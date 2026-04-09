@@ -1,0 +1,119 @@
+'use client';
+
+import React, { useState } from 'react';
+import { AtSign, Lock, Loader2 } from 'lucide-react';
+import Link from 'next/link';
+import { useLogin } from '@/lib/hooks/useAuth';
+import { loginSchema } from '@/lib/validators/auth';
+
+export default function LoginPage() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const { login, isLoading, error, fieldErrors, reset } = useLogin();
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    reset();
+
+    const result = loginSchema.safeParse({ email, password });
+    if (!result.success) return;
+
+    login(result.data);
+  };
+
+  return (
+    <div className="flex-grow flex flex-col px-8 pb-10 max-w-md mx-auto w-full justify-center">
+      {/* Welcome Section */}
+      <div className="mt-4 mb-10">
+        <h1 className="text-4xl font-black tracking-tighter text-white mb-2 uppercase">Terminal de Acceso</h1>
+        <p className="text-nexus-text text-sm font-medium tracking-wide">Ingresa tus credenciales seguras para gestionar tu patrimonio.</p>
+      </div>
+
+      {/* Server Error */}
+      {error && (
+        <div className="mb-6 rounded-xl bg-red-500/10 border border-red-500/20 px-4 py-3 text-sm text-red-400">
+          {error}
+        </div>
+      )}
+
+      {/* Login Form */}
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Input Field: Email */}
+        <div className="group">
+          <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-nexus-text/60 mb-2 group-focus-within:text-nexus-blue-light transition-colors">
+            Correo Electrónico
+          </label>
+          <div className="relative">
+            <input
+              className="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-4 text-white placeholder:text-white/20 focus:ring-1 focus:ring-nexus-blue-light transition-all outline-none"
+              placeholder="nombre@correo.com"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              disabled={isLoading}
+            />
+            <div className="absolute right-4 top-1/2 -translate-y-1/2 text-outline-variant">
+              <AtSign className="w-5 h-5" />
+            </div>
+          </div>
+          {fieldErrors?.email && (
+            <p className="mt-1 text-xs text-red-400">{fieldErrors.email[0]}</p>
+          )}
+        </div>
+
+        {/* Input Field: Password */}
+        <div className="group">
+          <div className="flex justify-between items-end mb-2">
+            <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-nexus-text/60 group-focus-within:text-nexus-blue-light transition-colors">
+              Contraseña
+            </label>
+            <Link href="/forgot-password" className="text-[10px] font-black uppercase tracking-widest text-nexus-blue-light hover:text-white transition-colors">
+              ¿Olvidaste tu contraseña?
+            </Link>
+          </div>
+          <div className="relative">
+            <input
+              className="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-4 text-white placeholder:text-white/20 focus:ring-1 focus:ring-nexus-blue-light transition-all outline-none"
+              placeholder="••••••••"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              disabled={isLoading}
+            />
+            <div className="absolute right-4 top-1/2 -translate-y-1/2 text-outline-variant">
+              <Lock className="w-5 h-5" />
+            </div>
+          </div>
+        </div>
+
+        {/* CTA Section */}
+        <div className="pt-6">
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="w-full bg-nexus-blue text-white font-black py-5 rounded-xl shadow-[0_0_30px_rgba(11,64,193,0.3)] hover:scale-[1.02] active:scale-95 transition-all uppercase tracking-widest text-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          >
+            {isLoading ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                Iniciando sesión...
+              </>
+            ) : (
+              'Iniciar Sesión'
+            )}
+          </button>
+        </div>
+      </form>
+
+      {/* Registration Link */}
+      <div className="mt-8 text-center pb-8 border-t border-white/5 pt-8">
+        <p className="text-sm text-nexus-text/60 font-medium tracking-wide">
+          ¿No tienes una cuenta?
+          <Link href="/register" className="text-nexus-blue-light font-black ml-2 hover:text-white transition-all uppercase tracking-tighter">
+            Únete a la Élite
+          </Link>
+        </p>
+      </div>
+    </div>
+  );
+}

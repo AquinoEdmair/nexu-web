@@ -1,101 +1,174 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
+import Link from 'next/link';
+import { ArrowRight, User, Zap, CheckCircle2, ShieldCheck } from 'lucide-react';
+import { ActivityTicker } from '@/components/home/ActivityTicker';
+import { NetworkStats } from '@/components/home/NetworkStats';
+import { SidebarInfo } from '@/components/home/SidebarInfo';
+import { UserRankingTable } from '@/components/home/UserRankingTable';
+import { GoldPriceChart } from '@/components/home/GoldPriceChart';
+import { GoldNewsFeed } from '@/components/home/GoldNewsFeed';
+
+export default function LandingPage() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <div className="min-h-screen bg-[#050b11] text-white font-sans selection:bg-nexus-blue/30 selection:text-nexus-blue overflow-x-hidden">
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+      {/* 🚀 NAV: Diseño Glow y Minimalista */}
+      <header className="sticky top-0 z-50 w-full bg-[#050b11]/80 backdrop-blur-md border-b border-white/5">
+        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <img src="/nexu.png" alt="NEXU" className="h-7 w-auto object-contain" />
+            <div className="hidden sm:block h-4 w-px bg-white/10 mx-3" />
+            <span className="hidden sm:block text-[9px] font-black text-nexus-text uppercase tracking-[0.4em] italic opacity-80">Investment Terminal</span>
+          </div>
+          <div className="flex items-center gap-4 lg:gap-8">
+            <Link href="/login" className="text-xs font-black uppercase tracking-widest text-nexus-text hover:text-white transition-colors">
+              Iniciar Sesión
+            </Link>
+            <Link 
+              href="/register" 
+              className="px-6 py-2.5 rounded-full bg-nexus-blue text-white text-[11px] font-black uppercase tracking-widest hover:brightness-110 transition-all shadow-[0_0_20px_rgba(11,64,193,0.3)]"
+            >
+              Registrarse
+            </Link>
+          </div>
         </div>
+      </header>
+
+      <main className="max-w-7xl mx-auto px-6 py-12 lg:py-20 flex flex-col gap-20 lg:gap-32">
+
+        {/* 🔥 SECCIÓN 1: HERO TERMINAL & GOLD CHART */}
+        <section className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-center">
+          <div className="lg:col-span-7 space-y-10">
+            <div className="space-y-6">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-nexus-blue/10 border border-nexus-blue/30">
+                <Zap className="w-3.5 h-3.5 text-nexus-blue-light fill-nexus-blue-light shadow-[0_0_10px_rgba(24,136,243,0.4)]" />
+                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-nexus-blue-light">Generación de Rendimientos IA</span>
+              </div>
+              <h1 className="text-6xl lg:text-7xl xl:text-8xl font-black leading-[0.9] tracking-tighter text-white">
+                TU CAPITAL EN <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-nexus-blue via-white/90 to-blue-500">VALOR REAL.</span>
+              </h1>
+              <p className="text-xl text-nexus-text font-medium leading-relaxed max-w-2xl">
+                Invierte en oro con criptomonedas y genera rendimientos diarios sin complicaciones. El refugio más seguro del mundo con la velocidad de la red blockchain.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap gap-4">
+              {['Sin trading manual', 'Sin alta experiencia', 'Respaldo físico'].map((badge) => (
+                <span key={badge} className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-slate-100 text-[10px] font-bold uppercase tracking-widest flex items-center gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-nexus-blue" /> {badge}
+                </span>
+              ))}
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-center gap-6 pt-4">
+              <Link
+                href="/register"
+                className="w-full sm:w-fit inline-flex items-center justify-center gap-3 px-10 py-5 bg-nexus-blue text-white font-black uppercase tracking-widest text-sm rounded-full hover:scale-105 transition-all shadow-[0_0_40px_rgba(11,64,193,0.4)]"
+              >
+                Comenzar a invertir ahora
+                <ArrowRight className="w-5 h-5 stroke-[3]" />
+              </Link>
+              <div className="flex items-center gap-2 text-nexus-text">
+                <ShieldCheck className="w-5 h-5 text-nexus-blue" />
+                <span className="text-xs font-bold uppercase tracking-widest">Protección Cifrada</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="lg:col-span-5 relative group">
+            <div className="glass-card-glow p-6 lg:p-8 relative border border-nexus-blue/20 hover:border-nexus-blue/40 transition-colors">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-sm font-black text-white uppercase tracking-widest">Oro en Tiempo Real</h3>
+                <span className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-nexus-blue/10 text-nexus-blue-light text-[9px] font-black border border-nexus-blue/20">XAU/USD</span>
+              </div>
+              <GoldPriceChart />
+            </div>
+          </div>
+        </section>
+
+        {/* 📊 SECCIÓN 2: PULSO OPERATIVO (ESTÁTICO POR CARGA) */}
+        <section className="space-y-10">
+          <div className="glass-card p-4 lg:p-6 border-white/5 bg-white/[0.02]">
+            <ActivityTicker />
+          </div>
+          <NetworkStats />
+        </section>
+
+        {/* 📰 SECCIÓN 3: INTELIGENCIA & COMUNIDAD (7/5) */}
+        <section className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
+          {/* RADAR DE MERCADO (IZQUIERDA) */}
+          <div className="lg:col-span-7 space-y-10">
+            <div className="flex items-center justify-between px-2">
+              <h2 className="text-xs font-black uppercase tracking-[0.5em] text-nexus-blue-light flex items-center gap-4">
+                <span className="w-3 h-3 rounded-full bg-nexus-blue-light shadow-[0_0_10px_#1888F3]" />
+                Radar de Mercado
+              </h2>
+              <div className="h-px flex-1 mx-8 bg-nexus-blue/10" />
+              <Link href="#" className="text-[10px] font-black text-nexus-text hover:text-nexus-blue transition-colors uppercase tracking-[0.2em]">Live Feed</Link>
+            </div>
+            <div className="h-[600px] overflow-y-auto pr-4 custom-scrollbar">
+              <GoldNewsFeed />
+            </div>
+          </div>
+
+          {/* RANKING ELITE (DERECHA) */}
+          <div className="lg:col-span-5 space-y-10">
+            <div className="flex items-center justify-between px-2">
+              <h2 className="text-xs font-black uppercase tracking-[0.5em] text-nexus-text">Ranking de Inversores</h2>
+              <div className="h-px flex-1 mx-8 bg-white/5" />
+            </div>
+            <div className="glass-card p-2 bg-white/[0.01]">
+              <UserRankingTable />
+            </div>
+          </div>
+        </section>
+
+        {/* 🛡️ SECCIÓN 4: Sidebar de Autoridad Integrado */}
+        <section className="pt-20 border-t border-white/5">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+            <div className="lg:col-span-7">
+              <div className="p-1 rounded-3xl bg-gradient-to-br from-white/10 to-transparent shadow-2xl">
+                <div className="bg-[#0a0c10] rounded-[22px] p-8 lg:p-12 border border-white/5">
+                  <SidebarInfo />
+                </div>
+              </div>
+            </div>
+            <div className="lg:col-span-5 space-y-10">
+              <div className="space-y-6 text-center lg:text-left">
+                <h3 className="text-5xl lg:text-6xl font-black text-white tracking-tighter leading-none">ÚNETE A LA <br /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-nexus-blue to-white">ÉLITE NEXU.</span></h3>
+                <p className="text-nexus-text font-medium leading-relaxed">Estás a un paso de automatizar tu futuro financiero sobre el activo más estable de la historia.</p>
+              </div>
+              <div className="flex justify-center lg:justify-start">
+                <Link href="/register" className="group bg-nexus-blue text-white font-black py-5 px-12 rounded-2xl flex items-center gap-4 hover:scale-105 transition-all shadow-[0_0_40px_rgba(11,64,193,0.3)]">
+                  CREAR CUENTA AHORA
+                  <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+
       </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+
+      {/* 🏁 FOOTER: Firma de Marca */}
+      <footer className="py-20 border-t border-white/5 bg-[#03070b]">
+        <div className="max-w-7xl mx-auto px-6 text-center space-y-8">
+          <div className="text-3xl font-black tracking-widest text-[#1e2a38]">
+            NEX<span className="text-nexus-blue/20">U</span>
+          </div>
+          <p className="text-[10px] font-black text-nexus-text/40 uppercase tracking-[0.6em]">
+            NEXU DIGITAL ASSET TERMINAL &copy; 2024 &bull; SECURE INVESTMENTS &bull; POWERED BY NEXUS PROTOCOL
+          </p>
+        </div>
       </footer>
+
+      {/* Decorative Blobs */}
+      <div className="fixed top-0 left-0 -z-10 w-full h-full overflow-hidden pointer-events-none">
+        <div className="absolute top-[-5%] left-[-5%] w-[40%] h-[40%] bg-nexus-blue/10 blur-[120px] rounded-full"></div>
+        <div className="absolute bottom-[-5%] right-[-5%] w-[30%] h-[30%] bg-blue-500/5 blur-[100px] rounded-full"></div>
+      </div>
     </div>
   );
 }
