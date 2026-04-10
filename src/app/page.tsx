@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight, User, Zap, CheckCircle2, ShieldCheck } from 'lucide-react';
+import { ArrowRight, Zap, CheckCircle2, ShieldCheck } from 'lucide-react';
 import { ActivityTicker } from '@/components/home/ActivityTicker';
 import { NetworkStats } from '@/components/home/NetworkStats';
 import { SidebarInfo } from '@/components/home/SidebarInfo';

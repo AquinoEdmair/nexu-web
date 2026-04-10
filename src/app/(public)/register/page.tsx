@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Eye, EyeOff, Award, Loader2, User, Mail, Phone, Lock, ShieldCheck } from 'lucide-react';
+import { Eye, EyeOff, Award, Loader2, User, Mail, Phone, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useRegister } from '@/lib/hooks/useAuth';

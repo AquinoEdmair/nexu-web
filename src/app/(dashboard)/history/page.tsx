@@ -1,6 +1,6 @@
 'use client';
 
-import { Download, Search, Calendar, ArrowDownLeft, ArrowUpRight, TrendingUp, Users, ChevronLeft, ChevronRight, Hash, ShieldCheck } from 'lucide-react';
+import { Download, Search, Calendar, ArrowDownLeft, ArrowUpRight, TrendingUp, Users, ChevronLeft, ChevronRight, Hash } from 'lucide-react';
 
 export default function HistoryPage() {
   return (

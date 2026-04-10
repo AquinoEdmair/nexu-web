@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Pencil, Lock, Key, BellRing, AtSign, ShieldCheck, User, Settings, CheckCircle } from 'lucide-react';
+import { Pencil, Lock, Key, BellRing, AtSign, ShieldCheck, User, CheckCircle } from 'lucide-react';
 
 export default function ProfilePage() {
   return (
