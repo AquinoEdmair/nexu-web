@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { DepositInvoice } from '@/types/models';
-import { Copy, Check, CheckCircle, AlertTriangle, Radio, ShieldCheck } from 'lucide-react';
+import { Copy, Check, AlertTriangle, Radio, ShieldCheck, Clock } from 'lucide-react';
 
 interface DepositAddressProps {
   invoice: DepositInvoice;

@@ -1,13 +1,21 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, Suspense } from 'react';
 import { ChevronLeft, KeyRound, Eye, EyeOff, CheckCircle2, Circle, Shield, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useResetPassword } from '@/lib/hooks/useAuth';
 import { resetPasswordSchema } from '@/lib/validators/auth';
 
-export default function ResetPasswordPage() {
+export default function ResetPasswordPageWrapper() {
+  return (
+    <Suspense fallback={<div className="flex-grow flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-nexus-blue-light" /></div>}>
+      <ResetPasswordPage />
+    </Suspense>
+  );
+}
+
+function ResetPasswordPage() {
   const searchParams = useSearchParams();
   const token = searchParams.get('token') ?? '';
   const emailParam = searchParams.get('email') ?? '';

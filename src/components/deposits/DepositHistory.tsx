@@ -1,16 +1,16 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { depositsApi } from '@/lib/api/deposits';
-import { Skeleton } from '@/components/ui/Skeleton';
+
 import { Modal } from '@/components/ui/Modal';
 import { DepositAddress } from '@/components/deposits/DepositAddress';
 import { useNotificationStore } from '@/lib/store/notificationStore';
 import { Copy, Check, Clock, CheckCircle2, XCircle, Eye, Activity, Database } from 'lucide-react';
 import { DepositInvoice } from '@/types/models';
 
-const STATUS_CONFIG: Record<string, { label: string; icon: any; classes: string }> = {
+const STATUS_CONFIG: Record<string, { label: string; icon: React.ComponentType<{ className?: string }>; classes: string }> = {
   completed:        { label: 'Sincronizado', icon: CheckCircle2, classes: 'text-nexus-blue-light bg-nexus-blue/10 border-nexus-blue/20 shadow-[0_0_12px_rgba(11,64,193,0.1)]' },
   awaiting_payment: { label: 'Esperando Pago',  icon: Clock,        classes: 'text-yellow-400 bg-yellow-400/10 border-yellow-400/20 shadow-[0_0_12px_rgba(250,204,21,0.1)]' },
   expired:          { label: 'Expirado',   icon: XCircle,      classes: 'text-white/20 bg-white/5 border-white/10 shadow-none grayscale' },
@@ -51,7 +51,7 @@ export function DepositHistory() {
   const addNotification = useNotificationStore(s => s.addNotification);
   const prevInvoicesRef = useRef<Record<string, string>>({});
 
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ['deposits', 'invoices'],
     queryFn: () => depositsApi.getInvoiceHistory(),
     refetchInterval: 8000,

@@ -96,7 +96,7 @@ export function RecentTransactions() {
                   <p className={`text-sm font-black tracking-tight ${config.color}`}>
                     {formatSignedAmount(tx.net_amount, tx.type)}
                   </p>
-                  <p className={`text-[9px] font-black uppercase tracking-[0.2em] py-0.5 px-2 rounded-full border ${tx.status === 'completed' ? 'border-nexus-blue/20 text-nexus-blue-light' : 'border-white/10 text-nexus-text/40'}`}>
+                  <p className={`text-[9px] font-black uppercase tracking-[0.2em] py-0.5 px-2 rounded-full border ${tx.status === 'confirmed' ? 'border-nexus-blue/20 text-nexus-blue-light' : 'border-white/10 text-nexus-text/40'}`}>
                     {tx.status}
                   </p>
                 </div>
