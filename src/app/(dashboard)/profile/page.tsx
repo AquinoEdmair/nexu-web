@@ -161,7 +161,4 @@ export default function ProfilePage() {
     </main>
   );
 }
-    </main>
-  );
-}
 
