@@ -1,4 +1,4 @@
-import { apiClient } from './client';
+import { apiClient } from './axios';
 import type { YieldLogEntry } from '@/types/models';
 import type { PaginatedResponse } from '@/types/api';
 

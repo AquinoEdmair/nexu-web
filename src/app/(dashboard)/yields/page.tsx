@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { TrendingUp, Award, Download, Cpu, Activity, ShieldCheck, Zap } from 'lucide-react';
 import { useYields } from '@/lib/hooks/useYields';
 import { useBalance } from '@/lib/hooks/useBalance';
-import { formatCurrency, formatDate } from '@/lib/utils';
+import { formatCurrency, formatDate } from '@/lib/utils/format';
 
 export default function YieldsPage() {
   const [page, setPage] = useState(1);
