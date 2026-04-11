@@ -225,7 +225,7 @@ function RegisterPage() {
             />
           </div>
           <label className="text-sm text-nexus-text/60 leading-snug font-medium" htmlFor="terms">
-            Acepto los <span className="text-nexus-blue-light font-black hover:underline cursor-pointer transition-all">Términos de Servicio</span> y la <span className="text-nexus-blue-light font-black hover:underline cursor-pointer transition-all">Política de Privacidad</span>.
+            Acepto los <Link href="/terms" target="_blank" className="text-nexus-blue-light font-black hover:underline cursor-pointer transition-all">Términos de Servicio</Link> y la <Link href="/terms" target="_blank" className="text-nexus-blue-light font-black hover:underline cursor-pointer transition-all">Política de Privacidad</Link>.
           </label>
         </div>
         {getError('terms') && <p className="text-xs text-red-400 ml-1">{getError('terms')}</p>}

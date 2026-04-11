@@ -8,6 +8,8 @@ import { SidebarInfo } from '@/components/home/SidebarInfo';
 import { UserRankingTable } from '@/components/home/UserRankingTable';
 import { GoldPriceChart } from '@/components/home/GoldPriceChart';
 import { GoldNewsFeed } from '@/components/home/GoldNewsFeed';
+import { AboutSection } from '@/components/home/AboutSection';
+import { ContactSection } from '@/components/home/ContactSection';
 
 export default function LandingPage() {
   return (
@@ -19,14 +21,20 @@ export default function LandingPage() {
           <div className="flex items-center gap-2">
             <img src="/nexu.png" alt="NEXU" className="h-7 w-auto object-contain" />
             <div className="hidden sm:block h-4 w-px bg-white/10 mx-3" />
-            <span className="hidden sm:block text-[9px] font-black text-nexus-text uppercase tracking-[0.4em] italic opacity-80">Investment Terminal</span>
+            <span className="hidden sm:block text-[9px] font-black text-nexus-text uppercase tracking-[0.4em] italic opacity-80">Powered by Predictive IA</span>
           </div>
+          <nav className="hidden lg:flex items-center gap-8">
+            <Link href="#quienes-somos" className="text-[10px] font-black uppercase tracking-widest text-nexus-text hover:text-white transition-colors">Quiénes Somos</Link>
+            <Link href="#contacto" className="text-[10px] font-black uppercase tracking-widest text-nexus-text hover:text-white transition-colors">Contacto</Link>
+            <Link href="/terms" className="text-[10px] font-black uppercase tracking-widest text-nexus-text hover:text-white transition-colors">Términos</Link>
+          </nav>
+
           <div className="flex items-center gap-4 lg:gap-8">
             <Link href="/login" className="text-xs font-black uppercase tracking-widest text-nexus-text hover:text-white transition-colors">
               Iniciar Sesión
             </Link>
-            <Link 
-              href="/register" 
+            <Link
+              href="/register"
               className="px-6 py-2.5 rounded-full bg-nexus-blue text-white text-[11px] font-black uppercase tracking-widest hover:brightness-110 transition-all shadow-[0_0_20px_rgba(11,64,193,0.3)]"
             >
               Registrarse
@@ -43,19 +51,19 @@ export default function LandingPage() {
             <div className="space-y-6">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-nexus-blue/10 border border-nexus-blue/30">
                 <Zap className="w-3.5 h-3.5 text-nexus-blue-light fill-nexus-blue-light shadow-[0_0_10px_rgba(24,136,243,0.4)]" />
-                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-nexus-blue-light">Generación de Rendimientos IA</span>
+                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-nexus-blue-light">INVERSIÓN AUTOMATIZADA EN ORO</span>
               </div>
               <h1 className="text-6xl lg:text-7xl xl:text-8xl font-black leading-[0.9] tracking-tighter text-white">
-                TU CAPITAL EN <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-nexus-blue via-white/90 to-blue-500">VALOR REAL.</span>
+                TU CAPITAL TRABAJA 24/7 <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-nexus-blue via-white/90 to-blue-500">EN EL MERCADO DEL ORO.</span>
               </h1>
               <p className="text-xl text-nexus-text font-medium leading-relaxed max-w-2xl">
-                Invierte en oro con criptomonedas y genera rendimientos diarios sin complicaciones. El refugio más seguro del mundo con la velocidad de la red blockchain.
+                Invertimos por ti con trading asistido por IA, ejecutando micro operaciones de forma continua.
               </p>
             </div>
 
             <div className="flex flex-wrap gap-4">
-              {['Sin trading manual', 'Sin alta experiencia', 'Respaldo físico'].map((badge) => (
+              {['Sin trading manual', 'Operaciones automatizadas', 'Depósitos y retiros en minutos'].map((badge) => (
                 <span key={badge} className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-slate-100 text-[10px] font-bold uppercase tracking-widest flex items-center gap-2">
                   <CheckCircle2 className="w-3.5 h-3.5 text-nexus-blue" /> {badge}
                 </span>
@@ -80,7 +88,7 @@ export default function LandingPage() {
           <div className="lg:col-span-5 relative group">
             <div className="glass-card-glow p-6 lg:p-8 relative border border-nexus-blue/20 hover:border-nexus-blue/40 transition-colors">
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-sm font-black text-white uppercase tracking-widest">Oro en Tiempo Real</h3>
+                <h3 className="text-sm font-black text-white uppercase tracking-widest">Mercado de Oro en Tiempo Real</h3>
                 <span className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-nexus-blue/10 text-nexus-blue-light text-[9px] font-black border border-nexus-blue/20">XAU/USD</span>
               </div>
               <GoldPriceChart />
@@ -150,19 +158,13 @@ export default function LandingPage() {
           </div>
         </section>
 
-      </main>
-
-      {/* 🏁 FOOTER: Firma de Marca */}
-      <footer className="py-20 border-t border-white/5 bg-[#03070b]">
-        <div className="max-w-7xl mx-auto px-6 text-center space-y-8">
-          <div className="text-3xl font-black tracking-widest text-[#1e2a38]">
-            NEX<span className="text-nexus-blue/20">U</span>
-          </div>
-          <p className="text-[10px] font-black text-nexus-text/40 uppercase tracking-[0.6em]">
-            NEXU DIGITAL ASSET TERMINAL &copy; 2024 &bull; SECURE INVESTMENTS &bull; POWERED BY NEXUS PROTOCOL
-          </p>
+        {/* 🏢 SECCIÓN 5: Otros Protocolos (Sobre, Contacto) */}
+        <div className="space-y-32">
+          <AboutSection />
+          <ContactSection />
         </div>
-      </footer>
+
+      </main>
 
       {/* Decorative Blobs */}
       <div className="fixed top-0 left-0 -z-10 w-full h-full overflow-hidden pointer-events-none">

@@ -75,6 +75,54 @@ export interface YieldLog {
   created_at: string;
 }
 
+// ── Referrals ────────────────────────────────────────────────────────────────
+
+export type EliteTier = 'bronze' | 'silver' | 'gold' | 'platinum';
+
+export interface ReferralElite {
+  points: string;
+  tier: EliteTier;
+  next_tier: EliteTier | null;
+  points_to_next: string | null;
+  progress_pct: number;
+}
+
+export interface ReferralStats {
+  active_count: number;
+  inactive_count: number;
+  total_earned: string;
+}
+
+export interface ReferralSummary {
+  code: string;
+  share_url: string;
+  commission_rate: string;
+  stats: ReferralStats;
+  elite: ReferralElite;
+}
+
+export interface ReferralNode {
+  id: string;
+  masked_email: string;
+  joined_at: string;
+  status: 'active' | 'inactive';
+  total_generated: string;
+}
+
+export interface ReferralEarning {
+  id: string;
+  amount: string;
+  source_user_masked: string;
+  created_at: string;
+}
+
+export interface ReferralCodeValidation {
+  valid: boolean;
+  referrer_name: string | null;
+}
+
+// ── Withdrawals ───────────────────────────────────────────────────────────────
+
 export interface WithdrawalRequest {
   id: string;
   user_id: string;

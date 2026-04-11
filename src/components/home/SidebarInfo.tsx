@@ -13,10 +13,10 @@ export function SidebarInfo() {
           <span className="text-[10px] font-black uppercase tracking-[0.2em]">Tecnología Core</span>
         </div>
         <h2 className="text-3xl font-extrabold text-white tracking-tight leading-tight">
-          El puente definitivo hacia el Oro Cripto.
+          Invierte en Oro con Gestión Automatizada.
         </h2>
         <p className="text-slate-300 text-sm leading-relaxed font-medium">
-          NEXU es una arquitectura de inversión automatizada que permite exposición directa al metal precioso usando activos digitales, sin la fricción del trading tradicional.
+          Accede al mercado de oro mientras nuestro sistema ejecuta operaciones automatizadas por ti.
         </p>
       </section>
 
@@ -25,8 +25,8 @@ export function SidebarInfo() {
         {[
           { icon: <Globe className="w-4 h-4" />, title: 'Global', desc: 'Acceso 24/7' },
           { icon: <Lock className="w-4 h-4" />, title: 'Seguro', desc: 'Cifrado HMAC' },
-          { icon: <Zap className="w-4 h-4" />, title: 'Instantáneo', desc: 'Retiros Rápidos' },
-          { icon: <Rocket className="w-4 h-4" />, title: 'Escalable', desc: 'Interés Compuesto' },
+          { icon: <Zap className="w-4 h-4" />, title: 'Instantáneo', desc: 'Gestión de balance rápido' },
+          { icon: <Rocket className="w-4 h-4" />, title: 'Escalable', desc: 'Crecimiento progresivo' },
         ].map((f, i) => (
           <div key={i} className="p-4 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors">
             <div className="text-nexus-blue-light-light mb-2">{f.icon}</div>
@@ -41,11 +41,11 @@ export function SidebarInfo() {
         <h3 className="text-xs font-black text-slate-300 uppercase tracking-widest">Protocolo de Operación</h3>
         <div className="space-y-8 relative">
           <div className="absolute left-4 top-2 bottom-2 w-px bg-white/10"></div>
-          
+
           {[
             { n: '01', t: 'Depósito Inteligente', d: 'Fondea tu cuenta vía USDT/BTC.' },
             { n: '02', t: 'Ejecución Automática', d: 'Tu capital entra en el flujo de trading.' },
-            { n: '03', t: 'Retiros de Utilidad', d: 'Cobranza garantizada en tu wallet.' },
+            { n: '03', t: 'Retiros de Utilidad', d: 'Solicita tus ganancias de forma segura.' },
           ].map((s, i) => (
             <div key={i} className="flex gap-6 relative z-10">
               <div className="w-8 h-8 rounded-full bg-slate-900 border border-nexus-blue/40 flex items-center justify-center text-[10px] font-black text-nexus-blue-light shadow-[0_0_15px_rgba(11,64,193,0.2)]">
