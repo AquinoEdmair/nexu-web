@@ -1,9 +1,25 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { TrendingUp, Award, Download, Cpu, Activity, ShieldCheck, Zap } from 'lucide-react';
+import { useYields } from '@/lib/hooks/useYields';
+import { useBalance } from '@/lib/hooks/useBalance';
+import { formatCurrency, formatDate } from '@/lib/utils';
 
 export default function YieldsPage() {
+  const [page, setPage] = useState(1);
+  const { data: yieldsData, isLoading: yieldsLoading } = useYields(page);
+  const { data: balanceData, isLoading: balanceLoading } = useBalance();
+
+  const history = yieldsData?.data || [];
+  
+  // Calculate Monthly Yield (simplified: sum of the current page for now)
+  const monthlyYield = history.reduce((acc, curr) => acc + parseFloat(curr.amount_applied), 0);
+  
+  // Total yield accumulated - ideally this would come from the API, 
+  // but we'll show the balance in operation context here.
+  const totalInOperation = balanceData?.balance_in_operation || '0';
+
   return (
     <main className="max-w-7xl mx-auto px-4 md:px-8 pt-6 pb-32 space-y-10">
       {/* Tactical Header */}
@@ -30,10 +46,14 @@ export default function YieldsPage() {
             
             <div className="relative z-10 space-y-2">
               <p className="text-nexus-blue-light/40 font-black text-[9px] tracking-[0.3em] uppercase">
-                Acumulado Táctico Total
+                Balance en Operación
               </p>
               <div className="flex items-baseline gap-2">
-                <h2 className="text-5xl font-black text-white tracking-tighter">$3,450.20</h2>
+                {balanceLoading ? (
+                  <div className="h-12 w-32 bg-white/5 animate-pulse rounded-lg" />
+                ) : (
+                  <h2 className="text-5xl font-black text-white tracking-tighter">{formatCurrency(totalInOperation)}</h2>
+                )}
               </div>
               <div className="inline-flex items-center gap-2 px-2 py-0.5 rounded-full bg-nexus-blue/10 border border-nexus-blue/20">
                 <Zap className="w-3 h-3 text-nexus-blue-light fill-nexus-blue-light" />
@@ -44,13 +64,17 @@ export default function YieldsPage() {
             <div className="mt-10 grid grid-cols-1 gap-4 relative z-10">
               <div className="p-5 rounded-2xl bg-white/5 border border-white/5 hover:border-nexus-blue/20 transition-all">
                 <p className="text-[9px] text-white/20 font-black uppercase tracking-[0.2em] mb-2">
-                  Rendimiento Mensual
+                  Acumulado Reciente (Pág.)
                 </p>
                 <div className="flex items-end justify-between">
-                   <p className="text-2xl font-black text-white tracking-tighter">$412.80</p>
+                   {yieldsLoading ? (
+                     <div className="h-8 w-24 bg-white/5 animate-pulse rounded-lg" />
+                   ) : (
+                     <p className="text-2xl font-black text-white tracking-tighter">{formatCurrency(monthlyYield)}</p>
+                   )}
                    <div className="flex items-center gap-1 text-[10px] text-nexus-blue-light font-black mb-1">
                       <TrendingUp className="w-3 h-3" />
-                      +8.2%
+                      AUTO
                    </div>
                 </div>
               </div>
@@ -115,30 +139,79 @@ export default function YieldsPage() {
                 <div className="col-span-4 text-right">Balance de Red</div>
               </div>
               
-              {[
-                { date: 'MAY 12, 2024', type: 'RENDIMIENTO DE BÓVEDA', pct: '+2.00%', amount: '+$82.40', old: '$4,120.00', new: '$4,202.40' },
-                { date: 'MAY 05, 2024', type: 'RECOMPENSA DE RED', pct: '+$50.00', amount: 'BONO AFILIADO', old: '$4,070.00', new: '$4,120.00', elite: true },
-                { date: 'APR 28, 2024', type: 'RENDIMIENTO DE BÓVEDA', pct: '+1.85%', amount: '+$74.12', old: '$3,995.88', new: '$4,070.00' },
-                { date: 'APR 21, 2024', type: 'RENDIMIENTO DE BÓVEDA', pct: '+2.15%', amount: '+$84.22', old: '$3,911.66', new: '$3,995.88' },
-              ].map((row, i) => (
-                <div key={i} className="grid grid-cols-12 items-center px-8 py-6 hover:bg-white/[0.02] transition-colors border-b border-white/5 group">
-                  <div className="col-span-4 space-y-2">
-                    <p className="text-xs font-black text-white tracking-tighter uppercase">{row.date}</p>
-                    <span className={`inline-flex px-1.5 py-0.5 rounded border text-[8px] font-black tracking-widest uppercase ${row.elite ? 'bg-nexus-blue-light/10 border-nexus-blue-light/20 text-nexus-blue-light' : 'bg-white/5 border-white/5 text-white/30'}`}>
-                      {row.type}
-                    </span>
+              {yieldsLoading ? (
+                Array.from({ length: 5 }).map((_, i) => (
+                  <div key={i} className="grid grid-cols-12 items-center px-8 py-6 border-b border-white/5 animate-pulse">
+                    <div className="col-span-4 space-y-2">
+                      <div className="h-3 w-20 bg-white/10 rounded" />
+                      <div className="h-2 w-32 bg-white/5 rounded" />
+                    </div>
+                    <div className="col-span-4 flex flex-col items-center gap-1">
+                      <div className="h-4 w-12 bg-white/10 rounded" />
+                      <div className="h-2 w-16 bg-white/5 rounded" />
+                    </div>
+                    <div className="col-span-4 flex flex-col items-end gap-1">
+                      <div className="h-2 w-12 bg-white/5 rounded" />
+                      <div className="h-4 w-20 bg-white/10 rounded" />
+                    </div>
                   </div>
-                  <div className="col-span-4 text-center space-y-1">
-                    <p className="text-base font-black text-nexus-blue-light tracking-tighter">{row.pct}</p>
-                    <p className="text-[10px] text-white/20 font-black uppercase tracking-widest">{row.amount}</p>
+                ))
+              ) : history.length > 0 ? (
+                history.map((row) => (
+                  <div key={row.id} className="grid grid-cols-12 items-center px-8 py-6 hover:bg-white/[0.02] transition-colors border-b border-white/5 group">
+                    <div className="col-span-4 space-y-2">
+                      <p className="text-xs font-black text-white tracking-tighter uppercase">
+                        {formatDate(row.created_at)}
+                      </p>
+                      <span className={`inline-flex px-1.5 py-0.5 rounded border text-[8px] font-black tracking-widest uppercase bg-white/5 border-white/5 text-white/30`}>
+                        {row.yield_log?.description || 'RENDIMIENTO DE BÓVEDA'}
+                      </span>
+                    </div>
+                    <div className="col-span-4 text-center space-y-1">
+                      <p className="text-base font-black text-nexus-blue-light tracking-tighter">
+                        {parseFloat(row.amount_applied) >= 0 ? '+' : ''}{formatCurrency(row.amount_applied)}
+                      </p>
+                      <p className="text-[10px] text-white/20 font-black uppercase tracking-widest">
+                        AJUSTE POR {row.yield_log?.type || 'SISTEMA'}
+                      </p>
+                    </div>
+                    <div className="col-span-4 text-right space-y-1">
+                      <p className="text-[10px] text-white/10 font-black line-through tracking-widest">
+                        {formatCurrency(row.balance_before)}
+                      </p>
+                      <p className="text-sm font-black text-white tracking-tighter">
+                        {formatCurrency(row.balance_after)}
+                      </p>
+                    </div>
                   </div>
-                  <div className="col-span-4 text-right space-y-1">
-                    <p className="text-[10px] text-white/10 font-black line-through tracking-widest">{row.old}</p>
-                    <p className="text-sm font-black text-white tracking-tighter">{row.new}</p>
-                  </div>
+                ))
+              ) : (
+                <div className="px-8 py-20 text-center">
+                   <p className="text-white/20 font-black uppercase tracking-widest text-xs">No se han detectado registros en el historial</p>
                 </div>
-              ))}
+              )}
             </div>
+            
+            {/* Pagination Controls */}
+            {yieldsData && yieldsData.last_page > 1 && (
+              <div className="flex justify-center items-center gap-4 py-6 border-t border-white/5 bg-white/[0.02]">
+                <button 
+                  onClick={() => setPage(p => Math.max(1, p - 1))}
+                  disabled={page === 1}
+                  className="px-4 py-2 text-[10px] font-black uppercase tracking-widest text-white/40 disabled:opacity-20 hover:text-nexus-blue-light transition-colors"
+                >
+                  Regresión
+                </button>
+                <span className="text-[10px] font-black text-nexus-blue-light">VECTOR {page} / {yieldsData.last_page}</span>
+                <button 
+                  onClick={() => setPage(p => Math.min(yieldsData.last_page, p + 1))}
+                  disabled={page === yieldsData.last_page}
+                  className="px-4 py-2 text-[10px] font-black uppercase tracking-widest text-white/40 disabled:opacity-20 hover:text-nexus-blue-light transition-colors"
+                >
+                  Proyección
+                </button>
+              </div>
+            )}
           </div>
         </section>
       </div>

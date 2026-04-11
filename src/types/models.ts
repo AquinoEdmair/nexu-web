@@ -75,6 +75,18 @@ export interface YieldLog {
   created_at: string;
 }
 
+export interface YieldLogEntry {
+  id: string;
+  yield_log_id: string;
+  user_id: string;
+  balance_before: string;
+  balance_after: string;
+  amount_applied: string;
+  status: 'applied' | 'failed' | 'skipped';
+  created_at: string;
+  yield_log?: YieldLog;
+}
+
 // ── Referrals ────────────────────────────────────────────────────────────────
 
 export type EliteTier = 'bronze' | 'silver' | 'gold' | 'platinum';
