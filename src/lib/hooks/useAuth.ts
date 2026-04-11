@@ -40,14 +40,14 @@ export const useLogin = () => {
 };
 
 export const useRegister = () => {
-  const { setAuth } = useAuthStore();
   const router = useRouter();
 
   const mutation = useMutation({
     mutationFn: (data: RegisterData) => authApi.register(data),
-    onSuccess: (data) => {
-      setAuth(data.data.user, data.data.token);
-      router.push('/dashboard');
+    onSuccess: (_data, variables) => {
+      // Do not auto-login: user must verify email first.
+      const email = encodeURIComponent(variables.email);
+      router.push(`/verify-email-sent?email=${email}`);
     },
   });
 

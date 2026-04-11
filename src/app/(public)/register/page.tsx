@@ -1,11 +1,12 @@
 'use client';
 
 import React, { useState, Suspense } from 'react';
-import { Eye, EyeOff, Award, Loader2, User, Mail, Phone, ShieldCheck } from 'lucide-react';
+import { Eye, EyeOff, Award, Loader2, User, Mail, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useRegister } from '@/lib/hooks/useAuth';
 import { registerSchema } from '@/lib/validators/auth';
+import { PhoneInput } from '@/components/ui/PhoneInput';
 
 export default function RegisterPageWrapper() {
   return (
@@ -129,20 +130,13 @@ function RegisterPage() {
           <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-nexus-text/60 ml-1 group-focus-within:text-nexus-blue-light transition-colors" htmlFor="phone">
             Teléfono (Opcional)
           </label>
-          <div className="relative">
-            <input
-              className="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-4 pr-12 text-white focus:ring-1 focus:ring-nexus-blue-light placeholder:text-white/20 transition-all outline-none"
-              id="phone"
-              placeholder="+52 55 1234 5678"
-              type="tel"
-              value={form.phone}
-              onChange={(e) => updateField('phone', e.target.value)}
-              disabled={isLoading}
-            />
-            <div className="absolute right-4 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-nexus-blue-light transition-colors">
-              <Phone className="w-5 h-5" />
-            </div>
-          </div>
+          <PhoneInput
+            id="phone"
+            value={form.phone}
+            onChange={(v) => updateField('phone', v)}
+            disabled={isLoading}
+          />
+          {getError('phone') && <p className="text-xs text-red-400 ml-1">{getError('phone')}</p>}
         </div>
 
         <div className="space-y-1.5 group">
