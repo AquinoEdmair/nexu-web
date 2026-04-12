@@ -56,8 +56,8 @@ export default function YieldsPage() {
                 )}
               </div>
               <div className="inline-flex items-center gap-2 px-2 py-0.5 rounded-full bg-nexus-blue/10 border border-nexus-blue/20">
-                <Zap className="w-3 h-3 text-nexus-blue-light fill-nexus-blue-light" />
-                <span className="text-nexus-blue-light text-[10px] font-black uppercase tracking-widest">+12.4% ALL-TIME</span>
+                <Activity className="w-3 h-3 text-nexus-blue-light" />
+                <span className="text-nexus-blue-light text-[10px] font-black uppercase tracking-widest">Sincronización en Tiempo Real</span>
               </div>
             </div>
             
@@ -74,20 +74,7 @@ export default function YieldsPage() {
                    )}
                    <div className="flex items-center gap-1 text-[10px] text-nexus-blue-light font-black mb-1">
                       <TrendingUp className="w-3 h-3" />
-                      AUTO
-                   </div>
-                </div>
-              </div>
-              
-              <div className="p-5 rounded-2xl bg-nexus-blue/5 border border-nexus-blue/10 hover:border-nexus-blue/30 transition-all">
-                <p className="text-[9px] text-nexus-blue-light/40 font-black uppercase tracking-[0.2em] mb-2">
-                  Multiplicador Activo
-                </p>
-                <div className="flex items-end justify-between">
-                   <p className="text-2xl font-black text-nexus-blue-light tracking-tighter uppercase">1.25x</p>
-                   <div className="flex items-center gap-1 text-[9px] text-nexus-blue-light/40 font-black mb-1">
-                      <Award className="w-3 h-3" />
-                      Bóveda Lvl 3
+                      AUTO-SIGNAL
                    </div>
                 </div>
               </div>
