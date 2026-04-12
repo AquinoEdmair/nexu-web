@@ -199,7 +199,6 @@ export default function YieldsPage() {
                 </button>
               </div>
             )}
-          )}
           </div>
         </section>
       </div>
