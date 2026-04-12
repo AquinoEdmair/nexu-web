@@ -6,14 +6,23 @@ import { usePendingInvoices } from '@/lib/hooks/usePendingInvoices';
 import { SUPPORTED_CURRENCIES } from '@/lib/validators/deposit';
 import { DepositInvoice } from '@/types/models';
 import { useNotificationStore } from '@/lib/store/notificationStore';
-import { DollarSign, Bitcoin, RefreshCcw, ArrowRight, Loader2, Info, Zap } from 'lucide-react';
+import { DollarSign, Bitcoin, RefreshCcw, ArrowRight, Loader2, Info, Zap, TrendingUp, Shield } from 'lucide-react';
 import { AxiosError } from 'axios';
+import { apiClient } from '@/lib/api/client';
+import { useQuery } from '@tanstack/react-query';
 
 const CURRENCY_CONFIG = {
   USDT: { icon: DollarSign, label: 'USDT' },
   BTC:  { icon: Bitcoin,    label: 'BTC' },
   ETH:  { icon: RefreshCcw, label: 'ETH' },
 } as const;
+
+interface CommissionPreview {
+  rate: number;
+  net_amount: number;
+  fee_amount: number;
+  amount_charged: number;
+}
 
 interface InitiateDepositFormProps {
   invoice: DepositInvoice | null;
@@ -26,8 +35,19 @@ export function InitiateDepositForm({ invoice, setInvoice }: InitiateDepositForm
   const { data: pendingData, isLoading: isLoadingPending } = usePendingInvoices();
   const { mutate, isPending, error, reset } = useInitiateDeposit();
   const addNotification = useNotificationStore(s => s.addNotification);
-
   const lastAutoLoadedId = useRef<string | null>(null);
+
+  const numericAmount = parseFloat(amount) || 0;
+
+  // Fetch commission preview whenever amount changes (debounced via enabled)
+  const { data: commissionData } = useQuery<{ data: CommissionPreview }>({
+    queryKey: ['deposit-commission', numericAmount],
+    queryFn: () => apiClient.get(`/deposits/commission-rate?amount=${numericAmount}`).then(r => r.data),
+    enabled: numericAmount >= 10,
+    staleTime: 30_000,
+  });
+
+  const preview = commissionData?.data;
 
   useEffect(() => {
     if (pendingData?.data && pendingData.data.length > 0 && !isPending) {
@@ -47,7 +67,6 @@ export function InitiateDepositForm({ invoice, setInvoice }: InitiateDepositForm
   }, [pendingData, invoice, isPending, setInvoice]);
 
   const handleGenerate = () => {
-    const numericAmount = parseFloat(amount);
     if (!numericAmount || numericAmount < 10) return;
     
     reset();
@@ -59,8 +78,8 @@ export function InitiateDepositForm({ invoice, setInvoice }: InitiateDepositForm
         setInvoice(data.data);
         addNotification({
           type: 'success',
-          title: 'Protocolo Iniciado',
-          message: `Dirección de ${selectedCurrency} generada bajo cifrado HMAC.`,
+          title: 'Dirección Generada',
+          message: `Dirección de ${selectedCurrency} lista. Envía el monto exacto.`,
           duration: 5000
         });
       },
@@ -77,8 +96,10 @@ export function InitiateDepositForm({ invoice, setInvoice }: InitiateDepositForm
   };
 
   const errorMessage = error instanceof AxiosError
-    ? error.response?.data?.message ?? 'Fallo en la generación del nodo. Reintenta.'
-    : error ? 'Error de protocolo inesperado.' : null;
+    ? error.response?.data?.message ?? 'Error al generar la dirección. Reintenta.'
+    : error ? 'Error inesperado. Reintenta.' : null;
+
+  const hasCommission = preview && preview.rate > 0 && numericAmount >= 10;
 
   return (
     <div className="space-y-8 p-6">
@@ -88,7 +109,7 @@ export function InitiateDepositForm({ invoice, setInvoice }: InitiateDepositForm
           <div className="flex items-center gap-2">
             <Zap className="w-3 h-3 text-nexus-blue-light" />
             <label className="text-[10px] font-black uppercase tracking-[0.3em] text-nexus-blue-light/60">
-              Activo de Transferencia
+              Activo de Inversión
             </label>
           </div>
           <div className="grid grid-cols-3 gap-3">
@@ -120,7 +141,7 @@ export function InitiateDepositForm({ invoice, setInvoice }: InitiateDepositForm
           <div className="flex items-center gap-2">
             <div className="w-1 h-3 bg-nexus-blue-light rounded-full"></div>
             <label className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40">
-              Monto Requerido (USD)
+              Monto a Invertir (USD)
             </label>
           </div>
           <div className="relative group">
@@ -137,9 +158,50 @@ export function InitiateDepositForm({ invoice, setInvoice }: InitiateDepositForm
           </div>
           <div className="flex items-center gap-2 text-[9px] font-black text-nexus-text/40 px-1 uppercase tracking-widest">
             <Info className="h-3 w-3" />
-            <span>Umbral mínimo de adquisición: $10.00 USD</span>
+            <span>Mínimo de inversión: $10.00 USD</span>
           </div>
         </div>
+
+        {/* Commission Breakdown */}
+        {hasCommission && (
+          <div className="rounded-2xl border border-amber-500/20 bg-amber-500/5 p-4 space-y-3 animate-in fade-in slide-in-from-top-2">
+            <div className="flex items-center gap-2">
+              <Shield className="w-3 h-3 text-amber-400" />
+              <span className="text-[9px] font-black uppercase tracking-[0.3em] text-amber-400/80">
+                Desglose de Inversión
+              </span>
+            </div>
+            <div className="space-y-2">
+              <div className="flex justify-between items-center">
+                <span className="text-[10px] text-white/40 font-black uppercase tracking-widest">Recibes en tu cuenta</span>
+                <span className="text-[11px] font-black text-white">${preview.net_amount.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-[10px] text-white/40 font-black uppercase tracking-widest">
+                  Comisión de plataforma ({preview.rate}%)
+                </span>
+                <span className="text-[11px] font-black text-amber-400">+${preview.fee_amount.toFixed(2)}</span>
+              </div>
+              <div className="h-px bg-white/10 my-1" />
+              <div className="flex justify-between items-center">
+                <span className="text-[10px] text-white font-black uppercase tracking-widest">Total a enviar</span>
+                <span className="text-sm font-black text-nexus-blue-light">${preview.amount_charged.toFixed(2)}</span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* No commission notice */}
+        {numericAmount >= 10 && preview && preview.rate === 0 && (
+          <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-4 animate-in fade-in">
+            <div className="flex items-center gap-2">
+              <TrendingUp className="w-3 h-3 text-emerald-400" />
+              <span className="text-[9px] font-black uppercase tracking-[0.3em] text-emerald-400">
+                Sin comisión activa — recibes el 100% de ${numericAmount.toFixed(2)}
+              </span>
+            </div>
+          </div>
+        )}
 
         {/* Error Feedback */}
         {errorMessage && (
@@ -149,17 +211,17 @@ export function InitiateDepositForm({ invoice, setInvoice }: InitiateDepositForm
           </div>
         )}
 
-        {/* Command Button */}
+        {/* Generate Button */}
         <button
           onClick={handleGenerate}
-          disabled={isPending || !amount || parseFloat(amount) < 10}
+          disabled={isPending || !amount || numericAmount < 10}
           className="w-full bg-nexus-blue text-white font-black py-5 rounded-2xl flex items-center justify-center gap-3 hover:bg-nexus-blue-light disabled:opacity-20 disabled:cursor-not-allowed transition-all shadow-[0_0_20px_rgba(11,64,193,0.2)] active:scale-[0.98] uppercase tracking-[0.2em] text-xs"
         >
           {isPending ? (
             <Loader2 className="h-5 w-5 animate-spin" />
           ) : (
             <>
-              Iniciar Adquisición
+              {hasCommission ? `Generar Dirección — Enviar $${preview.amount_charged.toFixed(2)}` : 'Generar Dirección de Pago'}
               <ArrowRight className="h-4 w-4" />
             </>
           )}
@@ -168,4 +230,3 @@ export function InitiateDepositForm({ invoice, setInvoice }: InitiateDepositForm
     </div>
   );
 }
-
