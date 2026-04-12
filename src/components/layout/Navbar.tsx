@@ -19,15 +19,13 @@ export function Navbar() {
 
   return (
     <header className="w-full top-0 sticky bg-[#0a0f16]/90 backdrop-blur-3xl z-[99] border-b border-white/5 flex items-center justify-center">
-      <div className="flex justify-between items-center px-6 md:px-10 py-5 w-full max-max-w-7xl">
+      <div className="flex justify-between items-center px-6 md:px-10 py-5 w-full max-w-7xl">
         <div className="flex items-center gap-6">
           <Link href="/dashboard" className="flex items-center gap-3 group transition-all">
             <div className="relative">
               <img src="/nexu.png" alt="NEXU Logo" className="h-9 w-auto brightness-110 drop-shadow-[0_0_12px_rgba(24,136,243,0.4)] group-hover:drop-shadow-[0_0_20px_rgba(24,136,243,0.6)] transition-all" />
             </div>
           </Link>
-          <div className="hidden md:flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/5 rounded-full">
-            <div className="w-1.5 h-1.5 rounded-full bg-nexus-blue-light animate-pulse shadow-[0_0_8px_rgba(24,136,243,1)]"></div>
           <div className="hidden md:flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/5 rounded-full">
             <div className="w-1.5 h-1.5 rounded-full bg-nexus-blue-light animate-pulse shadow-[0_0_8px_rgba(24,136,243,1)]"></div>
             <span className="text-[9px] font-black text-white/40 uppercase tracking-[0.3em]">Estado: Protegido</span>
