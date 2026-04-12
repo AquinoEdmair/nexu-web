@@ -53,7 +53,10 @@ export default function ReferralsPage() {
 
       {summary && (
         <>
-          <EliteProgress elite={summary.elite} />
+          <EliteProgress 
+            elite={summary.elite} 
+            totalPersonalDeposit={summary.stats.total_personal_deposit} 
+          />
           <ReferralInfo summary={summary} />
           <ReferralNetwork />
           <ReferralEarnings stats={summary.stats} />

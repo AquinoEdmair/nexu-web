@@ -80,14 +80,6 @@ export function Navbar() {
                       <UserIcon className="w-4 h-4 text-nexus-blue-light" />
                       Gestionar Perfil
                     </Link>
-                    <Link 
-                      href="/settings" 
-                      onClick={() => setIsProfileOpen(false)}
-                      className="flex items-center gap-3 px-4 py-3 text-[10px] font-black text-white/60 uppercase tracking-widest hover:text-white hover:bg-white/5 rounded-2xl transition-all"
-                    >
-                      <Settings className="w-4 h-4 text-nexus-blue-light" />
-                      Configuración
-                    </Link>
                     <div className="h-px bg-white/5 my-2 mx-4"></div>
                     <button 
                       onClick={handleLogout}
