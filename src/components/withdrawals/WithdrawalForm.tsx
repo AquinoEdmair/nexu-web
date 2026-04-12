@@ -6,14 +6,23 @@ import { useCreateWithdrawal } from '@/lib/hooks/useCreateWithdrawal';
 import { useNotificationStore } from '@/lib/store/notificationStore';
 import { WITHDRAWAL_CURRENCIES } from '@/lib/validators/withdrawal';
 import { formatCurrency } from '@/lib/utils/format';
-import { DollarSign, Bitcoin, RefreshCcw, ArrowRight, Loader2, Info, Wallet, Zap, ShieldAlert } from 'lucide-react';
+import { DollarSign, Bitcoin, RefreshCcw, ArrowRight, Loader2, Info, Wallet, Zap, ShieldAlert, TrendingDown } from 'lucide-react';
 import { AxiosError } from 'axios';
+import { apiClient } from '@/lib/api/axios';
+import { useQuery } from '@tanstack/react-query';
 
 const CURRENCY_CONFIG = {
   USDT: { icon: DollarSign, label: 'USDT' },
   BTC:  { icon: Bitcoin,    label: 'BTC' },
   ETH:  { icon: RefreshCcw, label: 'ETH' },
 } as const;
+
+interface WithdrawalPreview {
+  rate: number;
+  amount: number;
+  fee_amount: number;
+  net_amount: number;
+}
 
 export function WithdrawalForm() {
   const [selectedCurrency, setSelectedCurrency] = useState<typeof WITHDRAWAL_CURRENCIES[number]>('USDT');
@@ -26,17 +35,27 @@ export function WithdrawalForm() {
 
   const balance = balanceData?.data;
   const availableBalance = balance?.balance_available ?? '0';
+  const numericAmount = parseFloat(amount) || 0;
+
+  // Fetch commission preview
+  const { data: commissionData } = useQuery<{ data: WithdrawalPreview }>({
+    queryKey: ['withdrawal-commission', numericAmount],
+    queryFn: () => apiClient.get(`/withdrawals/commission-rate?amount=${numericAmount}`).then(r => r.data),
+    enabled: numericAmount > 0,
+    staleTime: 30_000,
+  });
+
+  const preview = commissionData?.data;
 
   const handleSubmit = () => {
-    const numAmount = parseFloat(amount);
-    if (isNaN(numAmount) || numAmount <= 0) return;
+    if (isNaN(numericAmount) || numericAmount <= 0) return;
     if (address.length < 20) return;
 
     reset();
 
     mutate(
       {
-        amount: numAmount,
+        amount: numericAmount,
         currency: selectedCurrency,
         destination_address: address,
       },
@@ -45,7 +64,7 @@ export function WithdrawalForm() {
           addNotification({
             type: 'success',
             title: 'Protocolo de Salida Iniciado',
-            message: `Solicitud de ${numAmount} ${selectedCurrency} en proceso de validación.`,
+            message: `Solicitud de ${numericAmount} ${selectedCurrency} en proceso de validación.`,
           });
           setAmount('');
           setAddress('');
@@ -57,7 +76,7 @@ export function WithdrawalForm() {
           
           addNotification({
             type: 'error',
-            title: 'Fifa de Seguridad',
+            title: 'Error de Seguridad',
             message,
           });
         }
@@ -74,7 +93,8 @@ export function WithdrawalForm() {
     reset();
   };
 
-  const isFormValid = parseFloat(amount) > 0 && address.length >= 20;
+  const isFormValid = numericAmount > 0 && address.length >= 20 && numericAmount <= parseFloat(availableBalance);
+  const hasCommission = preview && preview.rate > 0 && numericAmount > 0;
 
   return (
     <div className="p-8 space-y-8 bg-[#0a0f16]/40 border border-white/10 rounded-3xl backdrop-blur-xl shadow-[0_8px_40px_rgba(0,0,0,0.3)]">
@@ -159,6 +179,33 @@ export function WithdrawalForm() {
         </div>
       </div>
 
+      {/* Commission Breakdown */}
+      {hasCommission && (
+        <div className="rounded-2xl border border-nexus-blue/20 bg-nexus-blue/5 p-5 space-y-4 animate-in fade-in slide-in-from-top-2">
+          <div className="flex items-center gap-2">
+            <TrendingDown className="w-3 h-3 text-nexus-blue-light" />
+            <span className="text-[9px] font-black uppercase tracking-[0.3em] text-nexus-blue-light/80">
+              Desglose de Liquidación
+            </span>
+          </div>
+          <div className="space-y-2.5">
+            <div className="flex justify-between items-center">
+              <span className="text-[10px] text-white/40 font-black uppercase tracking-widest">Monto Solicitado</span>
+              <span className="text-[11px] font-black text-white">${preview.amount.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between items-center text-red-400/80">
+              <span className="text-[10px] font-black uppercase tracking-widest">Comisión Retiro ({preview.rate}%)</span>
+              <span className="text-[11px] font-black">-${preview.fee_amount.toFixed(2)}</span>
+            </div>
+            <div className="h-px bg-white/5 my-1" />
+            <div className="flex justify-between items-center">
+              <span className="text-[10px] text-white font-black uppercase tracking-widest">Neto a Recibir</span>
+              <span className="text-lg font-black text-nexus-blue-light">${preview.net_amount.toFixed(2)}</span>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Destination address */}
       <div className="space-y-4">
         <div className="flex items-center gap-2">
@@ -200,7 +247,7 @@ export function WithdrawalForm() {
           </>
         ) : (
           <>
-            Ejecutar Retiro
+            {hasCommission ? `Retirar Neto de $${preview.net_amount.toFixed(2)}` : 'Ejecutar Retiro'}
             <ArrowRight className="h-4 w-4" />
           </>
         )}
