@@ -8,7 +8,7 @@ import { DepositInvoice } from '@/types/models';
 import { useNotificationStore } from '@/lib/store/notificationStore';
 import { DollarSign, Bitcoin, RefreshCcw, ArrowRight, Loader2, Info, Zap, TrendingUp, Shield } from 'lucide-react';
 import { AxiosError } from 'axios';
-import { apiClient } from '@/lib/api/client';
+import { apiClient } from '@/lib/api/axios';
 import { useQuery } from '@tanstack/react-query';
 
 const CURRENCY_CONFIG = {
