@@ -10,7 +10,8 @@ export function useYields(page = 1, perPage = 20) {
   return useQuery({
     queryKey: yieldKeys.history(page, perPage),
     queryFn: () => getYieldHistory(page, perPage),
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 10_000,
+    refetchInterval: 15_000,
     placeholderData: (previousData) => previousData,
   });
 }
