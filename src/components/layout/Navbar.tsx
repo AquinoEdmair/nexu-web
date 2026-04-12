@@ -33,20 +33,8 @@ export function Navbar() {
         </div>
 
         <div className="flex items-center gap-4 md:gap-6">
-          <div className="flex items-center gap-1 md:gap-2 pr-4 border-r border-white/5">
-            <button 
-              onClick={() => setIsSearchOpen(!isSearchOpen)}
-              className={`p-2.5 rounded-2xl transition-all active:scale-90 group relative ${isSearchOpen ? 'bg-nexus-blue/20 text-nexus-blue-light' : 'hover:bg-white/5 text-white/20 hover:text-nexus-blue-light'}`}
-            >
-              <Search className="h-5 w-5 transition-transform group-hover:scale-110" />
-            </button>
-            <button className="p-2.5 rounded-2xl hover:bg-white/5 transition-all text-white/20 hover:text-nexus-blue-light active:scale-90 group relative">
-              <Bell className="h-5 w-5 transition-transform group-hover:rotate-12" />
-              <span className="absolute top-2 right-2 w-2 h-2 bg-nexus-blue-light rounded-full border-2 border-[#0a0f16] shadow-[0_0_8px_rgba(24,136,243,0.6)]"></span>
-            </button>
-            <Link href="/settings" className="p-2.5 rounded-2xl hover:bg-white/5 transition-all text-white/20 hover:text-nexus-blue-light active:scale-90 group">
-              <Settings className="h-5 w-5 transition-transform group-hover:rotate-90" />
-            </Link>
+          <div className="flex items-center gap-1 md:gap-2 pr-4">
+            {/* Icons removed as per user request */}
           </div>
           
           <div className="relative">

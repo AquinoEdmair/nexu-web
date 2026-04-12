@@ -107,18 +107,7 @@ export function Sidebar() {
            </button>
         </div>
 
-        {/* System Monitoring Pulse */}
-        <div className="mt-auto pb-4">
-          <div className="p-5 rounded-2xl bg-white/[0.02] border border-white/5 space-y-4">
-             <div className="flex justify-between items-center">
-               <span className="text-[9px] font-black text-white/30 uppercase tracking-[0.3em]">Network Pulse</span>
-               <div className="w-1.5 h-1.5 rounded-full bg-nexus-blue-light animate-pulse shadow-[0_0_8px_rgba(24,136,243,1)]"></div>
-             </div>
-             <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
-                <div className="h-full bg-nexus-blue-light w-full shadow-[0_0_10px_rgba(24,136,243,0.5)]"></div>
-             </div>
-          </div>
-        </div>
+        {/* System Monitoring Pulse removed as per user request */}
       </aside>
     </>
   );

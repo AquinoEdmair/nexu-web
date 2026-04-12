@@ -2,8 +2,11 @@
 
 import React from 'react';
 import { Pencil, Lock, Key, BellRing, AtSign, ShieldCheck, User, CheckCircle } from 'lucide-react';
+import { useAuthStore } from '@/lib/store/authStore';
 
 export default function ProfilePage() {
+  const { user } = useAuthStore();
+
   return (
     <main className="max-w-7xl mx-auto px-4 md:px-8 pt-6 pb-32 space-y-10">
       {/* Tactical Header */}
@@ -43,9 +46,9 @@ export default function ProfilePage() {
               </div>
               
               <div className="mt-8 text-center">
-                <h2 className="text-3xl font-black text-white tracking-tighter uppercase mb-1">Alexander Vault</h2>
+                <h2 className="text-3xl font-black text-white tracking-tighter uppercase mb-1">{user?.name}</h2>
                 <div className="inline-flex items-center gap-2 mb-4">
-                  <span className="text-nexus-blue-light text-[10px] font-black tracking-[0.3em] uppercase">Rango: Operador Elite</span>
+                  <span className="text-nexus-blue-light text-[10px] font-black tracking-[0.3em] uppercase">Rango: Operador Operativo</span>
                 </div>
                 
                 <div className="mt-2 flex items-center justify-center gap-2 bg-white/5 px-4 py-2 rounded-2xl border border-white/5">
@@ -75,7 +78,7 @@ export default function ProfilePage() {
           <div className="space-y-5">
             <div className="flex justify-between items-end px-1">
               <h3 className="text-[9px] font-black tracking-[0.3em] text-white/20 uppercase">Protocolo de Registro</h3>
-              <span className="text-[10px] text-nexus-blue-light font-black tracking-widest border-b border-nexus-blue-light/20">ID: NEXU-9921-X</span>
+              <span className="text-[10px] text-nexus-blue-light font-black tracking-widest border-b border-nexus-blue-light/20">ID: {user?.referral_code}</span>
             </div>
             
             <div className="bg-[#0a0f16]/40 border border-white/10 rounded-[2.5rem] p-10 space-y-10 backdrop-blur-xl">
@@ -83,14 +86,14 @@ export default function ProfilePage() {
                 <div className="space-y-2">
                   <label className="text-[9px] font-black text-white/20 uppercase tracking-[0.3em] ml-1">Alias Operativo</label>
                   <div className="bg-white/5 p-5 rounded-2xl border border-white/5 group hover:border-nexus-blue/20 transition-colors">
-                    <p className="text-sm font-black text-white tracking-tighter uppercase">Alexander Vault</p>
+                    <p className="text-sm font-black text-white tracking-tighter uppercase">{user?.name}</p>
                   </div>
                 </div>
                 
                 <div className="space-y-2 opacity-60">
                   <label className="text-[9px] font-black text-white/20 uppercase tracking-[0.3em] ml-1">Nodo de Contacto</label>
                   <div className="flex items-center justify-between bg-white/5 p-5 rounded-2xl border border-white/5">
-                    <p className="text-sm font-black text-white/40 tracking-tighter">alex.v@nexus.io</p>
+                    <p className="text-sm font-black text-white/40 tracking-tighter">{user?.email}</p>
                     <Lock className="w-4 h-4 text-white/10" />
                   </div>
                 </div>
@@ -99,7 +102,7 @@ export default function ProfilePage() {
               <div className="space-y-2">
                 <label className="text-[9px] font-black text-white/20 uppercase tracking-[0.3em] ml-1">Línea Segura</label>
                 <div className="bg-white/5 p-5 rounded-2xl border border-white/5 group hover:border-nexus-blue/20 transition-colors">
-                  <p className="text-sm font-black text-white tracking-tighter">+1 (555) 808-2024</p>
+                  <p className="text-sm font-black text-white tracking-tighter uppercase">{user?.phone || 'Sin Registrar'}</p>
                 </div>
               </div>
             </div>
