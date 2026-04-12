@@ -32,7 +32,7 @@ export default function ReferralsPage() {
           <div className="flex items-center gap-3 px-4 py-2 bg-white/5 border border-white/10 rounded-2xl">
             <ShieldCheck className="w-4 h-4 text-nexus-blue-light" />
             <span className="text-[10px] font-black text-white uppercase tracking-widest">
-              Nivel: Elite {summary.elite.tier?.name ?? 'Sin Nivel'}
+              Nivel: {summary.elite.tier?.name ?? 'Elite'}
             </span>
           </div>
         )}

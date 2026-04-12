@@ -63,6 +63,7 @@ function RegisterPage() {
       return;
     }
 
+    console.log('Registering with data:', result.data);
     register(result.data);
   };
 

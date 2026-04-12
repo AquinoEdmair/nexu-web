@@ -69,17 +69,10 @@ export function ReferralInfo({ summary }: ReferralInfoProps) {
             }
           </button>
         </div>
-        <div className="space-y-1">
-          <div className="flex items-center gap-3">
-            <span className="text-[10px] font-black text-nexus-blue-light uppercase tracking-widest">
-              {summary.stats.active_count} Invitados Activos
-            </span>
-            {summary.stats.inactive_count > 0 && (
-              <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">
-                · {summary.stats.inactive_count} inactivos
-              </span>
-            )}
-          </div>
+        <div className="pt-2">
+          <p className="text-[10px] font-black text-white/20 uppercase tracking-[0.3em]">
+            Tu enlace de invitación es único y personal.
+          </p>
         </div>
       </div>
     </section>

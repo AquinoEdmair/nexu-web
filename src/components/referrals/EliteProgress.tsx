@@ -8,9 +8,9 @@ interface EliteProgressProps {
 }
 
 export function EliteProgress({ elite, totalPersonalDeposit }: EliteProgressProps) {
-  const tierName     = elite.tier?.name ?? 'Nivel Inicial';
+  const tierName     = elite.tier?.name ?? 'Elite';
   const tierSlug     = elite.tier?.slug ?? 'none';
-  const nextTierName = elite.next_tier?.name ?? null;
+  const nextTierName = elite.next_tier?.name ?? '';
 
   return (
     <section className="relative overflow-hidden rounded-[2.5rem] p-10 bg-[#0a0f16]/40 border border-white/10 backdrop-blur-xl shadow-[0_8px_40px_rgba(0,0,0,0.4)] group hover:border-nexus-blue/20 transition-all">
