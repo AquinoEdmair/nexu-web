@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { Search, Settings, User as UserIcon, Bell, LogOut, Shield, ChevronDown } from 'lucide-react';
