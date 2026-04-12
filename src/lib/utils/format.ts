@@ -1,11 +1,11 @@
-/**
- * Formats a numeric string as currency display (e.g. "1,234.56").
- * Used across dashboard components for consistent formatting.
- */
-export function formatCurrency(value: string, decimals: number = 2): string {
-  return parseFloat(value).toLocaleString('en-US', {
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
+export function formatCurrency(value: string | number, minDecimals: number = 2, maxDecimals: number = 8): string {
+  const num = typeof value === 'string' ? parseFloat(value) : value;
+  
+  if (isNaN(num)) return '0.00';
+
+  return num.toLocaleString('en-US', {
+    minimumFractionDigits: minDecimals,
+    maximumFractionDigits: maxDecimals,
   });
 }
 
