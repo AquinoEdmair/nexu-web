@@ -8,7 +8,7 @@ interface EliteProgressProps {
 }
 
 export function EliteProgress({ elite, totalPersonalDeposit }: EliteProgressProps) {
-  const tierName     = elite.tier?.name ?? 'Sin Nivel';
+  const tierName     = elite.tier?.name ?? 'Nivel Inicial';
   const tierSlug     = elite.tier?.slug ?? 'none';
   const nextTierName = elite.next_tier?.name ?? null;
 
@@ -64,10 +64,14 @@ export function EliteProgress({ elite, totalPersonalDeposit }: EliteProgressProp
             </div>
           </div>
           <div className="flex justify-between text-[9px] font-black tracking-[0.3em] uppercase">
-            <span className={tierSlug === 'bronze'   ? 'text-nexus-blue-light shadow-[0_0_10px_rgba(24,136,243,0.3)]' : 'text-white/40'}>Bronce</span>
-            <span className={tierSlug === 'silver'   ? 'text-nexus-blue-light shadow-[0_0_10px_rgba(24,136,243,0.3)]' : 'text-white/20'}>Plata</span>
-            <span className={tierSlug === 'gold'     ? 'text-nexus-blue-light shadow-[0_0_10px_rgba(24,136,243,0.3)]' : 'text-white/20'}>Oro</span>
-            <span className={tierSlug === 'platinum' ? 'text-nexus-blue-light shadow-[0_0_10px_rgba(24,136,243,0.3)]' : 'text-white/10'}>Platino</span>
+            {elite.tiers.map((t) => (
+              <span 
+                key={t.slug}
+                className={tierSlug === t.slug ? 'text-nexus-blue-light shadow-[0_0_10px_rgba(24,136,243,0.3)]' : 'text-white/20'}
+              >
+                {t.name}
+              </span>
+            ))}
           </div>
         </div>
 

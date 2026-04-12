@@ -5,7 +5,6 @@ import { useReferralSummary } from '@/lib/hooks/useReferrals';
 import { EliteProgress } from '@/components/referrals/EliteProgress';
 import { ReferralInfo } from '@/components/referrals/ReferralInfo';
 import { ReferralNetwork } from '@/components/referrals/ReferralNetwork';
-import { ReferralEarnings } from '@/components/referrals/ReferralEarnings';
 import { ReferralSkeleton } from '@/components/referrals/ReferralSkeleton';
 
 export default function ReferralsPage() {
@@ -55,7 +54,6 @@ export default function ReferralsPage() {
           />
           <ReferralInfo summary={summary} />
           <ReferralNetwork />
-          <ReferralEarnings stats={summary.stats} />
         </>
       )}
     </main>
