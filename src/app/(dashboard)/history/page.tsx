@@ -11,10 +11,12 @@ import { formatCurrency, formatDate } from '@/lib/utils/format';
 import type { Transaction } from '@/types/models';
 
 const TYPE_ICONS: Record<string, any> = {
-  deposit:    { icon: ArrowDownLeft, label: 'Depósito', color: 'nexus-blue-light' },
-  withdrawal: { icon: ArrowUpRight,   label: 'Retiro',   color: 'red-500' },
-  yield:      { icon: TrendingUp,     label: 'Rendimiento', color: 'nexus-blue-light' },
-  commission: { icon: Users,          label: 'Comisión',    color: 'nexus-blue-light' },
+  deposit:             { icon: ArrowDownLeft, label: 'Depósito',        color: 'nexus-blue-light' },
+  withdrawal:          { icon: ArrowUpRight,  label: 'Retiro',          color: 'red-500' },
+  yield:               { icon: TrendingUp,    label: 'Rendimiento',     color: 'nexus-blue-light' },
+  commission:          { icon: Users,         label: 'Comisión',        color: 'nexus-blue-light' },
+  investment:          { icon: TrendingUp,    label: 'Inversión',       color: 'nexus-blue-light' },
+  referral_commission: { icon: Users,         label: 'Com. Referido',   color: 'nexus-blue-light' },
 };
 
 const STATUS_MAP: Record<string, { label: string, className: string }> = {
@@ -104,6 +106,8 @@ export default function HistoryPage() {
               <option value="withdrawal">Retiro</option>
               <option value="yield">Rendimiento</option>
               <option value="commission">Comisión</option>
+              <option value="investment">Inversión</option>
+              <option value="referral_commission">Com. Referido</option>
             </select>
           </div>
         </div>

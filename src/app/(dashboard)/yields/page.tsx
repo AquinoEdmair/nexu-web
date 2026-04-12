@@ -13,12 +13,11 @@ export default function YieldsPage() {
 
   const history = yieldsData?.data || [];
   
-  // Calculate Monthly Yield (simplified: sum of the current page for now)
+  // Suma de rendimientos de la página actual
   const monthlyYield = history.reduce((acc, curr) => acc + parseFloat(curr.amount_applied), 0);
   
-  // Total yield accumulated - ideally this would come from the API, 
-  // but we'll show the balance in operation context here.
-  const totalInOperation = balanceData?.balance_in_operation || '0';
+  // Fix: la API responde con { data: { balance_in_operation, ... } }
+  const totalInOperation = balanceData?.data?.balance_in_operation || '0';
 
   return (
     <main className="max-w-7xl mx-auto px-4 md:px-8 pt-6 pb-32 space-y-10">
