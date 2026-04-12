@@ -9,8 +9,11 @@ import {
   Wallet, 
   CreditCard, 
   TrendingUp, 
-  Users
+  Users,
+  LogOut
 } from 'lucide-react';
+import { useAuthStore } from '@/lib/store/authStore';
+import { useRouter } from 'next/navigation';
 
 const navItems = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
@@ -22,6 +25,13 @@ const navItems = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const { logout } = useAuthStore();
+  const router = useRouter();
+
+  const handleLogout = () => {
+    logout();
+    router.push('/login');
+  };
 
   // Desktop sidebar vs Mobile bottom bar handled with media queries directly
   return (
@@ -49,43 +59,56 @@ export function Sidebar() {
             </Link>
           )
         })}
+        {/* Mobile logout indicator or action could go here, but Navbar is primary on mobile */}
       </nav>
 
       {/* Desktop Tactical Sidebar */}
       <aside className="hidden md:flex flex-col w-72 bg-[#0a0f16] border-r border-white/5 h-[calc(100vh-72px)] p-6 space-y-3 relative overflow-hidden">
         <div className="absolute -left-20 top-20 w-40 h-80 bg-nexus-blue/5 rounded-full blur-[100px] pointer-events-none"></div>
         
-        {navItems.map((item) => {
-          const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                "group relative flex items-center px-5 py-4 text-[11px] font-black rounded-2xl transition-all uppercase tracking-[0.2em] overflow-hidden",
-                isActive 
-                  ? "bg-white/[0.03] text-nexus-blue-light border border-white/5 shadow-[0_0_20px_rgba(11,64,193,0.05)]" 
-                  : "text-white/40 hover:bg-white/5 hover:text-white border border-transparent"
-              )}
-            >
-              {/* Active Indicator Bar */}
-              {isActive && (
-                <div className="absolute left-0 top-1/4 bottom-1/4 w-1 bg-nexus-blue-light rounded-r-full shadow-[0_0_15px_rgba(24,136,243,1)]"></div>
-              )}
-              
-              <item.icon 
+        <div className="space-y-2">
+          {navItems.map((item) => {
+            const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
                 className={cn(
-                  "mr-4 flex-shrink-0 h-4 w-4 transition-all duration-500",
-                  isActive ? "text-nexus-blue-light scale-110" : "text-white/20 group-hover:text-white/60"
-                )} 
-              />
-              <span className="relative z-10">{item.name}</span>
-            </Link>
-          );
-        })}
+                  "group relative flex items-center px-5 py-4 text-[11px] font-black rounded-2xl transition-all uppercase tracking-[0.2em] overflow-hidden",
+                  isActive 
+                    ? "bg-white/[0.03] text-nexus-blue-light border border-white/5 shadow-[0_0_20px_rgba(11,64,193,0.05)]" 
+                    : "text-white/40 hover:bg-white/5 hover:text-white border border-transparent"
+                )}
+              >
+                {/* Active Indicator Bar */}
+                {isActive && (
+                  <div className="absolute left-0 top-1/4 bottom-1/4 w-1 bg-nexus-blue-light rounded-r-full shadow-[0_0_15px_rgba(24,136,243,1)]"></div>
+                )}
+                
+                <item.icon 
+                  className={cn(
+                    "mr-4 flex-shrink-0 h-4 w-4 transition-all duration-500",
+                    isActive ? "text-nexus-blue-light scale-110" : "text-white/20 group-hover:text-white/60"
+                  )} 
+                />
+                <span className="relative z-10">{item.name}</span>
+              </Link>
+            );
+          })}
+        </div>
+
+        <div className="mt-8 pt-8 border-t border-white/5">
+           <button
+             onClick={handleLogout}
+             className="w-full group relative flex items-center px-5 py-4 text-[11px] font-black rounded-2xl transition-all uppercase tracking-[0.2em] text-white/40 hover:bg-red-500/5 hover:text-red-400 border border-transparent"
+           >
+              <LogOut className="mr-4 flex-shrink-0 h-4 w-4 text-white/20 group-hover:text-red-400/60" />
+              <span>Cerrar Sesión</span>
+           </button>
+        </div>
 
         {/* System Monitoring Pulse */}
-        <div className="mt-auto pb-4 px-4">
+        <div className="mt-auto pb-4">
           <div className="p-5 rounded-2xl bg-white/[0.02] border border-white/5 space-y-4">
              <div className="flex justify-between items-center">
                <span className="text-[9px] font-black text-white/30 uppercase tracking-[0.3em]">Network Pulse</span>
