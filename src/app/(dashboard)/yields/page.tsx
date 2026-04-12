@@ -27,14 +27,14 @@ export default function YieldsPage() {
         <div>
           <div className="flex items-center gap-2 mb-2">
             <Cpu className="w-4 h-4 text-nexus-blue-light animate-pulse" />
-            <span className="text-[10px] font-black tracking-[0.4em] text-nexus-blue-light/60 uppercase">Módulo: Generación Algorítmica</span>
+            <span className="text-[10px] font-black tracking-[0.4em] text-nexus-blue-light/60 uppercase">Módulo: Rendimientos Gestionados</span>
           </div>
-          <h1 className="text-4xl font-black text-white tracking-tighter uppercase">Radar de Rendimientos</h1>
-          <p className="text-sm text-nexus-text/40 font-medium tracking-tight">Análisis y proyección de crecimiento de capital mediante IA.</p>
+          <h1 className="text-4xl font-black text-white tracking-tighter uppercase">Control de Rendimientos</h1>
+          <p className="text-sm text-nexus-text/40 font-medium tracking-tight">Análisis y proyección de crecimiento de capital respaldado en oro.</p>
         </div>
         <div className="flex items-center gap-3 px-4 py-2 bg-white/5 border border-white/10 rounded-2xl">
           <ShieldCheck className="w-4 h-4 text-nexus-blue-light" />
-          <span className="text-[10px] font-black text-white uppercase tracking-widest">Protocolo de Sync Activo</span>
+          <span className="text-[10px] font-black text-white uppercase tracking-widest">Protección de Bóveda Activa</span>
         </div>
       </header>
 
@@ -57,14 +57,14 @@ export default function YieldsPage() {
               </div>
               <div className="inline-flex items-center gap-2 px-2 py-0.5 rounded-full bg-nexus-blue/10 border border-nexus-blue/20">
                 <Activity className="w-3 h-3 text-nexus-blue-light" />
-                <span className="text-nexus-blue-light text-[10px] font-black uppercase tracking-widest">Sincronización en Tiempo Real</span>
+                <span className="text-nexus-blue-light text-[10px] font-black uppercase tracking-widest">Rendimientos en Tiempo Real</span>
               </div>
             </div>
             
             <div className="mt-10 grid grid-cols-1 gap-4 relative z-10">
               <div className="p-5 rounded-2xl bg-white/5 border border-white/5 hover:border-nexus-blue/20 transition-all">
                 <p className="text-[9px] text-white/20 font-black uppercase tracking-[0.2em] mb-2">
-                  Acumulado Reciente (Pág.)
+                  Rendimiento del Periodo
                 </p>
                 <div className="flex items-end justify-between">
                    {yieldsLoading ? (
@@ -74,7 +74,7 @@ export default function YieldsPage() {
                    )}
                    <div className="flex items-center gap-1 text-[10px] text-nexus-blue-light font-black mb-1">
                       <TrendingUp className="w-3 h-3" />
-                      AUTO-SIGNAL
+                      ACTIVO
                    </div>
                 </div>
               </div>
@@ -85,7 +85,7 @@ export default function YieldsPage() {
           <section className="p-8 rounded-3xl bg-[#0a0f16]/40 border border-white/10 backdrop-blur-xl group hover:border-nexus-blue/30 transition-all">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-[9px] font-black uppercase tracking-[0.3em] text-white/40">
-                Vector de Proyección
+                Gráfica de Rendimiento
               </h3>
               <Activity className="w-4 h-4 text-nexus-blue-light/20 group-hover:animate-pulse" />
             </div>
@@ -112,18 +112,18 @@ export default function YieldsPage() {
         {/* Right Column: Historical Ledger */}
         <section className="lg:col-span-8 space-y-6">
           <div className="flex justify-between items-center px-2">
-            <h2 className="text-2xl font-black text-white tracking-tighter uppercase">Historial Algorítmico</h2>
+            <h2 className="text-2xl font-black text-white tracking-tighter uppercase">Historial de Rendimientos</h2>
             <button className="text-[10px] text-nexus-blue-light font-black tracking-widest uppercase flex items-center gap-2 px-4 py-2 bg-nexus-blue/5 border border-nexus-blue/10 rounded-xl hover:bg-nexus-blue hover:text-white transition-all">
-              Exportar Protocolo <Download className="w-3 h-3" />
+              Exportar Registro <Download className="w-3 h-3" />
             </button>
           </div>
           
           <div className="bg-[#0a0f16]/40 border border-white/10 rounded-3xl overflow-hidden backdrop-blur-xl shadow-[0_8px_40px_rgba(0,0,0,0.3)]">
             <div className="overflow-x-auto min-w-[600px]">
               <div className="grid grid-cols-12 px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-nexus-blue-light/60 border-b border-white/10 bg-white/5">
-                <div className="col-span-4">Registro / Origen</div>
-                <div className="col-span-4 text-center">Incidencia</div>
-                <div className="col-span-4 text-right">Balance de Red</div>
+                <div className="col-span-4">Marca Temporal</div>
+                <div className="col-span-4 text-center">Rendimiento Aplicado</div>
+                <div className="col-span-4 text-right">Balance de Capital</div>
               </div>
               
               {yieldsLoading ? (
@@ -159,7 +159,7 @@ export default function YieldsPage() {
                         {parseFloat(row.amount_applied) >= 0 ? '+' : ''}{formatCurrency(row.amount_applied)}
                       </p>
                       <p className="text-[10px] text-white/20 font-black uppercase tracking-widest">
-                        AJUSTE POR {row.yield_log?.type || 'SISTEMA'}
+                        GENERADO POR {row.yield_log?.type || 'NEXU'}
                       </p>
                     </div>
                     <div className="col-span-4 text-right space-y-1">
@@ -175,7 +175,7 @@ export default function YieldsPage() {
               ) : (
                 <div className="px-8 py-20 text-center">
                    <p className="text-white/20 font-black uppercase tracking-widest text-xs">No se han detectado registros en el historial</p>
-                </div>
+                 </div>
               )}
             </div>
             
@@ -187,18 +187,19 @@ export default function YieldsPage() {
                   disabled={page === 1}
                   className="px-4 py-2 text-[10px] font-black uppercase tracking-widest text-white/40 disabled:opacity-20 hover:text-nexus-blue-light transition-colors"
                 >
-                  Regresión
+                  Anterior
                 </button>
-                <span className="text-[10px] font-black text-nexus-blue-light">VECTOR {page} / {yieldsData.last_page}</span>
+                <span className="text-[10px] font-black text-nexus-blue-light">PÁGINA {page} / {yieldsData.last_page}</span>
                 <button 
                   onClick={() => setPage(p => Math.min(yieldsData.last_page, p + 1))}
                   disabled={page === yieldsData.last_page}
                   className="px-4 py-2 text-[10px] font-black uppercase tracking-widest text-white/40 disabled:opacity-20 hover:text-nexus-blue-light transition-colors"
                 >
-                  Proyección
+                  Siguiente
                 </button>
               </div>
             )}
+          )}
           </div>
         </section>
       </div>

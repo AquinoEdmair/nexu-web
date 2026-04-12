@@ -13,14 +13,14 @@ export default function WithdrawalsPage() {
         <div>
           <div className="flex items-center gap-2 mb-2">
             <CreditCard className="w-4 h-4 text-nexus-blue-light animate-pulse" />
-            <span className="text-[10px] font-black tracking-[0.4em] text-nexus-blue-light/60 uppercase">Módulo: Salida de Activos</span>
+            <span className="text-[10px] font-black tracking-[0.4em] text-nexus-blue-light/60 uppercase">Módulo: Gestión de Retiros</span>
           </div>
-          <h1 className="text-4xl font-black text-white tracking-tighter uppercase">Ejecución de Liquidez</h1>
-          <p className="text-sm text-nexus-text/40 font-medium tracking-tight">Gestión de retiros mediante protocolos de validación HMAC.</p>
+          <h1 className="text-4xl font-black text-white tracking-tighter uppercase">Retiro de Fondos</h1>
+          <p className="text-sm text-nexus-text/40 font-medium tracking-tight">Solicitud de retiros mediante procesos de validación segura.</p>
         </div>
         <div className="flex items-center gap-3 px-4 py-2 bg-white/5 border border-white/10 rounded-2xl">
           <ShieldCheck className="w-4 h-4 text-nexus-blue-light" />
-          <span className="text-[10px] font-black text-white uppercase tracking-widest">Revisión Táctica Activa</span>
+          <span className="text-[10px] font-black text-white uppercase tracking-widest">Seguridad de Retiro Activa</span>
         </div>
       </header>
 
@@ -28,12 +28,12 @@ export default function WithdrawalsPage() {
         {/* Control Panel: Balance & Form (4 columns) */}
         <aside className="lg:col-span-4 space-y-8">
           <div className="space-y-4">
-            <h2 className="text-[10px] font-black text-white/30 uppercase tracking-[0.3em] pl-1">Status de Capital</h2>
+            <h2 className="text-[10px] font-black text-white/30 uppercase tracking-[0.3em] pl-1">Balance Disponible</h2>
             <BalanceMiniCard />
           </div>
           
           <div className="space-y-4">
-            <h2 className="text-[10px] font-black text-white/30 uppercase tracking-[0.3em] pl-1">Comando de Salida</h2>
+            <h2 className="text-[10px] font-black text-white/30 uppercase tracking-[0.3em] pl-1">Gestionar Retiro</h2>
             <div className="bg-[#0a0f16]/40 border border-white/10 rounded-3xl backdrop-blur-xl relative overflow-hidden group hover:border-nexus-blue/20 transition-all shadow-[0_4px_30px_rgba(0,0,0,0.2)]">
               <div className="absolute inset-x-0 top-0 h-[2px] bg-nexus-blue/20 group-hover:bg-nexus-blue-light transition-colors" />
               <WithdrawalForm />

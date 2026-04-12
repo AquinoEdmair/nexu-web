@@ -20,7 +20,7 @@ const navItems = [
   { name: 'Depósitos', href: '/deposits', icon: Wallet },
   { name: 'Retiros', href: '/withdrawals', icon: CreditCard },
   { name: 'Rendimientos', href: '/yields', icon: TrendingUp },
-  { name: 'Referidos Elite', href: '/referrals', icon: Users },
+  { name: 'Membresía Elite', href: '/referrals', icon: Users },
 ];
 
 export function Sidebar() {

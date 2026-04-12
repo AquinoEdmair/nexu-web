@@ -26,7 +26,7 @@ export function ReferralInfo({ summary }: ReferralInfoProps) {
       <div className="bg-[#0a0f16]/40 border border-white/10 p-8 rounded-[2rem] backdrop-blur-xl flex flex-col justify-between space-y-8 hover:border-nexus-blue/20 transition-all shadow-[0_4px_30px_rgba(0,0,0,0.2)]">
         <div>
           <h3 className="text-white/20 font-black tracking-[0.3em] uppercase text-[9px] mb-4">
-            Identidad Operativa
+            Tu Código Elite
           </h3>
           <button
             type="button"
@@ -43,9 +43,9 @@ export function ReferralInfo({ summary }: ReferralInfoProps) {
           </button>
         </div>
         <p className="text-xs text-nexus-text/40 font-medium leading-relaxed uppercase tracking-wider">
-          Distribuye tu identificador para captar el{' '}
+          Comparte tu código para obtener el{' '}
           <span className="text-nexus-blue-light">{commissionPct}%</span>{' '}
-          de comisión recurrente por nodo activo.
+          de comisión por cada invitado activo.
         </p>
       </div>
 
@@ -53,7 +53,7 @@ export function ReferralInfo({ summary }: ReferralInfoProps) {
       <div className="bg-[#0a0f16]/40 border border-white/10 p-8 rounded-[2rem] backdrop-blur-xl flex flex-col justify-between space-y-8 hover:border-nexus-blue/20 transition-all shadow-[0_4px_30px_rgba(0,0,0,0.2)]">
         <div>
           <h3 className="text-white/20 font-black tracking-[0.3em] uppercase text-[9px] mb-4">
-            Interfaz de Acceso
+            Enlace de Invitación
           </h3>
           <button
             type="button"
@@ -72,7 +72,7 @@ export function ReferralInfo({ summary }: ReferralInfoProps) {
         <div className="space-y-1">
           <div className="flex items-center gap-3">
             <span className="text-[10px] font-black text-nexus-blue-light uppercase tracking-widest">
-              {summary.stats.active_count} Nodos Activos
+              {summary.stats.active_count} Invitados Activos
             </span>
             {summary.stats.inactive_count > 0 && (
               <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">

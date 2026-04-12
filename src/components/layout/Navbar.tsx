@@ -28,7 +28,9 @@ export function Navbar() {
           </Link>
           <div className="hidden md:flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/5 rounded-full">
             <div className="w-1.5 h-1.5 rounded-full bg-nexus-blue-light animate-pulse shadow-[0_0_8px_rgba(24,136,243,1)]"></div>
-            <span className="text-[9px] font-black text-white/40 uppercase tracking-[0.3em]">Red: Sincronizada</span>
+          <div className="hidden md:flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/5 rounded-full">
+            <div className="w-1.5 h-1.5 rounded-full bg-nexus-blue-light animate-pulse shadow-[0_0_8px_rgba(24,136,243,1)]"></div>
+            <span className="text-[9px] font-black text-white/40 uppercase tracking-[0.3em]">Estado: Protegido</span>
           </div>
         </div>
 
@@ -44,7 +46,7 @@ export function Navbar() {
             >
               <div className="text-right hidden sm:block">
                 <p className="text-[10px] font-black text-white uppercase tracking-tighter">
-                  {user?.name || 'Operativo NEXU'}
+                  {user?.name || 'Inversor NEXU'}
                 </p>
                 <div className="flex items-center justify-end gap-1">
                   <Shield className="w-2 h-2 text-nexus-blue-light" />
@@ -68,7 +70,7 @@ export function Navbar() {
                 ></div>
                 <div className="absolute right-0 mt-4 w-64 bg-[#0d131c] border border-white/10 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden backdrop-blur-3xl animate-in fade-in zoom-in-95 duration-200">
                   <div className="p-5 border-b border-white/5 bg-white/[0.02]">
-                    <p className="text-[9px] font-black text-white/20 uppercase tracking-[0.3em] mb-1">Perfil de Operación</p>
+                    <p className="text-[9px] font-black text-white/20 uppercase tracking-[0.3em] mb-1">Estatus de Perfil</p>
                     <p className="text-xs font-black text-white uppercase truncate">{user?.email}</p>
                   </div>
                   <div className="p-2">
@@ -86,7 +88,7 @@ export function Navbar() {
                       className="w-full flex items-center gap-3 px-4 py-3 text-[10px] font-black text-red-400 uppercase tracking-widest hover:text-red-300 hover:bg-red-500/10 rounded-2xl transition-all"
                     >
                       <LogOut className="w-4 h-4" />
-                      Cerrar Protocolo
+                      Cerrar Sesión
                     </button>
                   </div>
                 </div>
@@ -104,14 +106,14 @@ export function Navbar() {
                 <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-nexus-blue-light" />
                 <input 
                   autoFocus
-                  placeholder="BUSCAR TRANSACCIÓN, RENDIMIENTO O AYUDA..." 
+                  placeholder="BUSCAR MOVIMIENTO, RENDIMIENTO O SOPORTE..." 
                   className="w-full bg-[#0d131c] border border-nexus-blue-light/30 rounded-[2rem] py-5 px-16 text-xs font-black uppercase text-white tracking-widest focus:outline-none focus:border-nexus-blue-light focus:ring-4 focus:ring-nexus-blue/10 transition-all"
                 />
                 <button 
                   onClick={() => setIsSearchOpen(false)}
                   className="absolute right-6 top-1/2 -translate-y-1/2 text-[9px] font-black text-white/20 hover:text-white uppercase tracking-widest"
                 >
-                  [ESC]
+                  [BORRAR]
                 </button>
              </div>
           </div>

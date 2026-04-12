@@ -17,14 +17,14 @@ export default function DepositsPage() {
         <div>
           <div className="flex items-center gap-2 mb-2">
             <Wallet className="w-4 h-4 text-nexus-blue-light animate-pulse" />
-            <span className="text-[10px] font-black tracking-[0.4em] text-nexus-blue-light/60 uppercase">Módulo: Adquisición de Activos</span>
+            <span className="text-[10px] font-black tracking-[0.4em] text-nexus-blue-light/60 uppercase">Módulo: Depósito de Fondos</span>
           </div>
-          <h1 className="text-4xl font-black text-white tracking-tighter uppercase">Adquisición de Capital</h1>
-          <p className="text-sm text-nexus-text/40 font-medium tracking-tight">Gestión de fondeo mediante protocolos de transferencia segura.</p>
+          <h1 className="text-4xl font-black text-white tracking-tighter uppercase">Invertir en Oro</h1>
+          <p className="text-sm text-nexus-text/40 font-medium tracking-tight">Gestión de depósitos mediante pasarelas de pago seguras.</p>
         </div>
         <div className="flex items-center gap-3 px-4 py-2 bg-white/5 border border-white/10 rounded-2xl">
           <ShieldCheck className="w-4 h-4 text-nexus-blue-light" />
-          <span className="text-[10px] font-black text-white uppercase tracking-widest">Canal de Pago HMAC</span>
+          <span className="text-[10px] font-black text-white uppercase tracking-widest">Pago Seguro Activo</span>
         </div>
       </header>
 
@@ -32,12 +32,12 @@ export default function DepositsPage() {
         {/* Control Panel: Balance & Generator (4 columns) */}
         <aside className="lg:col-span-4 space-y-8">
           <div className="space-y-4">
-            <h2 className="text-[10px] font-black text-white/30 uppercase tracking-[0.3em] pl-1">Status Actual</h2>
+            <h2 className="text-[10px] font-black text-white/30 uppercase tracking-[0.3em] pl-1">Balance de Capital</h2>
             <BalanceMiniCard />
           </div>
           
           <div className="space-y-4">
-            <h2 className="text-[10px] font-black text-white/30 uppercase tracking-[0.3em] pl-1">Generador de Dirección</h2>
+            <h2 className="text-[10px] font-black text-white/30 uppercase tracking-[0.3em] pl-1">Solicitar Depósito</h2>
             <div className="bg-[#0a0f16]/40 border border-white/10 rounded-3xl backdrop-blur-xl relative overflow-hidden group hover:border-nexus-blue/20 transition-all shadow-[0_4px_30px_rgba(0,0,0,0.2)]">
               <div className="absolute inset-x-0 top-0 h-[2px] bg-nexus-blue/20 group-hover:bg-nexus-blue-light transition-colors" />
               <InitiateDepositForm invoice={invoice} setInvoice={setInvoice} />

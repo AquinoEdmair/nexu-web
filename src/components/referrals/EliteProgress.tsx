@@ -26,7 +26,7 @@ export function EliteProgress({ elite, totalPersonalDeposit }: EliteProgressProp
         <div className="flex flex-col md:flex-row justify-between items-start gap-8">
           <div className="flex-grow">
             <span className="text-[10px] font-black text-nexus-blue-light/40 uppercase tracking-[0.3em] block mb-2">
-              Categoría de Membresía
+              Estatus de Membresía Elite
             </span>
             <div className="flex items-baseline gap-4">
               <h2 className="text-5xl font-black text-white tracking-tighter uppercase">
@@ -39,7 +39,7 @@ export function EliteProgress({ elite, totalPersonalDeposit }: EliteProgressProp
           <div className="flex flex-col md:flex-row gap-4 md:gap-12">
             <div>
                <span className="text-[10px] font-black text-white/20 uppercase tracking-[0.3em] block mb-2">
-                Tus Depósitos
+                Depósitos Personales
               </span>
               <div className="flex items-center gap-2">
                 <Wallet className="w-4 h-4 text-nexus-blue-light" />
@@ -51,7 +51,7 @@ export function EliteProgress({ elite, totalPersonalDeposit }: EliteProgressProp
 
             <div className="text-right">
               <span className="text-[10px] font-black text-white/20 uppercase tracking-[0.3em] block mb-2">
-                Próximo Hito
+                Siguiente Nivel
               </span>
               <p className="text-nexus-blue-light font-black text-xl uppercase tracking-widest">
                 {nextTierLabel ? `Elite ${nextTierLabel}` : '¡Nivel Máximo!'}
@@ -92,11 +92,11 @@ export function EliteProgress({ elite, totalPersonalDeposit }: EliteProgressProp
                 Beneficios Élite {nextTierLabel}
               </span>.
               <br />
-              <span className="text-[10px] text-white/30 uppercase tracking-widest">Compromiso actual: {elite.points} pts totales</span>
+              <span className="text-[10px] text-white/30 uppercase tracking-widest">Puntos acumulados: {elite.points} pts</span>
             </p>
           ) : (
             <p className="text-sm text-nexus-text/60 font-medium">
-              Eres <span className="text-nexus-blue-light font-black uppercase">Platino</span> — nivel máximo alcanzado en la infraestructura NEXU.
+              Eres <span className="text-nexus-blue-light font-black uppercase">Platino</span> — nivel máximo alcanzado en el sistema NEXU.
             </p>
           )}
         </div>

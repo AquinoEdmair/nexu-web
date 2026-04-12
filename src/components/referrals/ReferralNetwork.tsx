@@ -16,12 +16,12 @@ export function ReferralNetwork() {
     <section className="space-y-6">
       <div className="flex justify-between items-center px-2">
         <h2 className="text-2xl font-black text-white tracking-tighter uppercase">
-          Registro de Nodos
+          Tu Red de Invitados
         </h2>
         <div className="flex items-center gap-2">
           <Zap className="w-3 h-3 text-nexus-blue-light fill-nexus-blue-light" />
           <span className="text-[10px] font-black text-nexus-blue-light uppercase tracking-widest">
-            {total} referidos totales
+            {total} invitados totales
           </span>
         </div>
       </div>
@@ -34,7 +34,7 @@ export function ReferralNetwork() {
         ) : nodes.length === 0 ? (
           <div className="px-8 py-16 text-center">
             <p className="text-white/20 font-black uppercase tracking-widest text-xs">
-              Sin referidos aún. Comparte tu código para comenzar.
+              Sin invitados aún. Comparte tu enlace para comenzar tu red.
             </p>
           </div>
         ) : (
@@ -44,13 +44,13 @@ export function ReferralNetwork() {
                 <thead>
                   <tr className="bg-white/5 border-b border-white/10">
                     <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-nexus-blue-light/60">
-                      Afiliado / Nodo
+                      Invitado
                     </th>
                     <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-nexus-blue-light/60 text-center">
-                      Estatus
+                      Estado
                     </th>
                     <th className="px-8 py-5 text-right text-[10px] font-black uppercase tracking-[0.2em] text-nexus-blue-light/60">
-                      Comisiones generadas
+                      Comisión Generada
                     </th>
                   </tr>
                 </thead>

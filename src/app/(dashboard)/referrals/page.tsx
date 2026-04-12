@@ -23,21 +23,21 @@ export default function ReferralsPage() {
           <div className="flex items-center gap-2 mb-2">
             <Network className="w-4 h-4 text-nexus-blue-light animate-pulse" />
             <span className="text-[10px] font-black tracking-[0.4em] text-nexus-blue-light/60 uppercase">
-              Módulo: Expansión de Red
+              Módulo: Programa de Referidos
             </span>
           </div>
           <h1 className="text-4xl font-black text-white tracking-tighter uppercase">
-            Protocolo de Afiliación
+            Membresía Elite
           </h1>
           <p className="text-sm text-nexus-text/40 font-medium tracking-tight">
-            Escala tu infraestructura mediante la sincronización de nuevos nodos.
+            Expande tu red NEXU y desbloquea comisiones por rendimientos gestionados.
           </p>
         </div>
         {summary && (
           <div className="flex items-center gap-3 px-4 py-2 bg-white/5 border border-white/10 rounded-2xl">
             <ShieldCheck className="w-4 h-4 text-nexus-blue-light" />
             <span className="text-[10px] font-black text-white uppercase tracking-widest">
-              Estado: Elite {TIER_LABELS[summary.elite.tier]} Ready
+              Nivel: Elite {TIER_LABELS[summary.elite.tier]}
             </span>
           </div>
         )}

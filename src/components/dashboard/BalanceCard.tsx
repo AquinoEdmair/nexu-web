@@ -13,7 +13,7 @@ export function BalanceCard() {
         <div className="absolute inset-0 bg-nexus-blue blur-3xl opacity-5 rounded-full -z-10"></div>
         <div className="h-full bg-white/5 border border-white/10 rounded-3xl p-8 backdrop-blur-xl flex flex-col justify-center items-center gap-4">
           <Loader2 className="w-8 h-8 text-nexus-blue-light animate-spin" />
-          <p className="text-[10px] font-black tracking-[0.3em] text-nexus-blue-light/40 uppercase">Sincronizando Nodo...</p>
+          <p className="text-[10px] font-black tracking-[0.3em] text-nexus-blue-light/40 uppercase">Actualizando Datos de Inversión...</p>
         </div>
       </div>
     );
@@ -53,11 +53,11 @@ export function BalanceCard() {
         <div className="relative z-10 space-y-6">
           <div className="flex items-center gap-3">
             <div className="w-2 h-2 rounded-full bg-nexus-blue-light animate-pulse"></div>
-            <span className="text-[10px] font-black tracking-[0.4em] text-nexus-blue-light/80 uppercase">Infraestructura de Capital Operativa</span>
+            <span className="text-[10px] font-black tracking-[0.4em] text-nexus-blue-light/80 uppercase">Capital en Operación NEXU</span>
           </div>
 
           <div className="space-y-1">
-            <p className="text-[10px] font-black text-white/40 uppercase tracking-widest pl-1">Balance Consolidado (XAU/GOLD)</p>
+            <p className="text-[10px] font-black text-white/40 uppercase tracking-widest pl-1">Balance Consolidado en Oro</p>
             <div className="flex items-baseline gap-4">
               <h2 className="text-5xl md:text-6xl font-black text-white tracking-tighter drop-shadow-[0_0_20px_rgba(24,136,243,0.2)]">
                 ${formatCurrency(balance.balance_total)}
@@ -69,22 +69,22 @@ export function BalanceCard() {
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-8 pt-8 border-t border-white/5 relative z-10">
           <div className="space-y-1">
-            <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.15em]">Suministro Disponible</p>
+            <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.15em]">Disponible para Retiro</p>
             <p className="text-xl font-black text-white group-hover:text-nexus-blue-light transition-colors">
               ${formatCurrency(balance.balance_available)}
             </p>
           </div>
           <div className="space-y-1">
-            <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.15em]">En Operación IA</p>
+            <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.15em]">Capital en Operación</p>
             <p className="text-xl font-black text-gray-400">
               ${formatCurrency(balance.balance_in_operation)}
             </p>
           </div>
           <div className="hidden md:block space-y-1">
-            <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.15em]">Seguridad Nodo</p>
+            <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.15em]">Estado de Seguridad</p>
             <div className="flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 text-nexus-blue-light" />
-              <p className="text-[10px] font-black text-nexus-blue-light uppercase tracking-widest">Cifrado HMAC</p>
+              <p className="text-[10px] font-black text-nexus-blue-light uppercase tracking-widest">Protección Activa</p>
             </div>
           </div>
         </div>
