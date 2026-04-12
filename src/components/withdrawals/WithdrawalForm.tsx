@@ -181,25 +181,27 @@ export function WithdrawalForm() {
 
       {/* Commission Breakdown */}
       {hasCommission && (
-        <div className="rounded-2xl border border-nexus-blue/20 bg-nexus-blue/5 p-5 space-y-4 animate-in fade-in slide-in-from-top-2">
+        <div className="rounded-2xl border border-amber-500/20 bg-amber-500/5 p-5 space-y-4 animate-in fade-in slide-in-from-top-2">
           <div className="flex items-center gap-2">
-            <TrendingDown className="w-3 h-3 text-nexus-blue-light" />
-            <span className="text-[9px] font-black uppercase tracking-[0.3em] text-nexus-blue-light/80">
+            <ShieldAlert className="w-3 h-3 text-amber-400" />
+            <span className="text-[9px] font-black uppercase tracking-[0.3em] text-amber-400/80">
               Desglose de Liquidación
             </span>
           </div>
           <div className="space-y-2.5">
             <div className="flex justify-between items-center">
-              <span className="text-[10px] text-white/40 font-black uppercase tracking-widest">Monto Solicitado</span>
+              <span className="text-[10px] text-white/40 font-black uppercase tracking-widest">Monto a retirar</span>
               <span className="text-[11px] font-black text-white">${preview.amount.toFixed(2)}</span>
             </div>
-            <div className="flex justify-between items-center text-red-400/80">
-              <span className="text-[10px] font-black uppercase tracking-widest">Comisión Retiro ({preview.rate}%)</span>
+            <div className="flex justify-between items-center text-amber-400/80">
+              <span className="text-[10px] font-black uppercase tracking-widest">
+                Comisión de plataforma ({preview.rate}%)
+              </span>
               <span className="text-[11px] font-black">-${preview.fee_amount.toFixed(2)}</span>
             </div>
             <div className="h-px bg-white/5 my-1" />
             <div className="flex justify-between items-center">
-              <span className="text-[10px] text-white font-black uppercase tracking-widest">Neto a Recibir</span>
+              <span className="text-[10px] text-white font-black uppercase tracking-widest">Total a recibir</span>
               <span className="text-lg font-black text-nexus-blue-light">${preview.net_amount.toFixed(2)}</span>
             </div>
           </div>

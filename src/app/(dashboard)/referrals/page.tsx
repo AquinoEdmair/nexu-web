@@ -8,10 +8,6 @@ import { ReferralNetwork } from '@/components/referrals/ReferralNetwork';
 import { ReferralEarnings } from '@/components/referrals/ReferralEarnings';
 import { ReferralSkeleton } from '@/components/referrals/ReferralSkeleton';
 
-const TIER_LABELS: Record<string, string> = {
-  bronze: 'Bronce', silver: 'Plata', gold: 'Oro', platinum: 'Platino',
-};
-
 export default function ReferralsPage() {
   const { data, isLoading, error } = useReferralSummary();
   const summary = data?.data;
@@ -37,7 +33,7 @@ export default function ReferralsPage() {
           <div className="flex items-center gap-3 px-4 py-2 bg-white/5 border border-white/10 rounded-2xl">
             <ShieldCheck className="w-4 h-4 text-nexus-blue-light" />
             <span className="text-[10px] font-black text-white uppercase tracking-widest">
-              Nivel: Elite {TIER_LABELS[summary.elite.tier]}
+              Nivel: Elite {summary.elite.tier?.name ?? 'Sin Nivel'}
             </span>
           </div>
         )}

@@ -89,12 +89,24 @@ export interface YieldLogEntry {
 
 // ── Referrals ────────────────────────────────────────────────────────────────
 
-export type EliteTier = 'bronze' | 'silver' | 'gold' | 'platinum';
+export interface EliteTierData {
+  name: string;
+  slug: string;
+  multiplier: string;
+  first_deposit_commission_rate: string;
+  recurring_commission_rate: string;
+}
+
+export interface NextTierData {
+  name: string;
+  slug: string;
+  min_points: string;
+}
 
 export interface ReferralElite {
-  points: string;
-  tier: EliteTier;
-  next_tier: EliteTier | null;
+  points_total: string;
+  tier: EliteTierData | null;
+  next_tier: NextTierData | null;
   points_to_next: string | null;
   progress_pct: number;
 }
@@ -103,12 +115,12 @@ export interface ReferralStats {
   active_count: number;
   inactive_count: number;
   total_earned: string;
+  total_personal_deposit: string;
 }
 
 export interface ReferralSummary {
   code: string;
   share_url: string;
-  commission_rate: string;
   stats: ReferralStats;
   elite: ReferralElite;
 }

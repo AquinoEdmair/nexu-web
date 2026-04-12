@@ -2,21 +2,15 @@ import { Star, Wallet } from 'lucide-react';
 import type { ReferralElite } from '@/types/models';
 import { formatCurrency } from '@/lib/utils/format';
 
-const TIER_LABELS: Record<string, string> = {
-  bronze:   'Bronce',
-  silver:   'Plata',
-  gold:     'Oro',
-  platinum: 'Platino',
-};
-
 interface EliteProgressProps {
   elite: ReferralElite;
   totalPersonalDeposit?: string;
 }
 
 export function EliteProgress({ elite, totalPersonalDeposit }: EliteProgressProps) {
-  const tierLabel     = TIER_LABELS[elite.tier] ?? elite.tier;
-  const nextTierLabel = elite.next_tier ? TIER_LABELS[elite.next_tier] : null;
+  const tierName     = elite.tier?.name ?? 'Sin Nivel';
+  const tierSlug     = elite.tier?.slug ?? 'none';
+  const nextTierName = elite.next_tier?.name ?? null;
 
   return (
     <section className="relative overflow-hidden rounded-[2.5rem] p-10 bg-[#0a0f16]/40 border border-white/10 backdrop-blur-xl shadow-[0_8px_40px_rgba(0,0,0,0.4)] group hover:border-nexus-blue/20 transition-all">
@@ -30,7 +24,7 @@ export function EliteProgress({ elite, totalPersonalDeposit }: EliteProgressProp
             </span>
             <div className="flex items-baseline gap-4">
               <h2 className="text-5xl font-black text-white tracking-tighter uppercase">
-                {tierLabel}
+                {tierName}
               </h2>
               <span className="text-nexus-blue-light font-black text-xs uppercase tracking-widest border border-nexus-blue-light/20 px-3 py-1 rounded-full">Elite</span>
             </div>
@@ -54,7 +48,7 @@ export function EliteProgress({ elite, totalPersonalDeposit }: EliteProgressProp
                 Siguiente Nivel
               </span>
               <p className="text-nexus-blue-light font-black text-xl uppercase tracking-widest">
-                {nextTierLabel ? `Elite ${nextTierLabel}` : '¡Nivel Máximo!'}
+                {nextTierName ? `Elite ${nextTierName}` : '¡Nivel Máximo!'}
               </p>
             </div>
           </div>
@@ -70,10 +64,10 @@ export function EliteProgress({ elite, totalPersonalDeposit }: EliteProgressProp
             </div>
           </div>
           <div className="flex justify-between text-[9px] font-black tracking-[0.3em] uppercase">
-            <span className={elite.tier === 'bronze'   ? 'text-nexus-blue-light shadow-[0_0_10px_rgba(24,136,243,0.3)]' : 'text-white/40'}>Bronce</span>
-            <span className={elite.tier === 'silver'   ? 'text-nexus-blue-light shadow-[0_0_10px_rgba(24,136,243,0.3)]' : 'text-white/20'}>Plata</span>
-            <span className={elite.tier === 'gold'     ? 'text-nexus-blue-light shadow-[0_0_10px_rgba(24,136,243,0.3)]' : 'text-white/20'}>Oro</span>
-            <span className={elite.tier === 'platinum' ? 'text-nexus-blue-light shadow-[0_0_10px_rgba(24,136,243,0.3)]' : 'text-white/10'}>Platino</span>
+            <span className={tierSlug === 'bronze'   ? 'text-nexus-blue-light shadow-[0_0_10px_rgba(24,136,243,0.3)]' : 'text-white/40'}>Bronce</span>
+            <span className={tierSlug === 'silver'   ? 'text-nexus-blue-light shadow-[0_0_10px_rgba(24,136,243,0.3)]' : 'text-white/20'}>Plata</span>
+            <span className={tierSlug === 'gold'     ? 'text-nexus-blue-light shadow-[0_0_10px_rgba(24,136,243,0.3)]' : 'text-white/20'}>Oro</span>
+            <span className={tierSlug === 'platinum' ? 'text-nexus-blue-light shadow-[0_0_10px_rgba(24,136,243,0.3)]' : 'text-white/10'}>Platino</span>
           </div>
         </div>
 
@@ -89,14 +83,14 @@ export function EliteProgress({ elite, totalPersonalDeposit }: EliteProgressProp
               </span>{' '}
               de desbloquear los{' '}
               <span className="text-nexus-blue-light font-black uppercase tracking-widest text-[10px]">
-                Beneficios Élite {nextTierLabel}
+                Beneficios Élite {nextTierName}
               </span>.
               <br />
-              <span className="text-[10px] text-white/30 uppercase tracking-widest">Puntos acumulados: {elite.points} pts</span>
+              <span className="text-[10px] text-white/30 uppercase tracking-widest">Puntos acumulados: {elite.points_total} pts</span>
             </p>
           ) : (
             <p className="text-sm text-nexus-text/60 font-medium">
-              Eres <span className="text-nexus-blue-light font-black uppercase">Platino</span> — nivel máximo alcanzado en el sistema NEXU.
+              Eres <span className="text-nexus-blue-light font-black uppercase">{tierName}</span> — nivel máximo alcanzado en el sistema NEXU.
             </p>
           )}
         </div>
