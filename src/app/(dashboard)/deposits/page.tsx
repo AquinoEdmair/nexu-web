@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { InitiateDepositForm } from '@/components/deposits/InitiateDepositForm';
+import { DepositAddress } from '@/components/deposits/DepositAddress';
 import { DepositHistory } from '@/components/deposits/DepositHistory';
 import { BalanceMiniCard } from '@/components/ui/BalanceMiniCard';
 import { DepositInvoice } from '@/types/models';
@@ -43,6 +44,13 @@ export default function DepositsPage() {
               <InitiateDepositForm invoice={invoice} setInvoice={setInvoice} />
             </div>
           </div>
+
+          {invoice && invoice.status === 'awaiting_payment' && (
+            <div className="space-y-4">
+              <h2 className="text-[10px] font-black text-white/30 uppercase tracking-[0.3em] pl-1">Dirección de Pago</h2>
+              <DepositAddress invoice={invoice} />
+            </div>
+          )}
         </aside>
 
         {/* Tactical Ledger: Full History (8 columns) */}

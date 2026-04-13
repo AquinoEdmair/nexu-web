@@ -148,9 +148,16 @@ export function DepositHistory() {
                         </div>
                       </td>
                       <td className="px-8 py-6">
-                        <span className="text-sm font-black text-white tracking-tight">
-                          {invoice.amount_expected} <span className="text-[10px] text-white/20">{invoice.currency}</span>
-                        </span>
+                        <div className="flex flex-col gap-1">
+                          <span className="text-sm font-black text-white tracking-tight">
+                            ${parseFloat(invoice.amount_expected).toFixed(2)} <span className="text-[10px] text-white/20">USD</span>
+                          </span>
+                          {invoice.pay_amount && (
+                            <span className="text-[10px] font-black font-mono text-nexus-blue-light/60">
+                              {parseFloat(invoice.pay_amount).toFixed(8)} {invoice.currency}
+                            </span>
+                          )}
+                        </div>
                       </td>
                       <td className="px-8 py-6">
                         <div className="flex items-center gap-3 bg-white/5 px-4 py-2.5 rounded-xl border border-white/5 transition-all group-hover:border-nexus-blue/20 max-w-[200px]">
