@@ -6,7 +6,7 @@ import { usePendingInvoices } from '@/lib/hooks/usePendingInvoices';
 import { useCurrencies } from '@/lib/hooks/useCurrencies';
 import { DepositInvoice } from '@/types/models';
 import { useNotificationStore } from '@/lib/store/notificationStore';
-import { ArrowRight, Loader2, Info, Zap, TrendingUp, Shield } from 'lucide-react';
+import { ArrowRight, Loader2, Info, Zap, TrendingUp, Shield, Search, ChevronDown, X } from 'lucide-react';
 import { AxiosError } from 'axios';
 import { apiClient } from '@/lib/api/axios';
 import { useQuery } from '@tanstack/react-query';
@@ -27,7 +27,11 @@ export function InitiateDepositForm({ invoice, setInvoice }: InitiateDepositForm
   const { data: currencies = [], isLoading: isLoadingCurrencies } = useCurrencies();
   const [selectedCurrency, setSelectedCurrency] = useState<string>('USDT');
   const [amount, setAmount] = useState<string>('');
-  const { data: pendingData, isLoading: isLoadingPending } = usePendingInvoices();
+  const [isOpen, setIsOpen] = useState(false);
+  const [search, setSearch] = useState('');
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLInputElement>(null);
+  const { data: pendingData } = usePendingInvoices();
   const { mutate, isPending, error, reset } = useInitiateDeposit();
   const addNotification = useNotificationStore(s => s.addNotification);
   const lastAutoLoadedId = useRef<string | null>(null);
@@ -39,9 +43,25 @@ export function InitiateDepositForm({ invoice, setInvoice }: InitiateDepositForm
     }
   }, [currencies, invoice]);
 
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setIsOpen(false);
+        setSearch('');
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  // Focus search input when dropdown opens
+  useEffect(() => {
+    if (isOpen) searchRef.current?.focus();
+  }, [isOpen]);
+
   const numericAmount = parseFloat(amount) || 0;
 
-  // Fetch commission preview whenever amount changes (debounced via enabled)
   const { data: commissionData } = useQuery<{ data: CommissionPreview }>({
     queryKey: ['deposit-commission', numericAmount],
     queryFn: () => apiClient.get(`/deposits/commission-rate?amount=${numericAmount}`).then(r => r.data),
@@ -62,7 +82,7 @@ export function InitiateDepositForm({ invoice, setInvoice }: InitiateDepositForm
 
       if (activePending && !invoice && lastAutoLoadedId.current !== activePending.invoice_id) {
         setInvoice(activePending);
-        setSelectedCurrency(activePending.currency as any);
+        setSelectedCurrency(activePending.currency as string);
         lastAutoLoadedId.current = activePending.invoice_id;
       }
     }
@@ -70,12 +90,8 @@ export function InitiateDepositForm({ invoice, setInvoice }: InitiateDepositForm
 
   const handleGenerate = () => {
     if (!numericAmount || numericAmount < 10) return;
-    
     reset();
-    mutate({
-      currency: selectedCurrency, 
-      amount: numericAmount 
-    }, {
+    mutate({ currency: selectedCurrency, amount: numericAmount }, {
       onSuccess: (data) => {
         setInvoice(data.data);
         addNotification({
@@ -88,13 +104,15 @@ export function InitiateDepositForm({ invoice, setInvoice }: InitiateDepositForm
     });
   };
 
-  const handleSelectCurrency = (currency: string) => {
-    setSelectedCurrency(currency);
+  const handleSelectCurrency = (symbol: string) => {
+    setSelectedCurrency(symbol);
     if (invoice && invoice.status === 'awaiting_payment') {
       lastAutoLoadedId.current = invoice.invoice_id;
     }
     setInvoice(null);
     reset();
+    setIsOpen(false);
+    setSearch('');
   };
 
   const errorMessage = error instanceof AxiosError
@@ -102,6 +120,13 @@ export function InitiateDepositForm({ invoice, setInvoice }: InitiateDepositForm
     : error ? 'Error inesperado. Reintenta.' : null;
 
   const hasCommission = preview && preview.rate > 0 && numericAmount >= 10;
+
+  const selectedCurrencyData = currencies.find(c => c.symbol === selectedCurrency);
+
+  const filtered = currencies.filter(c => {
+    const q = search.toLowerCase();
+    return c.symbol.toLowerCase().includes(q) || c.name.toLowerCase().includes(q) || (c.network ?? '').toLowerCase().includes(q);
+  });
 
   return (
     <div className="space-y-8 p-6">
@@ -114,26 +139,80 @@ export function InitiateDepositForm({ invoice, setInvoice }: InitiateDepositForm
               Activo de Inversión
             </label>
           </div>
+
           {isLoadingCurrencies ? (
             <div className="h-14 rounded-2xl bg-white/5 animate-pulse" />
           ) : (
-            <div className="relative">
-              <select
-                value={selectedCurrency}
-                onChange={(e) => handleSelectCurrency(e.target.value)}
-                className="w-full appearance-none bg-[#0a0f16]/60 border border-white/10 rounded-2xl py-4 pl-5 pr-12 text-white font-black text-sm outline-none focus:border-nexus-blue/50 transition-all cursor-pointer hover:border-white/20"
+            <div className="relative" ref={dropdownRef}>
+              {/* Trigger button */}
+              <button
+                type="button"
+                onClick={() => setIsOpen(v => !v)}
+                className="w-full bg-[#0a0f16]/60 border border-white/10 rounded-2xl py-4 pl-5 pr-12 text-left text-white font-black text-sm outline-none focus:border-nexus-blue/50 transition-all hover:border-white/20"
               >
-                {currencies.map((c) => (
-                  <option key={c.symbol} value={c.symbol} className="bg-[#0d1117] text-white">
-                    {c.symbol}{c.network ? ` — ${c.network}` : ''} · {c.name}
-                  </option>
-                ))}
-              </select>
+                {selectedCurrencyData
+                  ? <span>{selectedCurrencyData.symbol}{selectedCurrencyData.network ? <span className="text-white/30 font-medium"> — {selectedCurrencyData.network}</span> : ''} <span className="text-white/30 font-medium">· {selectedCurrencyData.name}</span></span>
+                  : <span className="text-white/30">Selecciona una moneda</span>
+                }
+              </button>
               <div className="pointer-events-none absolute inset-y-0 right-4 flex items-center">
-                <svg className="w-4 h-4 text-nexus-blue-light/60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
+                <ChevronDown className={`w-4 h-4 text-nexus-blue-light/60 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
               </div>
+
+              {/* Dropdown */}
+              {isOpen && (
+                <div className="absolute z-50 w-full mt-2 bg-[#0d1117] border border-white/10 rounded-2xl overflow-hidden shadow-[0_8px_30px_rgba(0,0,0,0.5)]">
+                  {/* Search */}
+                  <div className="p-2 border-b border-white/5">
+                    <div className="flex items-center gap-2 bg-white/5 rounded-xl px-3 py-2">
+                      <Search className="w-3 h-3 text-white/30 shrink-0" />
+                      <input
+                        ref={searchRef}
+                        type="text"
+                        value={search}
+                        onChange={e => setSearch(e.target.value)}
+                        placeholder="Buscar moneda..."
+                        className="flex-1 bg-transparent text-white text-xs font-black outline-none placeholder:text-white/20 tracking-wide"
+                      />
+                      {search && (
+                        <button onClick={() => setSearch('')} className="text-white/30 hover:text-white transition-colors">
+                          <X className="w-3 h-3" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Options */}
+                  <div className="max-h-52 overflow-y-auto">
+                    {filtered.length === 0 ? (
+                      <div className="py-6 text-center text-[10px] text-white/20 font-black uppercase tracking-widest">
+                        Sin resultados
+                      </div>
+                    ) : (
+                      filtered.map(c => (
+                        <button
+                          key={c.symbol}
+                          type="button"
+                          onClick={() => handleSelectCurrency(c.symbol)}
+                          className={`w-full text-left px-4 py-3 flex items-center justify-between transition-colors hover:bg-white/5 ${
+                            selectedCurrency === c.symbol ? 'bg-nexus-blue/10 text-nexus-blue-light' : 'text-white/70'
+                          }`}
+                        >
+                          <div className="flex items-center gap-3">
+                            <span className="text-sm font-black">{c.symbol}</span>
+                            {c.network && (
+                              <span className="text-[8px] font-black uppercase tracking-widest px-1.5 py-0.5 rounded border border-white/10 bg-white/5 text-white/30">
+                                {c.network}
+                              </span>
+                            )}
+                          </div>
+                          <span className="text-[10px] text-white/30 font-medium">{c.name}</span>
+                        </button>
+                      ))
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
