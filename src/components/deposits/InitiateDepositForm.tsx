@@ -3,19 +3,13 @@
 import { useState, useEffect, useRef } from 'react';
 import { useInitiateDeposit } from '@/lib/hooks/useInitiateDeposit';
 import { usePendingInvoices } from '@/lib/hooks/usePendingInvoices';
-import { SUPPORTED_CURRENCIES } from '@/lib/validators/deposit';
+import { useCurrencies } from '@/lib/hooks/useCurrencies';
 import { DepositInvoice } from '@/types/models';
 import { useNotificationStore } from '@/lib/store/notificationStore';
-import { DollarSign, Bitcoin, RefreshCcw, ArrowRight, Loader2, Info, Zap, TrendingUp, Shield } from 'lucide-react';
+import { ArrowRight, Loader2, Info, Zap, TrendingUp, Shield } from 'lucide-react';
 import { AxiosError } from 'axios';
 import { apiClient } from '@/lib/api/axios';
 import { useQuery } from '@tanstack/react-query';
-
-const CURRENCY_CONFIG = {
-  USDT: { icon: DollarSign, label: 'USDT' },
-  BTC:  { icon: Bitcoin,    label: 'BTC' },
-  ETH:  { icon: RefreshCcw, label: 'ETH' },
-} as const;
 
 interface CommissionPreview {
   rate: number;
@@ -30,12 +24,20 @@ interface InitiateDepositFormProps {
 }
 
 export function InitiateDepositForm({ invoice, setInvoice }: InitiateDepositFormProps) {
-  const [selectedCurrency, setSelectedCurrency] = useState<typeof SUPPORTED_CURRENCIES[number]>('USDT');
+  const { data: currencies = [], isLoading: isLoadingCurrencies } = useCurrencies();
+  const [selectedCurrency, setSelectedCurrency] = useState<string>('USDT');
   const [amount, setAmount] = useState<string>('');
   const { data: pendingData, isLoading: isLoadingPending } = usePendingInvoices();
   const { mutate, isPending, error, reset } = useInitiateDeposit();
   const addNotification = useNotificationStore(s => s.addNotification);
   const lastAutoLoadedId = useRef<string | null>(null);
+
+  // Auto-select first currency once loaded
+  useEffect(() => {
+    if (currencies.length > 0 && !invoice) {
+      setSelectedCurrency(prev => currencies.some(c => c.symbol === prev) ? prev : currencies[0].symbol);
+    }
+  }, [currencies, invoice]);
 
   const numericAmount = parseFloat(amount) || 0;
 
@@ -86,7 +88,7 @@ export function InitiateDepositForm({ invoice, setInvoice }: InitiateDepositForm
     });
   };
 
-  const handleSelectCurrency = (currency: typeof SUPPORTED_CURRENCIES[number]) => {
+  const handleSelectCurrency = (currency: string) => {
     setSelectedCurrency(currency);
     if (invoice && invoice.status === 'awaiting_payment') {
       lastAutoLoadedId.current = invoice.invoice_id;
@@ -113,26 +115,33 @@ export function InitiateDepositForm({ invoice, setInvoice }: InitiateDepositForm
             </label>
           </div>
           <div className="grid grid-cols-3 gap-3">
-            {SUPPORTED_CURRENCIES.map((currency) => {
-              const config = CURRENCY_CONFIG[currency];
-              const Icon = config.icon;
-              const isSelected = selectedCurrency === currency;
-
-              return (
-                <button
-                  key={currency}
-                  onClick={() => handleSelectCurrency(currency)}
-                  className={`flex flex-col items-center justify-center p-4 rounded-2xl transition-all border outline-none ${
-                    isSelected
-                      ? 'bg-nexus-blue/10 border-nexus-blue/30 text-nexus-blue-light shadow-[0_0_15px_rgba(11,64,193,0.1)]'
-                      : 'bg-white/5 border-white/5 text-nexus-text/40 hover:text-white hover:bg-white/10'
-                  }`}
-                >
-                  <Icon className={`h-6 w-6 mb-2 ${isSelected ? 'animate-pulse' : ''}`} />
-                  <span className="text-[10px] font-black uppercase tracking-widest">{config.label}</span>
-                </button>
-              );
-            })}
+            {isLoadingCurrencies
+              ? Array.from({ length: 3 }).map((_, i) => (
+                  <div key={i} className="h-16 rounded-2xl bg-white/5 animate-pulse" />
+                ))
+              : currencies.map((currency) => {
+                  const isSelected = selectedCurrency === currency.symbol;
+                  return (
+                    <button
+                      key={currency.symbol}
+                      onClick={() => handleSelectCurrency(currency.symbol)}
+                      className={`flex flex-col items-center justify-center p-4 rounded-2xl transition-all border outline-none ${
+                        isSelected
+                          ? 'bg-nexus-blue/10 border-nexus-blue/30 text-nexus-blue-light shadow-[0_0_15px_rgba(11,64,193,0.1)]'
+                          : 'bg-white/5 border-white/5 text-nexus-text/40 hover:text-white hover:bg-white/10'
+                      }`}
+                    >
+                      <span className={`text-lg font-black mb-1 ${isSelected ? 'animate-pulse' : ''}`}>
+                        {currency.symbol === 'BTC' ? '₿' : currency.symbol === 'ETH' ? 'Ξ' : '$'}
+                      </span>
+                      <span className="text-[10px] font-black uppercase tracking-widest">{currency.symbol}</span>
+                      {currency.network && (
+                        <span className="text-[8px] font-black uppercase tracking-widest opacity-40 mt-0.5">{currency.network}</span>
+                      )}
+                    </button>
+                  );
+                })
+            }
           </div>
         </div>
 

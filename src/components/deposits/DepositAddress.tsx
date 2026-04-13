@@ -132,8 +132,26 @@ export function DepositAddress({ invoice }: DepositAddressProps) {
           </div>
         </div>
 
+        {/* Amount Summary */}
+        <div className="w-full rounded-2xl border border-white/5 bg-white/[0.02] divide-y divide-white/5">
+          <div className="flex justify-between items-center px-5 py-3">
+            <span className="text-[9px] font-black uppercase tracking-[0.2em] text-white/30">Monto USD (bruto)</span>
+            <span className="text-sm font-black text-white">${parseFloat(invoice.amount_expected).toFixed(2)}</span>
+          </div>
+          {invoice.pay_amount && (
+            <div className="flex justify-between items-center px-5 py-3">
+              <span className="text-[9px] font-black uppercase tracking-[0.2em] text-nexus-blue-light/60">
+                Enviar exactamente
+              </span>
+              <span className="text-sm font-black text-nexus-blue-light font-mono">
+                {parseFloat(invoice.pay_amount).toFixed(8)} {invoice.currency}
+              </span>
+            </div>
+          )}
+        </div>
+
         {/* Tactical Footer */}
-        <div className="w-full pt-4 flex flex-col items-center gap-5">
+        <div className="w-full pt-2 flex flex-col items-center gap-5">
            <div className="flex items-center justify-between w-full px-2">
               <div className="flex items-center gap-2 text-[10px] text-white/20 font-black uppercase tracking-widest">
                 <Clock className="w-3 h-3 text-nexus-blue-light" />
@@ -144,8 +162,8 @@ export function DepositAddress({ invoice }: DepositAddressProps) {
 
           <div className="p-5 bg-yellow-400/5 border border-yellow-400/10 rounded-2xl w-full">
             <p className="text-[10px] text-yellow-400/60 font-black text-center leading-relaxed uppercase tracking-tighter">
-              Aviso: Transfiere únicamente {invoice.currency} 
-              {invoice.network ? ` vía ${invoice.network}` : ''}. 
+              Aviso: Transfiere únicamente {invoice.currency}
+              {invoice.network ? ` vía ${invoice.network}` : ''}.
               Cualquier otro activo resultará en pérdida definitiva de capital.
             </p>
           </div>

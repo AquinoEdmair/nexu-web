@@ -60,9 +60,16 @@ export interface DepositInvoice {
   qr_code_url: string | null;
   status: 'awaiting_payment' | 'completed' | 'expired';
   amount_expected: string;
+  pay_amount: string | null;
   amount_received: string | null;
   expires_at: string;
   created_at: string;
+}
+
+export interface CryptoCurrency {
+  symbol: string;
+  name: string;
+  network: string | null;
 }
 
 export interface YieldLog {
