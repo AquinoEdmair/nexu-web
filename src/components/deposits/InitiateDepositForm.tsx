@@ -107,42 +107,35 @@ export function InitiateDepositForm({ invoice, setInvoice }: InitiateDepositForm
     <div className="space-y-8 p-6">
       <div className="space-y-8">
         {/* Currency Selection */}
-        <div className="space-y-4">
+        <div className="space-y-3">
           <div className="flex items-center gap-2">
             <Zap className="w-3 h-3 text-nexus-blue-light" />
             <label className="text-[10px] font-black uppercase tracking-[0.3em] text-nexus-blue-light/60">
               Activo de Inversión
             </label>
           </div>
-          <div className="grid grid-cols-3 gap-3">
-            {isLoadingCurrencies
-              ? Array.from({ length: 3 }).map((_, i) => (
-                  <div key={i} className="h-16 rounded-2xl bg-white/5 animate-pulse" />
-                ))
-              : currencies.map((currency) => {
-                  const isSelected = selectedCurrency === currency.symbol;
-                  return (
-                    <button
-                      key={currency.symbol}
-                      onClick={() => handleSelectCurrency(currency.symbol)}
-                      className={`flex flex-col items-center justify-center p-4 rounded-2xl transition-all border outline-none ${
-                        isSelected
-                          ? 'bg-nexus-blue/10 border-nexus-blue/30 text-nexus-blue-light shadow-[0_0_15px_rgba(11,64,193,0.1)]'
-                          : 'bg-white/5 border-white/5 text-nexus-text/40 hover:text-white hover:bg-white/10'
-                      }`}
-                    >
-                      <span className={`text-lg font-black mb-1 ${isSelected ? 'animate-pulse' : ''}`}>
-                        {currency.symbol === 'BTC' ? '₿' : currency.symbol === 'ETH' ? 'Ξ' : '$'}
-                      </span>
-                      <span className="text-[10px] font-black uppercase tracking-widest">{currency.symbol}</span>
-                      {currency.network && (
-                        <span className="text-[8px] font-black uppercase tracking-widest opacity-40 mt-0.5">{currency.network}</span>
-                      )}
-                    </button>
-                  );
-                })
-            }
-          </div>
+          {isLoadingCurrencies ? (
+            <div className="h-14 rounded-2xl bg-white/5 animate-pulse" />
+          ) : (
+            <div className="relative">
+              <select
+                value={selectedCurrency}
+                onChange={(e) => handleSelectCurrency(e.target.value)}
+                className="w-full appearance-none bg-[#0a0f16]/60 border border-white/10 rounded-2xl py-4 pl-5 pr-12 text-white font-black text-sm outline-none focus:border-nexus-blue/50 transition-all cursor-pointer hover:border-white/20"
+              >
+                {currencies.map((c) => (
+                  <option key={c.symbol} value={c.symbol} className="bg-[#0d1117] text-white">
+                    {c.symbol}{c.network ? ` — ${c.network}` : ''} · {c.name}
+                  </option>
+                ))}
+              </select>
+              <div className="pointer-events-none absolute inset-y-0 right-4 flex items-center">
+                <svg className="w-4 h-4 text-nexus-blue-light/60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Amount Input */}
