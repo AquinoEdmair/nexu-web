@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, Suspense } from 'react';
-import { Eye, EyeOff, Award, Loader2, User, Mail, ShieldCheck } from 'lucide-react';
+import { Eye, EyeOff, Award, Loader2, User, Mail } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { useRegister } from '@/lib/hooks/useAuth';
@@ -29,6 +29,7 @@ function RegisterPage() {
     referral_code: refCode,
   });
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [clientErrors, setClientErrors] = useState<Record<string, string>>({});
   const { register, isLoading, error, fieldErrors, reset } = useRegister();
@@ -174,14 +175,18 @@ function RegisterPage() {
               className="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-4 pr-12 text-white focus:ring-1 focus:ring-nexus-blue-light placeholder:text-white/20 transition-all outline-none"
               id="confirm_password"
               placeholder="••••••••"
-              type="password"
+              type={showConfirmPassword ? 'text' : 'password'}
               value={form.password_confirmation}
               onChange={(e) => updateField('password_confirmation', e.target.value)}
               disabled={isLoading}
             />
-            <div className="absolute right-4 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-nexus-blue-light transition-colors">
-              <ShieldCheck className="w-5 h-5" />
-            </div>
+            <button
+              type="button"
+              onClick={() => setShowConfirmPassword((v) => !v)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 hover:text-nexus-blue-light transition-colors"
+            >
+              {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+            </button>
           </div>
           {getError('password_confirmation') && <p className="text-xs text-nexus-blue-light ml-1 mt-1">{getError('password_confirmation')}</p>}
         </div>

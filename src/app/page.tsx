@@ -114,7 +114,9 @@ export default function LandingPage() {
                 Radar de Mercado
               </h2>
               <div className="h-px flex-1 mx-8 bg-nexus-blue/10" />
-              <Link href="#" className="text-[10px] font-black text-nexus-text hover:text-nexus-blue transition-colors uppercase tracking-[0.2em]">Live Feed</Link>
+              <span className="text-[9px] font-black uppercase tracking-widest text-amber-400/80 bg-amber-400/10 border border-amber-400/20 px-2.5 py-1 rounded-full">
+                XAU · Oro
+              </span>
             </div>
             <div className="h-[600px] overflow-y-auto pr-4 custom-scrollbar">
               <GoldNewsFeed />

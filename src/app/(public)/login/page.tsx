@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, Suspense } from 'react';
-import { AtSign, Lock, Loader2 } from 'lucide-react';
+import { AtSign, Eye, EyeOff, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { useLogin } from '@/lib/hooks/useAuth';
 import { loginSchema } from '@/lib/validators/auth';
@@ -17,6 +17,7 @@ export default function LoginPageWrapper() {
 function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const { login, isLoading, error, fieldErrors, reset } = useLogin();
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -81,16 +82,20 @@ function LoginPage() {
           </div>
           <div className="relative">
             <input
-              className="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-4 text-white placeholder:text-white/20 focus:ring-1 focus:ring-nexus-blue-light transition-all outline-none"
+              className="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-4 pr-12 text-white placeholder:text-white/20 focus:ring-1 focus:ring-nexus-blue-light transition-all outline-none"
               placeholder="••••••••"
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               disabled={isLoading}
             />
-            <div className="absolute right-4 top-1/2 -translate-y-1/2 text-outline-variant">
-              <Lock className="w-5 h-5" />
-            </div>
+            <button
+              type="button"
+              onClick={() => setShowPassword((v) => !v)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-white/30 hover:text-nexus-blue-light transition-colors"
+            >
+              {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+            </button>
           </div>
         </div>
 

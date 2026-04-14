@@ -12,8 +12,8 @@ export const metricsApi = {
     return data;
   },
 
-  getGoldPrice: async () => {
-    const { data } = await apiClient.get<GoldPriceResponse>('/metrics/gold');
+  getGoldPrice: async (range: string = '1w') => {
+    const { data } = await apiClient.get<GoldPriceResponse>('/metrics/gold', { params: { range } });
     return data;
   },
 

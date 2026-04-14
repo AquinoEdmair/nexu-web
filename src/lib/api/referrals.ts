@@ -1,5 +1,6 @@
 import { ApiResponse, PaginatedResponse } from '@/types/api';
 import {
+  ElitePointEntry,
   ReferralCodeValidation,
   ReferralEarning,
   ReferralNode,
@@ -28,6 +29,16 @@ export const referralsApi = {
     perPage = 20,
   ): Promise<PaginatedResponse<ReferralEarning>> => {
     const response = await apiClient.get('/referrals/earnings', {
+      params: { page, per_page: perPage },
+    });
+    return response.data;
+  },
+
+  getPointsHistory: async (
+    page = 1,
+    perPage = 20,
+  ): Promise<PaginatedResponse<ElitePointEntry>> => {
+    const response = await apiClient.get('/referrals/points-history', {
       params: { page, per_page: perPage },
     });
     return response.data;

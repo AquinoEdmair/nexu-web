@@ -110,12 +110,27 @@ export interface NextTierData {
   min_points: string;
 }
 
+export interface EliteTierSummary {
+  name: string;
+  slug: string;
+  min_points: number;
+}
+
 export interface ReferralElite {
   points_total: string;
   tier: EliteTierData | null;
   next_tier: NextTierData | null;
   points_to_next: string | null;
   progress_pct: number;
+  tiers: EliteTierSummary[];
+}
+
+export interface ElitePointEntry {
+  id: string;
+  points: string;
+  source: string;
+  amount_usd: string;
+  created_at: string;
 }
 
 export interface ReferralStats {

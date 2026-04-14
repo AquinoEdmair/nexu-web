@@ -1,11 +1,13 @@
 'use client';
 
 import { useBalance } from '@/lib/hooks/useBalance';
+import { useGoldPrice } from '@/lib/hooks/useMetrics';
 import { formatCurrency } from '@/lib/utils/format';
 import { Shield, Wallet, CheckCircle2, Loader2 } from 'lucide-react';
 
 export function BalanceCard() {
   const { data, isLoading, isError, refetch } = useBalance();
+  const { data: goldData } = useGoldPrice();
 
   if (isLoading) {
     return (
@@ -40,11 +42,17 @@ export function BalanceCard() {
   const balance = data?.data;
   if (!balance) return null;
 
+  const goldPrice = goldData?.current ?? 0;
+  const ozGold = goldPrice > 0 ? parseFloat(balance.balance_total) / goldPrice : null;
+  const ozLabel = ozGold !== null
+    ? ozGold.toLocaleString('es-MX', { minimumFractionDigits: 4, maximumFractionDigits: 4 })
+    : null;
+
   return (
     <div className="lg:col-span-2 relative group min-h-[320px]">
       <div className="absolute inset-0 bg-nexus-blue blur-[100px] opacity-5 rounded-full -z-10"></div>
       <div className="h-full bg-[#0a0f16]/40 border border-white/10 rounded-3xl p-8 backdrop-blur-xl relative overflow-hidden transition-all hover:border-nexus-blue/30 shadow-[0_0_50px_rgba(11,64,193,0.05)] flex flex-col justify-between">
-        
+
         {/* Background Emblem */}
         <div className="absolute -top-10 -right-10 opacity-5 rotate-12">
           <Shield className="w-64 h-64 text-nexus-blue-light" />
@@ -58,11 +66,16 @@ export function BalanceCard() {
 
           <div className="space-y-1">
             <p className="text-[10px] font-black text-white/40 uppercase tracking-widest pl-1">Balance Consolidado en Oro</p>
-            <div className="flex items-baseline gap-4">
+            <div className="flex items-baseline gap-4 flex-wrap">
               <h2 className="text-5xl md:text-6xl font-black text-white tracking-tighter drop-shadow-[0_0_20px_rgba(24,136,243,0.2)]">
                 ${formatCurrency(balance.balance_total)}
               </h2>
               <span className="text-nexus-blue-light font-black text-lg uppercase tracking-[0.2em]">{balance.currency}</span>
+              {ozLabel && (
+                <span className="text-amber-400/70 font-black text-sm uppercase tracking-widest">
+                  ≈ {ozLabel} oz XAU
+                </span>
+              )}
             </div>
           </div>
         </div>

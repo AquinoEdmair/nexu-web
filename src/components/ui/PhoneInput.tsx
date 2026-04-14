@@ -50,9 +50,23 @@ interface PhoneInputProps {
   id?: string;
 }
 
+const FALLBACK_DIAL = '+57'; // Colombia
+
+/** Detect dial code from browser locale (e.g. "es-CO" → "+57"). Falls back to Colombia. */
+function detectDialFromLocale(): string {
+  if (typeof navigator === 'undefined') return FALLBACK_DIAL;
+  const locale = navigator.language ?? '';
+  const regionCode = locale.split('-')[1]?.toUpperCase();
+  if (regionCode) {
+    const found = COUNTRIES.find((c) => c.code === regionCode);
+    if (found) return found.dial;
+  }
+  return FALLBACK_DIAL;
+}
+
 /** Split a combined phone string into dial code + national number. */
-function splitPhone(value: string): { dial: string; number: string } {
-  if (!value) return { dial: '+52', number: '' };
+function splitPhone(value: string, defaultDial: string): { dial: string; number: string } {
+  if (!value) return { dial: defaultDial, number: '' };
   const match = COUNTRIES
     .slice()
     .sort((a, b) => b.dial.length - a.dial.length)
@@ -60,7 +74,7 @@ function splitPhone(value: string): { dial: string; number: string } {
   if (match) {
     return { dial: match.dial, number: value.slice(match.dial.length).trim() };
   }
-  return { dial: '+52', number: value.replace(/^\+/, '') };
+  return { dial: defaultDial, number: value.replace(/^\+/, '') };
 }
 
 export function PhoneInput({
@@ -70,7 +84,8 @@ export function PhoneInput({
   placeholder = '55 1234 5678',
   id = 'phone',
 }: PhoneInputProps) {
-  const { dial: initialDial, number: initialNumber } = splitPhone(value);
+  const [defaultDial] = useState(() => detectDialFromLocale());
+  const { dial: initialDial, number: initialNumber } = splitPhone(value, defaultDial);
   const [selectedDial, setSelectedDial] = useState(initialDial);
   const [number, setNumber] = useState(initialNumber);
   const [open, setOpen] = useState(false);

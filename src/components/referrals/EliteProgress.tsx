@@ -1,4 +1,4 @@
-import { Star, Wallet } from 'lucide-react';
+import { Star, Trophy, Wallet } from 'lucide-react';
 import type { ReferralElite } from '@/types/models';
 import { formatCurrency } from '@/lib/utils/format';
 
@@ -11,6 +11,7 @@ export function EliteProgress({ elite, totalPersonalDeposit }: EliteProgressProp
   const tierName     = elite.tier?.name ?? 'Elite';
   const tierSlug     = elite.tier?.slug ?? 'none';
   const nextTierName = elite.next_tier?.name ?? '';
+  const pointsTotal  = parseFloat(elite.points_total).toLocaleString('es-MX', { maximumFractionDigits: 0 });
 
   return (
     <section className="relative overflow-hidden rounded-[2.5rem] p-10 bg-[#0a0f16]/40 border border-white/10 backdrop-blur-xl shadow-[0_8px_40px_rgba(0,0,0,0.4)] group hover:border-nexus-blue/20 transition-all">
@@ -29,10 +30,23 @@ export function EliteProgress({ elite, totalPersonalDeposit }: EliteProgressProp
               <span className="text-nexus-blue-light font-black text-xs uppercase tracking-widest border border-nexus-blue-light/20 px-3 py-1 rounded-full">Elite</span>
             </div>
           </div>
-          
+
           <div className="flex flex-col md:flex-row gap-4 md:gap-12">
+            {/* Total points — prominent */}
             <div>
-               <span className="text-[10px] font-black text-white/20 uppercase tracking-[0.3em] block mb-2">
+              <span className="text-[10px] font-black text-white/20 uppercase tracking-[0.3em] block mb-2">
+                Puntos Elite
+              </span>
+              <div className="flex items-center gap-2">
+                <Trophy className="w-4 h-4 text-nexus-blue-light" />
+                <p className="text-white font-black text-2xl tracking-tighter">
+                  {pointsTotal} <span className="text-xs text-white/30 font-bold">pts</span>
+                </p>
+              </div>
+            </div>
+
+            <div>
+              <span className="text-[10px] font-black text-white/20 uppercase tracking-[0.3em] block mb-2">
                 Depósitos Personales
               </span>
               <div className="flex items-center gap-2">
@@ -64,8 +78,8 @@ export function EliteProgress({ elite, totalPersonalDeposit }: EliteProgressProp
             </div>
           </div>
           <div className="flex justify-between text-[9px] font-black tracking-[0.3em] uppercase">
-            {elite.tiers.map((t) => (
-              <span 
+            {(elite.tiers ?? []).map((t) => (
+              <span
                 key={t.slug}
                 className={tierSlug === t.slug ? 'text-nexus-blue-light shadow-[0_0_10px_rgba(24,136,243,0.3)]' : 'text-white/20'}
               >
@@ -89,8 +103,6 @@ export function EliteProgress({ elite, totalPersonalDeposit }: EliteProgressProp
               <span className="text-nexus-blue-light font-black uppercase tracking-widest text-[10px]">
                 Beneficios Élite {nextTierName}
               </span>.
-              <br />
-              <span className="text-[10px] text-white/30 uppercase tracking-widest">Puntos acumulados: {elite.points_total} pts</span>
             </p>
           ) : (
             <p className="text-sm text-nexus-text/60 font-medium">

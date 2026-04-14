@@ -17,11 +17,13 @@ export const useUserRanking = () => {
   });
 };
 
-export const useGoldPrice = () => {
+export const useGoldPrice = (range: string = '1w') => {
   return useQuery({
-    queryKey: ['metrics', 'gold-price'],
-    queryFn: metricsApi.getGoldPrice,
-    staleTime: 60 * 1000, // 1 min
+    queryKey: ['metrics', 'gold-price', range],
+    queryFn: () => metricsApi.getGoldPrice(range),
+    staleTime: 10_000,          // 10s
+    refetchInterval: 10_000,    // auto-refetch every 10s
+    refetchIntervalInBackground: false,
   });
 };
 

@@ -3,6 +3,7 @@
 import { Network, ShieldCheck } from 'lucide-react';
 import { useReferralSummary } from '@/lib/hooks/useReferrals';
 import { EliteProgress } from '@/components/referrals/EliteProgress';
+import { ElitePointsHistory } from '@/components/referrals/ElitePointsHistory';
 import { ReferralInfo } from '@/components/referrals/ReferralInfo';
 import { ReferralNetwork } from '@/components/referrals/ReferralNetwork';
 import { ReferralSkeleton } from '@/components/referrals/ReferralSkeleton';
@@ -48,10 +49,11 @@ export default function ReferralsPage() {
 
       {summary && (
         <>
-          <EliteProgress 
-            elite={summary.elite} 
-            totalPersonalDeposit={summary.stats.total_personal_deposit} 
+          <EliteProgress
+            elite={summary.elite}
+            totalPersonalDeposit={summary.stats.total_personal_deposit}
           />
+          <ElitePointsHistory />
           <ReferralInfo summary={summary} />
           <ReferralNetwork />
         </>
