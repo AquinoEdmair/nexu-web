@@ -37,15 +37,14 @@ export default function PublicLayout({
         </div>
 
         <div className="relative z-10 p-12 lg:p-16 flex items-center justify-between border-t border-white/5">
-          <Link href="/" className="flex items-center gap-3 group">
+          <Link href="/" className="group">
             <Image
               src="/nexu.png"
               alt="NEXU"
-              width={32}
-              height={32}
-              className="h-8 w-auto brightness-110 drop-shadow-[0_0_12px_rgba(24,136,243,0.4)] group-hover:drop-shadow-[0_0_20px_rgba(24,136,243,0.6)] transition-all"
+              width={120}
+              height={40}
+              className="h-10 w-auto brightness-110 drop-shadow-[0_0_16px_rgba(24,136,243,0.5)] group-hover:drop-shadow-[0_0_28px_rgba(24,136,243,0.7)] transition-all"
             />
-            <span className="text-3xl font-black tracking-tighter text-white group-hover:text-nexus-blue-light transition-colors">NEXU</span>
           </Link>
           <div className="text-[10px] uppercase tracking-widest text-nexus-blue-light font-black">Protocolo de Alquimia Digital</div>
         </div>
@@ -54,16 +53,15 @@ export default function PublicLayout({
       {/* Right Column: Interactive Content */}
       <div className="w-full lg:w-1/2 flex flex-col relative">
         {/* Mobile Header */}
-        <header className="lg:hidden w-full sticky top-0 bg-[#111318]/80 backdrop-blur-md flex justify-center items-center px-6 py-6 z-50 border-b border-outline-variant/5">
-          <Link href="/" className="flex items-center gap-2.5 group">
+        <header className="lg:hidden w-full sticky top-0 bg-[#111318]/80 backdrop-blur-md flex justify-center items-center px-6 py-4 z-50 border-b border-outline-variant/5">
+          <Link href="/" className="group">
             <Image
               src="/nexu.png"
               alt="NEXU"
-              width={28}
-              height={28}
-              className="h-7 w-auto brightness-110 drop-shadow-[0_0_10px_rgba(24,136,243,0.4)] group-hover:drop-shadow-[0_0_18px_rgba(24,136,243,0.6)] transition-all"
+              width={120}
+              height={40}
+              className="h-9 w-auto brightness-110 drop-shadow-[0_0_14px_rgba(24,136,243,0.5)] group-hover:drop-shadow-[0_0_24px_rgba(24,136,243,0.7)] transition-all"
             />
-            <span className="text-3xl font-extrabold tracking-tighter text-white group-hover:text-nexus-blue-light transition-colors">NEXU</span>
           </Link>
         </header>
 
