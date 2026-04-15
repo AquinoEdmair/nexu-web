@@ -22,30 +22,66 @@ const RANGE_LABELS: Record<Range, string> = {
   '1m': 'Último mes',
 };
 
+// How many X-axis ticks to show per range
+const X_TICK_COUNT: Record<Range, number> = {
+  '1h': 6,
+  '1d': 6,
+  '1w': 7,
+  '1m': 6,
+};
+
 export function GoldPriceChart() {
   const [range, setRange] = useState<Range>('1w');
   const { data, isLoading, isFetching } = useGoldPrice(range);
 
   const currentPrice = data?.current ?? 0;
   const isPositive   = (data?.change_24h ?? 0) >= 0;
+  const chartData    = data?.data ?? [];
+
+  // Pick evenly-spaced ticks from the data
+  const tickCount  = X_TICK_COUNT[range];
+  const totalPts   = chartData.length;
+  const xTicks     = totalPts > 0
+    ? Array.from({ length: tickCount }, (_, i) =>
+        chartData[Math.round(i * (totalPts - 1) / (tickCount - 1))]?.date
+      ).filter(Boolean)
+    : [];
+
+  // Period change: first vs last price
+  const firstPrice  = chartData[0]?.price ?? currentPrice;
+  const periodDelta = currentPrice > 0 && firstPrice > 0
+    ? ((currentPrice - firstPrice) / firstPrice) * 100
+    : 0;
+  const periodPos   = periodDelta >= 0;
 
   return (
     <div className="border border-white/5 bg-slate-900/40 backdrop-blur-md rounded-2xl p-6 overflow-hidden">
       {/* Header */}
       <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
         <div>
-          <h3 className="text-slate-300 text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-2 mb-1">
+          <h3 className="text-slate-300 text-[10px] font-black uppercase tracking-[0.2em] mb-1">
             MÉTRICA DE VALOR: XAU / USD
           </h3>
-          <div className="flex items-end gap-3">
+          <div className="flex items-end gap-3 flex-wrap">
             <span className="text-4xl font-black text-white tracking-tighter">
               {isLoading ? '—' : `$${formatCurrency(currentPrice)}`}
             </span>
             {!isLoading && (
-              <div className={`flex items-center gap-1 mb-1 text-sm font-bold ${isPositive ? 'text-nexus-blue-light' : 'text-rose-400'}`}>
-                {isPositive ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
-                {isPositive ? '+' : ''}{data?.change_24h}%
-              </div>
+              <>
+                <div className={`flex items-center gap-1 mb-1 text-sm font-bold ${isPositive ? 'text-nexus-blue-light' : 'text-rose-400'}`}>
+                  {isPositive ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
+                  {isPositive ? '+' : ''}{data?.change_24h}% <span className="text-white/20 font-medium text-xs">24h</span>
+                </div>
+                {/* Period delta */}
+                <div className={`flex items-center gap-1 mb-1 text-xs font-bold px-2 py-0.5 rounded-full border ${
+                  periodPos
+                    ? 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20'
+                    : 'text-rose-400 bg-rose-400/10 border-rose-400/20'
+                }`}>
+                  {periodPos ? '+' : ''}{periodDelta.toFixed(2)}%
+                  <span className="text-white/30 font-medium ml-1">{RANGE_LABELS[range].toLowerCase()}</span>
+                </div>
+              </>
             )}
           </div>
         </div>
@@ -80,7 +116,7 @@ export function GoldPriceChart() {
           <div className="h-full w-full bg-white/5 animate-pulse rounded-xl" />
         ) : (
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={data?.data}>
+            <AreaChart key={range} data={chartData} margin={{ left: 0, right: 8, top: 4, bottom: 0 }}>
               <defs>
                 <linearGradient id="colorGoldPrice" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%"  stopColor="#1888F3" stopOpacity={0.2} />
@@ -88,8 +124,23 @@ export function GoldPriceChart() {
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="#ffffff08" vertical={false} />
-              <XAxis dataKey="date" hide={true} />
-              <YAxis hide={true} domain={['dataMin - 5', 'dataMax + 5']} />
+              <XAxis
+                dataKey="date"
+                ticks={xTicks}
+                tick={{ fill: '#ffffff30', fontSize: 9, fontWeight: 700 }}
+                axisLine={false}
+                tickLine={false}
+                dy={6}
+              />
+              <YAxis
+                domain={['dataMin - 2', 'dataMax + 2']}
+                tick={{ fill: '#ffffff25', fontSize: 9, fontWeight: 700 }}
+                axisLine={false}
+                tickLine={false}
+                tickFormatter={(v: number) => `$${Math.round(v).toLocaleString('es-MX')}`}
+                width={72}
+                orientation="right"
+              />
               <Tooltip
                 content={({ active, payload }) => {
                   if (active && payload && payload.length) {
@@ -114,7 +165,7 @@ export function GoldPriceChart() {
                 strokeWidth={2}
                 fillOpacity={1}
                 fill="url(#colorGoldPrice)"
-                animationDuration={600}
+                animationDuration={500}
                 isAnimationActive={true}
               />
             </AreaChart>

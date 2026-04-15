@@ -11,7 +11,6 @@ export interface InvestmentResponse {
     created_at: string;
   };
   wallet: {
-    balance_available: string;
     balance_in_operation: string;
     balance_total: string;
   };

@@ -7,7 +7,7 @@ import { depositsApi } from '@/lib/api/deposits';
 import { Modal } from '@/components/ui/Modal';
 import { DepositAddress } from '@/components/deposits/DepositAddress';
 import { useNotificationStore } from '@/lib/store/notificationStore';
-import { Copy, Check, Clock, CheckCircle2, XCircle, Eye, Activity, Database } from 'lucide-react';
+import { Copy, Check, Clock, CheckCircle2, XCircle, Eye, Activity, Database, UserCheck } from 'lucide-react';
 import { DepositInvoice } from '@/types/models';
 
 const STATUS_CONFIG: Record<string, { label: string; icon: React.ComponentType<{ className?: string }>; classes: string }> = {
@@ -109,7 +109,7 @@ export function DepositHistory() {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-white/5 border-b border-white/10">
-                {['Registro', 'Activo', 'Protocolo', 'Nodo de Recepción', 'Estatus', ''].map((header) => (
+                {['Registro', 'Activo', 'Protocolo', 'Nodo de Recepción', 'Origen', 'Estatus', ''].map((header) => (
                   <th key={header} className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-nexus-blue-light/60">
                     {header}
                   </th>
@@ -119,7 +119,7 @@ export function DepositHistory() {
             <tbody className="divide-y divide-white/5">
               {invoices.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="py-20 text-center opacity-20">
+                  <td colSpan={7} className="py-20 text-center opacity-20">
                     <p className="text-xs font-black uppercase tracking-[0.5em]">Sin registros tácticos activos</p>
                   </td>
                 </tr>
@@ -171,6 +171,23 @@ export function DepositHistory() {
                             {copiedId === invoice.invoice_id ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
                           </button>
                         </div>
+                      </td>
+                      <td className="px-8 py-6">
+                        {invoice.confirmed_manually ? (
+                          <div className="flex flex-col gap-1">
+                            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-amber-400/20 bg-amber-400/10 text-amber-400 text-[9px] font-black uppercase tracking-widest w-fit">
+                              <UserCheck className="h-3 w-3" />
+                              Admin
+                            </div>
+                            {invoice.confirmed_by_name && (
+                              <span className="text-[9px] text-white/30 font-black tracking-widest truncate max-w-[120px]">
+                                {invoice.confirmed_by_name}
+                              </span>
+                            )}
+                          </div>
+                        ) : (
+                          <span className="text-[9px] text-white/20 font-black uppercase tracking-widest">Automático</span>
+                        )}
                       </td>
                       <td className="px-8 py-6">
                         <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full border text-[9px] font-black uppercase tracking-widest ${status.classes}`}>

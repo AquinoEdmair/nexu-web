@@ -15,7 +15,6 @@ export interface User {
 export interface Wallet {
   id: string;
   user_id: string;
-  balance_available: string;
   balance_in_operation: string;
   balance_total: string;
   created_at: string;
@@ -39,7 +38,6 @@ export interface Transaction {
 }
 
 export interface BalanceData {
-  balance_available: string;
   balance_in_operation: string;
   balance_total: string;
   currency: string;
@@ -48,7 +46,6 @@ export interface BalanceData {
 export interface BalanceHistoryEntry {
   date: string;
   balance_total: string;
-  balance_available: string;
   balance_in_operation: string;
 }
 
@@ -64,6 +61,8 @@ export interface DepositInvoice {
   amount_received: string | null;
   expires_at: string;
   created_at: string;
+  confirmed_manually: boolean;
+  confirmed_by_name: string | null;
 }
 
 export interface CryptoCurrency {

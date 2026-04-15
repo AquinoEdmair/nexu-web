@@ -34,7 +34,7 @@ export function WithdrawalForm() {
   const { addNotification } = useNotificationStore();
 
   const balance = balanceData?.data;
-  const availableBalance = balance?.balance_available ?? '0';
+  const availableBalance = balance?.balance_in_operation ?? '0';
   const numericAmount = parseFloat(amount) || 0;
 
   // Fetch commission preview

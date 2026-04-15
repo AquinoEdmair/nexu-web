@@ -80,20 +80,14 @@ export function BalanceCard() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-8 pt-8 border-t border-white/5 relative z-10">
-          <div className="space-y-1">
-            <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.15em]">Disponible para Retiro</p>
-            <p className="text-xl font-black text-white group-hover:text-nexus-blue-light transition-colors">
-              ${formatCurrency(balance.balance_available)}
-            </p>
-          </div>
+        <div className="grid grid-cols-2 gap-8 pt-8 border-t border-white/5 relative z-10">
           <div className="space-y-1">
             <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.15em]">Capital en Operación</p>
-            <p className="text-xl font-black text-gray-400">
+            <p className="text-xl font-black text-white group-hover:text-nexus-blue-light transition-colors">
               ${formatCurrency(balance.balance_in_operation)}
             </p>
           </div>
-          <div className="hidden md:block space-y-1">
+          <div className="space-y-1">
             <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.15em]">Estado de Seguridad</p>
             <div className="flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 text-nexus-blue-light" />
