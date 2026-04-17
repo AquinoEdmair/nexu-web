@@ -7,7 +7,7 @@ import {
   Loader2, AlertCircle
 } from 'lucide-react';
 import { useTransactions } from '@/lib/hooks/useTransactions';
-import { formatCurrency, formatDate } from '@/lib/utils/format';
+import { formatCurrency } from '@/lib/utils/format';
 import type { Transaction } from '@/types/models';
 
 const TYPE_ICONS: Record<string, any> = {
@@ -177,10 +177,10 @@ export default function HistoryPage() {
                       <td className="px-8 py-6">
                         <div className="flex flex-col">
                           <span className="text-xs font-black text-white tracking-widest uppercase">
-                            {formatDate(tx.created_at || '', 'MMM D, YYYY')}
+                            {new Date(tx.created_at || '').toLocaleDateString('es', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase()}
                           </span>
                           <span className="text-[10px] text-white/20 font-black tracking-widest uppercase">
-                            {formatDate(tx.created_at || '', 'HH:mm:ss')}
+                            {new Date(tx.created_at || '').toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
                           </span>
                         </div>
                       </td>

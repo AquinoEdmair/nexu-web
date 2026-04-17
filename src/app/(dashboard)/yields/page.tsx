@@ -125,7 +125,7 @@ export default function YieldsPage() {
               ))}
             </div>
 
-            <div className="h-36 w-full">
+            <div className="h-44 w-full">
               {chartLoading ? (
                 <div className="h-full w-full bg-white/5 animate-pulse rounded-xl" />
               ) : chartPoints.length === 0 ? (
@@ -134,14 +134,21 @@ export default function YieldsPage() {
                 </div>
               ) : (
                 <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={chartPoints} margin={{ left: 0, right: 0, top: 4, bottom: 0 }}>
+                  <AreaChart data={chartPoints} margin={{ left: 0, right: 0, top: 4, bottom: 4 }}>
                     <defs>
                       <linearGradient id="yieldGrad" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="5%"  stopColor="#1888F3" stopOpacity={0.25} />
                         <stop offset="95%" stopColor="#1888F3" stopOpacity={0} />
                       </linearGradient>
                     </defs>
-                    <XAxis dataKey="time" hide />
+                    <XAxis
+                      dataKey="time"
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ fontSize: 8, fill: 'rgba(255,255,255,0.25)', fontWeight: 700 }}
+                      interval="preserveStartEnd"
+                      dy={6}
+                    />
                     <YAxis hide domain={['dataMin - 1', 'dataMax + 1']} />
                     <Tooltip
                       content={({ active, payload }) =>
