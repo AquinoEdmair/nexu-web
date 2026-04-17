@@ -6,15 +6,15 @@ import { useCreateWithdrawal } from '@/lib/hooks/useCreateWithdrawal';
 import { useNotificationStore } from '@/lib/store/notificationStore';
 import { WITHDRAWAL_CURRENCIES } from '@/lib/validators/withdrawal';
 import { formatCurrency } from '@/lib/utils/format';
-import { DollarSign, Bitcoin, RefreshCcw, ArrowRight, Loader2, Info, Wallet, Zap, ShieldAlert, TrendingDown } from 'lucide-react';
+import { DollarSign, Bitcoin, RefreshCcw, ArrowRight, Loader2, Wallet, Zap, ShieldAlert, TrendingDown, AlertTriangle } from 'lucide-react';
 import { AxiosError } from 'axios';
 import { apiClient } from '@/lib/api/axios';
 import { useQuery } from '@tanstack/react-query';
 
 const CURRENCY_CONFIG = {
   USDT: { icon: DollarSign, label: 'USDT' },
-  BTC:  { icon: Bitcoin,    label: 'BTC' },
-  ETH:  { icon: RefreshCcw, label: 'ETH' },
+  BTC:  { icon: Bitcoin,    label: 'BTC'  },
+  ETH:  { icon: RefreshCcw, label: 'ETH'  },
 } as const;
 
 interface WithdrawalPreview {
@@ -38,7 +38,6 @@ export function WithdrawalForm() {
   const availableBalance = balance?.balance_in_operation ?? '0';
   const numericAmount = parseFloat(amount) || 0;
 
-  // Fetch commission preview
   const { data: commissionData } = useQuery<{ data: WithdrawalPreview }>({
     queryKey: ['withdrawal-commission', numericAmount],
     queryFn: () => apiClient.get(`/withdrawals/commission-rate?amount=${numericAmount}`).then(r => r.data),
@@ -52,247 +51,208 @@ export function WithdrawalForm() {
     if (isNaN(numericAmount) || numericAmount <= 0) return;
     if (address.length < 20) return;
     if (address !== addressConfirm) return;
-
     reset();
-
     mutate(
-      {
-        amount: numericAmount,
-        currency: selectedCurrency,
-        destination_address: address,
-      },
+      { amount: numericAmount, currency: selectedCurrency, destination_address: address },
       {
         onSuccess: () => {
-          addNotification({
-            type: 'success',
-            title: 'Protocolo de Salida Iniciado',
-            message: `Solicitud de ${numericAmount} ${selectedCurrency} en proceso de validación.`,
-          });
-          setAmount('');
-          setAddress('');
-          setAddressConfirm('');
+          addNotification({ type: 'success', title: 'Protocolo de Salida Iniciado', message: `Solicitud de ${numericAmount} ${selectedCurrency} en proceso de validación.` });
+          setAmount(''); setAddress(''); setAddressConfirm('');
         },
         onError: (err) => {
           const message = err instanceof AxiosError
             ? err.response?.data?.message ?? 'Error en la ejecución de liquidez.'
             : 'Fallo de protocolo inesperado.';
-          
-          addNotification({
-            type: 'error',
-            title: 'Error de Seguridad',
-            message,
-          });
-        }
+          addNotification({ type: 'error', title: 'Error de Seguridad', message });
+        },
       },
     );
   };
 
-  const handleMax = () => {
-    setAmount(parseFloat(availableBalance).toFixed(2));
-  };
-
-  const handleSelectCurrency = (currency: typeof WITHDRAWAL_CURRENCIES[number]) => {
-    setSelectedCurrency(currency);
-    reset();
-  };
+  const handleMax = () => setAmount(parseFloat(availableBalance).toFixed(2));
+  const handleSelectCurrency = (currency: typeof WITHDRAWAL_CURRENCIES[number]) => { setSelectedCurrency(currency); reset(); };
 
   const addressMismatch = addressConfirm.length > 0 && address !== addressConfirm;
-  const isFormValid = numericAmount > 0 && address.length >= 20 && address === addressConfirm && numericAmount <= parseFloat(availableBalance);
-  const hasCommission = preview && preview.rate > 0 && numericAmount > 0;
+  const hasCommission    = preview && preview.rate > 0 && numericAmount > 0;
+  const isFormValid      = numericAmount > 0 && address.length >= 20 && address === addressConfirm && numericAmount <= parseFloat(availableBalance);
 
   return (
-    <div className="p-8 space-y-8 bg-[#0a0f16]/40 border border-white/10 rounded-3xl backdrop-blur-xl shadow-[0_8px_40px_rgba(0,0,0,0.3)]">
-      <div className="flex items-center justify-between border-b border-white/5 pb-6">
-        <div className="flex items-center gap-4">
-          <div className="p-3 bg-nexus-blue/10 rounded-2xl border border-nexus-blue/20">
-            <Wallet className="h-6 w-6 text-nexus-blue-light" />
+    <div className="bg-[#0a0f16]/40 border border-white/10 rounded-3xl backdrop-blur-xl shadow-[0_8px_40px_rgba(0,0,0,0.3)] overflow-hidden">
+
+      {/* ── Top bar: balance + currency + HMAC badge ── */}
+      <div className="px-8 py-5 border-b border-white/5 flex flex-wrap items-center justify-between gap-4">
+        <div className="flex items-center gap-6">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 bg-nexus-blue/10 rounded-xl border border-nexus-blue/20">
+              <Wallet className="h-4 w-4 text-nexus-blue-light" />
+            </div>
+            <div>
+              <p className="text-[9px] font-black text-white/20 uppercase tracking-[0.3em]">Disponible</p>
+              <p className="text-xl font-black text-white tracking-tighter">${formatCurrency(availableBalance)}</p>
+            </div>
           </div>
-          <div>
-            <h2 className="text-xl font-black text-white uppercase tracking-tighter leading-none">Ejecución de Liquidez</h2>
-            <p className="text-[10px] text-nexus-blue-light/60 font-black uppercase tracking-[0.2em] mt-2">Protocolo de Retiro Activo</p>
+
+          {/* Currency pills */}
+          <div className="flex gap-2 p-1 bg-white/5 rounded-xl border border-white/5">
+            {WITHDRAWAL_CURRENCIES.map((currency) => {
+              const config = CURRENCY_CONFIG[currency];
+              const Icon = config.icon;
+              const isSelected = selectedCurrency === currency;
+              return (
+                <button
+                  key={currency}
+                  onClick={() => handleSelectCurrency(currency)}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${
+                    isSelected
+                      ? 'bg-nexus-blue text-white shadow-[0_0_12px_rgba(11,64,193,0.3)]'
+                      : 'text-white/30 hover:text-white hover:bg-white/5'
+                  }`}
+                >
+                  <Icon className="h-3 w-3" />
+                  {config.label}
+                </button>
+              );
+            })}
           </div>
         </div>
-        <div className="hidden sm:flex items-center gap-2 px-3 py-1 bg-white/5 rounded-full border border-white/10">
+
+        <div className="flex items-center gap-2 px-3 py-1.5 bg-white/5 rounded-full border border-white/10">
           <Zap className="w-3 h-3 text-nexus-blue-light fill-nexus-blue-light" />
-          <span className="text-[9px] font-black text-nexus-blue-light uppercase tracking-widest">Revisión HMAC</span>
+          <span className="text-[9px] font-black text-nexus-blue-light uppercase tracking-widest">Validación HMAC</span>
         </div>
       </div>
 
-      {/* Currency selection */}
-      <div className="space-y-4">
-        <div className="flex items-center gap-2">
-          <div className="w-1 h-3 bg-nexus-blue-light rounded-full"></div>
-          <label className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40">
-            Activo de Liquidación
+      {/* ── Main form grid ── */}
+      <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+
+        {/* Amount */}
+        <div className="space-y-2">
+          <label className="text-[9px] font-black uppercase tracking-[0.3em] text-white/30 flex items-center gap-1.5">
+            <span className="w-1 h-3 bg-nexus-blue-light rounded-full inline-block" />
+            Monto de Retiro
           </label>
-        </div>
-        <div className="grid grid-cols-3 gap-3">
-          {WITHDRAWAL_CURRENCIES.map((currency) => {
-            const config = CURRENCY_CONFIG[currency];
-            const Icon = config.icon;
-            const isSelected = selectedCurrency === currency;
-
-            return (
-              <button
-                key={currency}
-                onClick={() => handleSelectCurrency(currency)}
-                className={`flex flex-col items-center justify-center p-4 rounded-2xl transition-all border outline-none ${
-                  isSelected
-                    ? 'bg-nexus-blue/10 border-nexus-blue/30 text-nexus-blue-light shadow-[0_0_15px_rgba(11,64,193,0.1)]'
-                    : 'bg-white/5 border-white/5 text-nexus-text/40 hover:text-white hover:bg-white/10'
-                }`}
-              >
-                <Icon className={`h-6 w-6 mb-2 ${isSelected ? 'animate-pulse' : ''}`} />
-                <span className="text-[10px] font-black uppercase tracking-widest">{config.label}</span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Amount input */}
-      <div className="space-y-4">
-        <div className="flex justify-between items-center px-1">
-          <div className="flex items-center gap-2">
-            <div className="w-1 h-3 bg-nexus-blue-light rounded-full"></div>
-            <label className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40">
-              Monto de Retiro
-            </label>
+          <div className="relative">
+            <span className="absolute inset-y-0 left-5 flex items-center font-black text-lg text-nexus-blue-light pointer-events-none">$</span>
+            <input
+              type="number"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              placeholder="0.00"
+              className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-10 pr-16 text-white font-black text-xl outline-none focus:border-nexus-blue/50 focus:bg-white/[0.08] transition-all placeholder:text-white/10"
+            />
+            <button
+              onClick={handleMax}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-[9px] font-black text-nexus-blue-light uppercase tracking-widest px-2.5 py-1 bg-nexus-blue/10 rounded-lg hover:bg-nexus-blue hover:text-white transition-all border border-nexus-blue/20"
+            >
+              MAX
+            </button>
           </div>
-          <p className="text-[10px] font-black text-nexus-text/40 uppercase tracking-widest">
-            Disponible: <span className="text-nexus-blue-light">${formatCurrency(availableBalance)}</span>
+        </div>
+
+        {/* Commission breakdown — occupies the right cell when active, empty placeholder otherwise */}
+        <div className="flex items-end">
+          {hasCommission ? (
+            <div className="w-full rounded-2xl border border-amber-500/20 bg-amber-500/5 px-5 py-4 space-y-2">
+              <div className="flex items-center gap-1.5 mb-1">
+                <ShieldAlert className="w-3 h-3 text-amber-400" />
+                <span className="text-[9px] font-black uppercase tracking-[0.2em] text-amber-400/80">Desglose</span>
+              </div>
+              <div className="flex justify-between text-[10px]">
+                <span className="text-white/40 font-black uppercase tracking-widest">Bruto</span>
+                <span className="text-white font-black">${preview.amount.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between text-[10px]">
+                <span className="text-amber-400/70 font-black uppercase tracking-widest">Comisión ({preview.rate}%)</span>
+                <span className="text-amber-400/80 font-black">-${preview.fee_amount.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between text-[11px] border-t border-white/5 pt-2">
+                <span className="text-white font-black uppercase tracking-widest">Recibirás</span>
+                <span className="text-nexus-blue-light font-black text-base">${preview.net_amount.toFixed(2)}</span>
+              </div>
+            </div>
+          ) : (
+            <div className="w-full rounded-2xl border border-white/5 bg-white/[0.02] px-5 py-4 flex items-center gap-3">
+              <ShieldAlert className="w-4 h-4 text-white/10 shrink-0" />
+              <p className="text-[10px] font-black text-white/20 uppercase tracking-widest">Ingresa un monto para ver el desglose de comisión</p>
+            </div>
+          )}
+        </div>
+
+        {/* Wallet address */}
+        <div className="space-y-2">
+          <label className="text-[9px] font-black uppercase tracking-[0.3em] text-white/30 flex items-center gap-1.5">
+            <span className="w-1 h-3 bg-nexus-blue-light rounded-full inline-block" />
+            Dirección de Wallet ({selectedCurrency})
+          </label>
+          <input
+            type="text"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            placeholder="Pega tu dirección aquí..."
+            className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-5 text-white font-black text-sm outline-none focus:border-nexus-blue/50 focus:bg-white/[0.08] transition-all placeholder:text-white/10 tracking-wide font-mono"
+          />
+        </div>
+
+        {/* Confirm address */}
+        <div className="space-y-2">
+          <label className="text-[9px] font-black uppercase tracking-[0.3em] text-white/30 flex items-center gap-1.5">
+            <span className="w-1 h-3 bg-red-400 rounded-full inline-block" />
+            Confirmar Dirección
+          </label>
+          <input
+            type="text"
+            value={addressConfirm}
+            onChange={(e) => setAddressConfirm(e.target.value)}
+            placeholder="Vuelve a pegar tu dirección..."
+            className={`w-full bg-white/5 border rounded-2xl py-4 px-5 text-white font-black text-sm outline-none transition-all placeholder:text-white/10 tracking-wide font-mono ${
+              addressMismatch
+                ? 'border-red-500/60 focus:border-red-500 bg-red-500/5'
+                : 'border-white/10 focus:border-nexus-blue/50 focus:bg-white/[0.08]'
+            }`}
+          />
+          {addressMismatch && (
+            <p className="text-[10px] font-black text-red-400 uppercase tracking-widest flex items-center gap-1.5">
+              <TrendingDown className="w-3 h-3" /> Las direcciones no coinciden
+            </p>
+          )}
+        </div>
+
+        {/* Critical warning — full width */}
+        <div className="md:col-span-2 flex gap-4 p-4 bg-red-500/5 border border-red-500/15 rounded-2xl relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-1 h-full bg-red-500" />
+          <AlertTriangle className="h-4 w-4 shrink-0 text-red-400 mt-0.5" />
+          <div>
+            <p className="text-[9px] font-black text-red-400 uppercase tracking-[0.2em] mb-0.5">Advertencia Crítica</p>
+            <p className="text-[10px] font-black leading-relaxed text-red-400/60 uppercase tracking-tight">
+              Una dirección incorrecta resultará en la pérdida permanente e irrecuperable de fondos. Verifica cada caracter antes de continuar.
+            </p>
+          </div>
+        </div>
+
+        {/* Info note — full width */}
+        <div className="md:col-span-2 flex gap-4 p-4 bg-white/5 border border-white/10 rounded-2xl relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-1 h-full bg-nexus-blue" />
+          <ShieldAlert className="h-4 w-4 shrink-0 text-nexus-blue-light mt-0.5" />
+          <p className="text-[10px] font-black leading-relaxed text-white/30 uppercase tracking-tight">
+            Las solicitudes son validadas manualmente bajo protocolo HMAC. Recibirás notificación tras la confirmación. El proceso puede tomar hasta 48 horas hábiles.
           </p>
         </div>
-        <div className="relative group">
-          <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none text-nexus-blue-light group-focus-within:text-white transition-colors">
-            <span className="font-black text-lg">$</span>
-          </div>
-          <input
-            type="number"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            placeholder="0.00"
-            className="w-full bg-[#0a0f16]/40 border border-white/10 rounded-2xl py-5 pl-10 pr-16 text-white font-black text-xl outline-none focus:border-nexus-blue/50 focus:bg-white/5 transition-all placeholder:text-white/10"
-          />
+
+        {/* Submit — full width */}
+        <div className="md:col-span-2">
           <button
-            onClick={handleMax}
-            className="absolute right-5 top-1/2 -translate-y-1/2 text-[10px] font-black text-nexus-blue-light uppercase tracking-widest px-3 py-1.5 bg-nexus-blue/10 rounded-lg hover:bg-nexus-blue hover:text-white transition-all border border-nexus-blue/20"
+            onClick={handleSubmit}
+            disabled={isPending || !isFormValid}
+            className="w-full py-4 bg-nexus-blue text-white font-black rounded-2xl hover:bg-nexus-blue-light hover:shadow-[0_0_30px_rgba(11,64,193,0.3)] active:scale-[0.99] transition-all flex items-center justify-center gap-3 disabled:opacity-20 disabled:cursor-not-allowed uppercase tracking-[0.2em] text-xs shadow-[0_4px_20px_rgba(0,0,0,0.2)]"
           >
-            Max
+            {isPending ? (
+              <><Loader2 className="h-4 w-4 animate-spin" /> Procesando...</>
+            ) : (
+              <>{hasCommission ? `Retirar — Neto $${preview.net_amount.toFixed(2)}` : 'Ejecutar Retiro'}<ArrowRight className="h-4 w-4" /></>
+            )}
           </button>
         </div>
       </div>
-
-      {/* Commission Breakdown */}
-      {hasCommission && (
-        <div className="rounded-2xl border border-amber-500/20 bg-amber-500/5 p-5 space-y-4 animate-in fade-in slide-in-from-top-2">
-          <div className="flex items-center gap-2">
-            <ShieldAlert className="w-3 h-3 text-amber-400" />
-            <span className="text-[9px] font-black uppercase tracking-[0.3em] text-amber-400/80">
-              Desglose de Liquidación
-            </span>
-          </div>
-          <div className="space-y-2.5">
-            <div className="flex justify-between items-center">
-              <span className="text-[10px] text-white/40 font-black uppercase tracking-widest">Monto a retirar</span>
-              <span className="text-[11px] font-black text-white">${preview.amount.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between items-center text-amber-400/80">
-              <span className="text-[10px] font-black uppercase tracking-widest">
-                Comisión de plataforma ({preview.rate}%)
-              </span>
-              <span className="text-[11px] font-black">-${preview.fee_amount.toFixed(2)}</span>
-            </div>
-            <div className="h-px bg-white/5 my-1" />
-            <div className="flex justify-between items-center">
-              <span className="text-[10px] text-white font-black uppercase tracking-widest">Total a recibir</span>
-              <span className="text-lg font-black text-nexus-blue-light">${preview.net_amount.toFixed(2)}</span>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Destination address */}
-      <div className="space-y-4">
-        <div className="flex items-center gap-2">
-          <div className="w-1 h-3 bg-nexus-blue-light rounded-full"></div>
-          <label className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40">
-            Dirección de Wallet ({selectedCurrency})
-          </label>
-        </div>
-        <input
-          type="text"
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
-          placeholder="Pega tu dirección aquí..."
-          className="w-full bg-[#0a0f16]/40 border border-white/10 rounded-2xl py-5 px-6 text-white font-black text-sm outline-none focus:border-nexus-blue/50 focus:bg-white/5 transition-all placeholder:text-white/10 tracking-widest font-mono"
-        />
-
-        <div className="flex items-center gap-2 pt-1">
-          <div className="w-1 h-3 bg-red-400 rounded-full"></div>
-          <label className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40">
-            Confirmar Dirección
-          </label>
-        </div>
-        <input
-          type="text"
-          value={addressConfirm}
-          onChange={(e) => setAddressConfirm(e.target.value)}
-          placeholder="Vuelve a pegar tu dirección..."
-          className={`w-full bg-[#0a0f16]/40 border rounded-2xl py-5 px-6 text-white font-black text-sm outline-none transition-all placeholder:text-white/10 tracking-widest font-mono ${
-            addressMismatch
-              ? 'border-red-500/60 focus:border-red-500 bg-red-500/5'
-              : 'border-white/10 focus:border-nexus-blue/50 focus:bg-white/5'
-          }`}
-        />
-        {addressMismatch && (
-          <p className="text-[10px] font-black text-red-400 uppercase tracking-widest flex items-center gap-1.5">
-            <TrendingDown className="w-3 h-3" /> Las direcciones no coinciden
-          </p>
-        )}
-      </div>
-
-      {/* Critical warning */}
-      <div className="p-5 bg-red-500/5 border border-red-500/20 rounded-2xl flex gap-4 relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-1 h-full bg-red-500"></div>
-        <ShieldAlert className="h-5 w-5 shrink-0 text-red-400 mt-0.5" />
-        <div className="space-y-1">
-          <p className="text-[10px] font-black text-red-400 uppercase tracking-[0.2em]">Advertencia Crítica</p>
-          <p className="text-[11px] font-black leading-relaxed text-red-400/70 uppercase tracking-tight">
-            Ingresar una dirección incorrecta resultará en la pérdida permanente e irrecuperable de tus fondos. Verifica cuidadosamente cada caracter antes de continuar.
-          </p>
-        </div>
-      </div>
-
-      {/* Info note */}
-      <div className="p-5 bg-white/5 border border-white/10 rounded-2xl flex gap-4 relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-1 h-full bg-nexus-blue"></div>
-        <ShieldAlert className="h-5 w-5 shrink-0 text-nexus-blue-light mt-0.5" />
-        <p className="text-[11px] font-black leading-relaxed text-nexus-text/40 uppercase tracking-tight">
-          Sugerencia de Seguridad: Las ejecuciones de liquidez son validadas manualmente bajo protocolo HMAC. Recibirás notificación de red tras la confirmación del bloque.
-        </p>
-      </div>
-
-      {/* Submit button */}
-      <button
-        onClick={handleSubmit}
-        disabled={isPending || !isFormValid}
-        className="w-full py-5 bg-nexus-blue text-white font-black rounded-2xl hover:bg-nexus-blue-light hover:shadow-[0_0_30px_rgba(11,64,193,0.3)] active:scale-[0.98] transition-all flex items-center justify-center gap-3 disabled:opacity-20 disabled:cursor-not-allowed uppercase tracking-[0.2em] text-xs shadow-[0_4px_20px_rgba(0,0,0,0.2)]"
-      >
-        {isPending ? (
-          <>
-            <Loader2 className="h-5 w-5 animate-spin" />
-            VIGILANDO PROTOCOLO...
-          </>
-        ) : (
-          <>
-            {hasCommission ? `Retirar Neto de $${preview.net_amount.toFixed(2)}` : 'Ejecutar Retiro'}
-            <ArrowRight className="h-4 w-4" />
-          </>
-        )}
-      </button>
     </div>
   );
 }
-
-

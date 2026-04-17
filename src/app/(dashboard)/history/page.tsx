@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { 
-  Download, Search, Calendar, ArrowDownLeft, ArrowUpRight, 
-  TrendingUp, Users, ChevronLeft, ChevronRight, Hash, 
+import { useState } from 'react';
+import {
+  ArrowDownLeft, ArrowUpRight,
+  TrendingUp, Users, ChevronLeft, ChevronRight, Hash,
   Loader2, AlertCircle
 } from 'lucide-react';
 import { useTransactions } from '@/lib/hooks/useTransactions';
@@ -28,31 +28,14 @@ const STATUS_MAP: Record<string, { label: string, className: string }> = {
 
 export default function HistoryPage() {
   const [page, setPage] = useState(1);
-  const [type, setType] = useState('all');
-  const [status, setStatus] = useState('all');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [debouncedSearch, setDebouncedSearch] = useState('');
-
-  // Search debounce logic
-  useEffect(() => {
-    const timer = setTimeout(() => setDebouncedSearch(searchTerm), 500);
-    return () => clearTimeout(timer);
-  }, [searchTerm]);
 
   const { data, isLoading, isError } = useTransactions({
     page,
     per_page: 15,
-    type: type !== 'all' ? type : undefined,
-    status: status !== 'all' ? status : undefined,
-    search: debouncedSearch || undefined,
   });
 
   const transactions = data?.data || [];
   const meta = data?.meta;
-
-  const handleExport = () => {
-    window.print(); // Simple export for now
-  };
 
   return (
     <main className="max-w-7xl mx-auto px-4 md:px-8 pt-6 pb-32 space-y-10">
@@ -66,76 +49,7 @@ export default function HistoryPage() {
           <h1 className="text-4xl font-black text-white tracking-tighter uppercase">Registro de Movimientos</h1>
           <p className="text-sm text-nexus-text/40 font-medium tracking-tight">Historial inmutable de ingresos, retiros y rendimientos generados.</p>
         </div>
-        <div className="flex gap-4">
-          <button 
-            onClick={handleExport}
-            className="bg-nexus-blue hover:bg-nexus-blue-light text-white px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all shadow-[0_4px_20px_rgba(11,64,193,0.3)] flex items-center gap-2 border border-nexus-blue/20 group cursor-pointer"
-          >
-            <Download className="h-4 w-4 group-hover:-translate-y-1 transition-transform" />
-            Descargar Historial
-          </button>
-        </div>
       </header>
-
-      {/* Analytical Filters Grid */}
-      <section className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-[#0a0f16]/40 border border-white/5 p-5 rounded-2xl backdrop-blur-xl group hover:border-nexus-blue/20 transition-all">
-          <label className="text-[9px] font-black text-white/20 uppercase tracking-[0.3em] mb-3 block ml-1">Búsqueda Directa</label>
-          <div className="relative flex items-center bg-white/5 p-3 rounded-xl border border-white/5 group-hover:bg-white/[0.08] transition-colors">
-            <Search className="absolute left-3 text-nexus-blue-light/40 h-4 w-4" />
-            <input 
-              className="bg-transparent border-none focus:ring-0 w-full pl-6 text-xs text-white placeholder:text-white/10 outline-none font-black uppercase tracking-tighter" 
-              placeholder="TXID, CONCEPT, ID..." 
-              type="text" 
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-        </div>
-
-        <div className="bg-[#0a0f16]/40 border border-white/5 p-5 rounded-2xl backdrop-blur-xl group hover:border-nexus-blue/20 transition-all">
-          <label className="text-[9px] font-black text-white/20 uppercase tracking-[0.3em] mb-3 block ml-1">Tipo de Operación</label>
-          <div className="relative bg-white/5 p-3 rounded-xl border border-white/5 group-hover:bg-white/[0.08] transition-colors">
-            <select 
-              value={type}
-              onChange={(e) => { setType(e.target.value); setPage(1); }}
-              className="bg-transparent border-none outline-none focus:ring-0 w-full text-xs text-nexus-blue-light font-black uppercase tracking-widest cursor-pointer appearance-none"
-            >
-              <option value="all">Todas las Clases</option>
-              <option value="deposit">Depósito</option>
-              <option value="withdrawal">Retiro</option>
-              <option value="yield">Rendimiento</option>
-              <option value="commission">Comisión</option>
-              <option value="investment">Inversión</option>
-              <option value="referral_commission">Com. Referido</option>
-            </select>
-          </div>
-        </div>
-
-        <div className="bg-[#0a0f16]/40 border border-white/5 p-5 rounded-2xl backdrop-blur-xl group hover:border-nexus-blue/20 transition-all">
-          <label className="text-[9px] font-black text-white/20 uppercase tracking-[0.3em] mb-3 block ml-1">Estado</label>
-          <div className="relative bg-white/5 p-3 rounded-xl border border-white/5 group-hover:bg-white/[0.08] transition-colors">
-            <select 
-              value={status}
-              onChange={(e) => { setStatus(e.target.value); setPage(1); }}
-              className="bg-transparent border-none outline-none focus:ring-0 w-full text-xs text-nexus-blue-light font-black uppercase tracking-widest cursor-pointer appearance-none"
-            >
-              <option value="all">Glosario Total</option>
-              <option value="confirmed">Confirmado</option>
-              <option value="pending">Pendiente</option>
-              <option value="failed">Fallido</option>
-            </select>
-          </div>
-        </div>
-
-        <div className="bg-[#0a0f16]/40 border border-white/5 p-5 rounded-2xl backdrop-blur-xl group hover:border-nexus-blue/20 transition-all">
-          <label className="text-[9px] font-black text-white/20 uppercase tracking-[0.3em] mb-3 block ml-1">Ventana Temporal</label>
-          <div className="flex items-center justify-between cursor-pointer bg-white/5 p-3 rounded-xl border border-white/5 group-hover:bg-white/[0.08] transition-colors">
-            <span className="text-xs text-white/60 font-black uppercase tracking-widest">Global Histórico</span>
-            <Calendar className="text-nexus-blue-light/40 h-4 w-4" />
-          </div>
-        </div>
-      </section>
 
       {/* Operations Ledger Table */}
       <div className="bg-[#0a0f16]/40 border border-white/10 rounded-[2.5rem] overflow-hidden backdrop-blur-xl shadow-[0_8px_40px_rgba(0,0,0,0.3)] min-h-[400px]">
