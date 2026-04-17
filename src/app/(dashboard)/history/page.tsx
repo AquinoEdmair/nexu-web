@@ -159,7 +159,7 @@ export default function HistoryPage() {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-white/5 border-b border-white/10">
-                  <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-nexus-blue-light/60">Marca Temporal</th>
+                  <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-nexus-blue-light/60">Registro</th>
                   <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-nexus-blue-light/60">Tipo de Movimiento</th>
                   <th className="px-8 py-6 text-right text-[10px] font-black uppercase tracking-[0.2em] text-nexus-blue-light/60">Monto Bruto</th>
                   <th className="px-8 py-6 text-right text-[10px] font-black uppercase tracking-[0.2em] text-nexus-blue-light/60">Balance Neto</th>

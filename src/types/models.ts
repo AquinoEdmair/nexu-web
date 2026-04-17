@@ -172,9 +172,12 @@ export interface WithdrawalRequest {
   id: string;
   user_id: string;
   amount: string;
+  fee_amount: string | null;
+  net_amount: string | null;
+  commission_rate: string | null;
   currency: string;
   destination_address: string;
-  status: 'pending' | 'approved' | 'rejected' | 'processing' | 'completed';
+  status: 'pending' | 'approved' | 'rejected' | 'processing' | 'completed' | 'cancelled';
   reviewed_by: string | null;
   reviewed_at: string | null;
   rejection_reason: string | null;

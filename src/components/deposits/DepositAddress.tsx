@@ -68,7 +68,7 @@ export function DepositAddress({ invoice }: DepositAddressProps) {
           <div className="w-full p-5 bg-[#0a0f16]/40 border border-white/5 rounded-2xl">
             <div className="flex justify-between items-center text-sm">
               <span className="text-[10px] font-black text-nexus-blue-light/60 uppercase tracking-[0.2em]">Carga Finalizada</span>
-              <span className="text-white font-black text-lg">{invoice.amount_received ?? invoice.amount_expected} <span className="text-xs opacity-40">{invoice.currency}</span></span>
+              <span className="text-white font-black text-lg">{parseFloat(invoice.amount_received ?? invoice.amount_expected).toFixed(2)} <span className="text-xs opacity-40">{invoice.currency}</span></span>
             </div>
           </div>
         </div>

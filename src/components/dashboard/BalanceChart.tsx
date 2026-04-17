@@ -6,6 +6,7 @@ import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'rec
 import { Loader2, TrendingUp } from 'lucide-react';
 
 const PERIOD_OPTIONS = [
+  { label: '1S', days: 7 },
   { label: '1M', days: 30 },
   { label: '3M', days: 90 },
   { label: '6M', days: 180 },

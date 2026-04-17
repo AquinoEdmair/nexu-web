@@ -35,7 +35,6 @@ export function GoldPriceChart() {
   const { data, isLoading, isFetching } = useGoldPrice(range);
 
   const currentPrice = data?.current ?? 0;
-  const isPositive   = (data?.change_24h ?? 0) >= 0;
   const chartData    = data?.data ?? [];
 
   // Pick evenly-spaced ticks from the data
@@ -67,21 +66,15 @@ export function GoldPriceChart() {
               {isLoading ? '—' : `$${formatCurrency(currentPrice)}`}
             </span>
             {!isLoading && (
-              <>
-                <div className={`flex items-center gap-1 mb-1 text-sm font-bold ${isPositive ? 'text-nexus-blue-light' : 'text-rose-400'}`}>
-                  {isPositive ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
-                  {isPositive ? '+' : ''}{data?.change_24h}% <span className="text-white/20 font-medium text-xs">24h</span>
-                </div>
-                {/* Period delta */}
-                <div className={`flex items-center gap-1 mb-1 text-xs font-bold px-2 py-0.5 rounded-full border ${
-                  periodPos
-                    ? 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20'
-                    : 'text-rose-400 bg-rose-400/10 border-rose-400/20'
-                }`}>
-                  {periodPos ? '+' : ''}{periodDelta.toFixed(2)}%
-                  <span className="text-white/30 font-medium ml-1">{RANGE_LABELS[range].toLowerCase()}</span>
-                </div>
-              </>
+              <div className={`flex items-center gap-1 mb-1 text-sm font-bold px-2 py-0.5 rounded-full border ${
+                periodPos
+                  ? 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20'
+                  : 'text-rose-400 bg-rose-400/10 border-rose-400/20'
+              }`}>
+                {periodPos ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
+                {periodPos ? '+' : ''}{periodDelta.toFixed(2)}%
+                <span className="text-white/30 font-medium text-xs ml-1">{RANGE_LABELS[range].toLowerCase()}</span>
+              </div>
             )}
           </div>
         </div>

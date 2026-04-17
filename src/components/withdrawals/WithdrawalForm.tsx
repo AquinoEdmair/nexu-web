@@ -28,6 +28,7 @@ export function WithdrawalForm() {
   const [selectedCurrency, setSelectedCurrency] = useState<typeof WITHDRAWAL_CURRENCIES[number]>('USDT');
   const [amount, setAmount] = useState('');
   const [address, setAddress] = useState('');
+  const [addressConfirm, setAddressConfirm] = useState('');
 
   const { data: balanceData } = useBalance();
   const { mutate, isPending, reset } = useCreateWithdrawal();
@@ -50,6 +51,7 @@ export function WithdrawalForm() {
   const handleSubmit = () => {
     if (isNaN(numericAmount) || numericAmount <= 0) return;
     if (address.length < 20) return;
+    if (address !== addressConfirm) return;
 
     reset();
 
@@ -68,6 +70,7 @@ export function WithdrawalForm() {
           });
           setAmount('');
           setAddress('');
+          setAddressConfirm('');
         },
         onError: (err) => {
           const message = err instanceof AxiosError
@@ -85,7 +88,7 @@ export function WithdrawalForm() {
   };
 
   const handleMax = () => {
-    setAmount(availableBalance);
+    setAmount(parseFloat(availableBalance).toFixed(2));
   };
 
   const handleSelectCurrency = (currency: typeof WITHDRAWAL_CURRENCIES[number]) => {
@@ -93,7 +96,8 @@ export function WithdrawalForm() {
     reset();
   };
 
-  const isFormValid = numericAmount > 0 && address.length >= 20 && numericAmount <= parseFloat(availableBalance);
+  const addressMismatch = addressConfirm.length > 0 && address !== addressConfirm;
+  const isFormValid = numericAmount > 0 && address.length >= 20 && address === addressConfirm && numericAmount <= parseFloat(availableBalance);
   const hasCommission = preview && preview.rate > 0 && numericAmount > 0;
 
   return (
@@ -213,17 +217,50 @@ export function WithdrawalForm() {
         <div className="flex items-center gap-2">
           <div className="w-1 h-3 bg-nexus-blue-light rounded-full"></div>
           <label className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40">
-            Nodo de Destino ({selectedCurrency})
+            Dirección de Wallet ({selectedCurrency})
           </label>
         </div>
-        <div className="relative group">
-          <input
-            type="text"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            placeholder="0x..."
-            className="w-full bg-[#0a0f16]/40 border border-white/10 rounded-2xl py-5 px-6 text-white font-black text-sm outline-none focus:border-nexus-blue/50 focus:bg-white/5 transition-all placeholder:text-white/10 tracking-widest font-mono"
-          />
+        <input
+          type="text"
+          value={address}
+          onChange={(e) => setAddress(e.target.value)}
+          placeholder="Pega tu dirección aquí..."
+          className="w-full bg-[#0a0f16]/40 border border-white/10 rounded-2xl py-5 px-6 text-white font-black text-sm outline-none focus:border-nexus-blue/50 focus:bg-white/5 transition-all placeholder:text-white/10 tracking-widest font-mono"
+        />
+
+        <div className="flex items-center gap-2 pt-1">
+          <div className="w-1 h-3 bg-red-400 rounded-full"></div>
+          <label className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40">
+            Confirmar Dirección
+          </label>
+        </div>
+        <input
+          type="text"
+          value={addressConfirm}
+          onChange={(e) => setAddressConfirm(e.target.value)}
+          placeholder="Vuelve a pegar tu dirección..."
+          className={`w-full bg-[#0a0f16]/40 border rounded-2xl py-5 px-6 text-white font-black text-sm outline-none transition-all placeholder:text-white/10 tracking-widest font-mono ${
+            addressMismatch
+              ? 'border-red-500/60 focus:border-red-500 bg-red-500/5'
+              : 'border-white/10 focus:border-nexus-blue/50 focus:bg-white/5'
+          }`}
+        />
+        {addressMismatch && (
+          <p className="text-[10px] font-black text-red-400 uppercase tracking-widest flex items-center gap-1.5">
+            <TrendingDown className="w-3 h-3" /> Las direcciones no coinciden
+          </p>
+        )}
+      </div>
+
+      {/* Critical warning */}
+      <div className="p-5 bg-red-500/5 border border-red-500/20 rounded-2xl flex gap-4 relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-1 h-full bg-red-500"></div>
+        <ShieldAlert className="h-5 w-5 shrink-0 text-red-400 mt-0.5" />
+        <div className="space-y-1">
+          <p className="text-[10px] font-black text-red-400 uppercase tracking-[0.2em]">Advertencia Crítica</p>
+          <p className="text-[11px] font-black leading-relaxed text-red-400/70 uppercase tracking-tight">
+            Ingresar una dirección incorrecta resultará en la pérdida permanente e irrecuperable de tus fondos. Verifica cuidadosamente cada caracter antes de continuar.
+          </p>
         </div>
       </div>
 
