@@ -4,7 +4,7 @@ import React from 'react';
 import { splitFormatCurrency } from '@/lib/utils/format';
 
 interface FormattedAmountProps {
-  value: string | number;
+  amount: string | number;
   currency?: string;
   className?: string; // For the container
   integerClassName?: string; // For the integer part
@@ -14,7 +14,7 @@ interface FormattedAmountProps {
 }
 
 export function FormattedAmount({
-  value,
+  amount: value,
   className = "flex items-baseline gap-0.5",
   integerClassName = "text-5xl md:text-6xl font-black text-white tracking-tighter",
   decimalClassName = "text-2xl md:text-3xl font-black text-white/50 tracking-tighter",
