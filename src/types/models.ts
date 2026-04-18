@@ -73,7 +73,7 @@ export interface CryptoCurrency {
 
 export interface YieldLog {
   id: string;
-  applied_by: string;
+  applied_by: string | { id: string; name: string } | null;
   type: 'percentage' | 'fixed_amount';
   value: string;
   description: string | null;
@@ -210,6 +210,7 @@ export interface WithdrawalRequest {
   destination_address: string;
   status: 'pending' | 'approved' | 'rejected' | 'processing' | 'completed' | 'cancelled';
   reviewed_by: string | null;
+  reviewed_by_name: string | null;
   reviewed_at: string | null;
   rejection_reason: string | null;
   tx_hash: string | null;

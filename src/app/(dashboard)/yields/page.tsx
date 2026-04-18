@@ -293,6 +293,12 @@ export default function YieldsPage() {
                       <span className="inline-flex px-1.5 py-0.5 rounded border text-[8px] font-black tracking-widest uppercase bg-white/5 border-white/5 text-white/30">
                         {row.yield_log?.description || 'RENDIMIENTO DE BÓVEDA'}
                       </span>
+                      {row.yield_log?.applied_by && typeof row.yield_log.applied_by === 'object' && (
+                        <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded border text-[8px] font-black tracking-widest uppercase bg-nexus-blue/5 border-nexus-blue/10 text-nexus-blue-light/50">
+                          <span className="text-[7px]">AD</span>
+                          {row.yield_log.applied_by.name}
+                        </span>
+                      )}
                     </div>
                     <div className="col-span-4 text-center space-y-1">
                       <p className="text-base font-black text-nexus-blue-light tracking-tighter">

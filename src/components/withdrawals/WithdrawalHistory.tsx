@@ -212,6 +212,28 @@ function WithdrawalDetailPanel({ w }: { w: WithdrawalRequest }) {
           </div>
         </div>
       )}
+
+      {/* Admin reviewer */}
+      {w.reviewed_by_name && (
+        <div className="md:col-span-2 flex items-center gap-3 px-4 py-3 bg-white/[0.02] border border-white/5 rounded-xl">
+          <div className="w-6 h-6 rounded-lg bg-nexus-blue/10 border border-nexus-blue/20 flex items-center justify-center shrink-0">
+            <span className="text-[8px] font-black text-nexus-blue-light">AD</span>
+          </div>
+          <div>
+            <p className="text-[9px] font-black uppercase tracking-widest text-white/20 mb-0.5">
+              {w.status === 'rejected' ? 'Rechazado por' : w.status === 'completed' ? 'Confirmado por' : 'Revisado por'}
+            </p>
+            <p className="text-[10px] font-black text-white/60">{w.reviewed_by_name}</p>
+          </div>
+          {w.reviewed_at && (
+            <p className="ml-auto text-[9px] font-black text-white/20 uppercase tracking-widest">
+              {new Date(w.reviewed_at).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase()}
+              {' · '}
+              {new Date(w.reviewed_at).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}
+            </p>
+          )}
+        </div>
+      )}
     </div>
   );
 }
