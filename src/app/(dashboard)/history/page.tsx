@@ -17,7 +17,10 @@ const TYPE_ICONS: Record<string, any> = {
   commission:          { icon: Users,         label: 'Comisión',        color: 'nexus-blue-light' },
   investment:          { icon: TrendingUp,    label: 'Inversión',       color: 'nexus-blue-light' },
   referral_commission: { icon: Users,         label: 'Com. Referido',   color: 'nexus-blue-light' },
+  admin_adjustment:    { icon: Users,         label: 'Ajuste Admin',    color: 'nexus-blue-light' },
 };
+
+const ADMIN_TYPES = new Set(['withdrawal', 'yield', 'admin_adjustment']);
 
 const STATUS_MAP: Record<string, { label: string, className: string }> = {
   confirmed: { label: 'Sincronizado', className: 'bg-nexus-blue-light/10 border-nexus-blue-light/30 text-nexus-blue-light' },
@@ -108,6 +111,11 @@ export default function HistoryPage() {
                             <span className="text-[9px] text-white/20 font-black uppercase tracking-widest truncate max-w-[120px] block">
                               {tx.external_tx_id || `REF-${tx.id.substring(0, 8)}`}
                             </span>
+                            {ADMIN_TYPES.has(tx.type) && tx.admin_name && (
+                              <span className="text-[8px] font-black text-nexus-blue-light/50 uppercase tracking-widest block mt-0.5">
+                                AD · {tx.admin_name}
+                              </span>
+                            )}
                           </div>
                         </div>
                       </td>

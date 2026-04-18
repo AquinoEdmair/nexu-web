@@ -24,7 +24,7 @@ export interface Wallet {
 export interface Transaction {
   id: string;
   user_id: string;
-  type: 'deposit' | 'withdrawal' | 'commission' | 'yield' | 'referral_commission';
+  type: 'deposit' | 'withdrawal' | 'commission' | 'yield' | 'referral_commission' | 'admin_adjustment';
   amount: string;
   fee_amount: string;
   net_amount: string;
@@ -33,6 +33,7 @@ export interface Transaction {
   external_tx_id: string | null;
   metadata: Record<string, unknown> | null;
   notes: string | null;
+  admin_name: string | null;
   created_at: string;
   updated_at: string;
 }
