@@ -166,7 +166,38 @@ export interface ReferralCodeValidation {
   referrer_name: string | null;
 }
 
+// ── Support Tickets ───────────────────────────────────────────────────────────
+
+export interface SupportTicketMessage {
+  id: string;
+  ticket_id: string;
+  sender_type: 'user' | 'admin';
+  sender_id: string;
+  body: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface SupportTicket {
+  id: string;
+  user_id: string;
+  subject: string;
+  status: 'open' | 'in_progress' | 'closed';
+  closed_by: number | null;
+  closed_at: string | null;
+  messages?: SupportTicketMessage[];
+  messages_count?: number;
+  created_at: string;
+  updated_at: string;
+}
+
 // ── Withdrawals ───────────────────────────────────────────────────────────────
+
+export interface WithdrawalCurrency {
+  symbol: string;
+  name: string;
+  network: string | null;
+}
 
 export interface WithdrawalRequest {
   id: string;

@@ -4,12 +4,13 @@ import * as React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils/cn';
-import { 
-  LayoutDashboard, 
-  Wallet, 
-  CreditCard, 
-  TrendingUp, 
+import {
+  LayoutDashboard,
+  Wallet,
+  CreditCard,
+  TrendingUp,
   Users,
+  Headphones,
   LogOut
 } from 'lucide-react';
 import { useAuthStore } from '@/lib/store/authStore';
@@ -21,6 +22,7 @@ const navItems = [
   { name: 'Retiros', href: '/withdrawals', icon: CreditCard },
   { name: 'Rendimientos', href: '/yields', icon: TrendingUp },
   { name: 'Membresía Elite', href: '/referrals', icon: Users },
+  { name: 'Soporte', href: '/support', icon: Headphones },
 ];
 
 export function Sidebar() {

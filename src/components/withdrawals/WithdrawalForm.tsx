@@ -1,21 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useBalance } from '@/lib/hooks/useBalance';
 import { useCreateWithdrawal } from '@/lib/hooks/useCreateWithdrawal';
 import { useNotificationStore } from '@/lib/store/notificationStore';
-import { WITHDRAWAL_CURRENCIES } from '@/lib/validators/withdrawal';
+import { useWithdrawalCurrencies } from '@/lib/hooks/useWithdrawalCurrencies';
 import { formatCurrency } from '@/lib/utils/format';
-import { DollarSign, Bitcoin, RefreshCcw, ArrowRight, Loader2, Wallet, Zap, ShieldAlert, TrendingDown, AlertTriangle } from 'lucide-react';
+import { ArrowRight, Loader2, Wallet, Zap, ShieldAlert, TrendingDown, AlertTriangle } from 'lucide-react';
 import { AxiosError } from 'axios';
 import { apiClient } from '@/lib/api/axios';
 import { useQuery } from '@tanstack/react-query';
-
-const CURRENCY_CONFIG = {
-  USDT: { icon: DollarSign, label: 'USDT' },
-  BTC:  { icon: Bitcoin,    label: 'BTC'  },
-  ETH:  { icon: RefreshCcw, label: 'ETH'  },
-} as const;
 
 interface WithdrawalPreview {
   rate: number;
@@ -25,14 +19,22 @@ interface WithdrawalPreview {
 }
 
 export function WithdrawalForm() {
-  const [selectedCurrency, setSelectedCurrency] = useState<typeof WITHDRAWAL_CURRENCIES[number]>('USDT');
+  const [selectedCurrency, setSelectedCurrency] = useState<string>('');
   const [amount, setAmount] = useState('');
   const [address, setAddress] = useState('');
   const [addressConfirm, setAddressConfirm] = useState('');
 
   const { data: balanceData } = useBalance();
+  const { data: currencies, isLoading: currenciesLoading } = useWithdrawalCurrencies();
   const { mutate, isPending, reset } = useCreateWithdrawal();
   const { addNotification } = useNotificationStore();
+
+  // Auto-select first currency once loaded
+  useEffect(() => {
+    if (currencies && currencies.length > 0 && !selectedCurrency) {
+      setSelectedCurrency(currencies[0].symbol);
+    }
+  }, [currencies, selectedCurrency]);
 
   const balance = balanceData?.data;
   const availableBalance = balance?.balance_in_operation ?? '0';
@@ -70,11 +72,11 @@ export function WithdrawalForm() {
   };
 
   const handleMax = () => setAmount(parseFloat(availableBalance).toFixed(2));
-  const handleSelectCurrency = (currency: typeof WITHDRAWAL_CURRENCIES[number]) => { setSelectedCurrency(currency); reset(); };
+  const handleSelectCurrency = (currency: string) => { setSelectedCurrency(currency); reset(); };
 
   const addressMismatch = addressConfirm.length > 0 && address !== addressConfirm;
   const hasCommission    = preview && preview.rate > 0 && numericAmount > 0;
-  const isFormValid      = numericAmount > 0 && address.length >= 20 && address === addressConfirm && numericAmount <= parseFloat(availableBalance);
+  const isFormValid      = numericAmount > 0 && address.length >= 20 && address === addressConfirm && numericAmount <= parseFloat(availableBalance) && !!selectedCurrency;
 
   return (
     <div className="bg-[#0a0f16]/40 border border-white/10 rounded-3xl backdrop-blur-xl shadow-[0_8px_40px_rgba(0,0,0,0.3)] overflow-hidden">
@@ -92,27 +94,34 @@ export function WithdrawalForm() {
             </div>
           </div>
 
-          {/* Currency pills */}
-          <div className="flex gap-2 p-1 bg-white/5 rounded-xl border border-white/5">
-            {WITHDRAWAL_CURRENCIES.map((currency) => {
-              const config = CURRENCY_CONFIG[currency];
-              const Icon = config.icon;
-              const isSelected = selectedCurrency === currency;
-              return (
-                <button
-                  key={currency}
-                  onClick={() => handleSelectCurrency(currency)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${
-                    isSelected
-                      ? 'bg-nexus-blue text-white shadow-[0_0_12px_rgba(11,64,193,0.3)]'
-                      : 'text-white/30 hover:text-white hover:bg-white/5'
-                  }`}
-                >
-                  <Icon className="h-3 w-3" />
-                  {config.label}
-                </button>
-              );
-            })}
+          {/* Currency pills — dynamic */}
+          <div className="flex flex-wrap gap-2 p-1 bg-white/5 rounded-xl border border-white/5">
+            {currenciesLoading ? (
+              <div className="px-3 py-1.5 flex items-center gap-1.5">
+                <Loader2 className="h-3 w-3 text-white/20 animate-spin" />
+                <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">Cargando...</span>
+              </div>
+            ) : currencies && currencies.length > 0 ? (
+              currencies.map((c) => {
+                const isSelected = selectedCurrency === c.symbol;
+                return (
+                  <button
+                    key={c.symbol}
+                    onClick={() => handleSelectCurrency(c.symbol)}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${
+                      isSelected
+                        ? 'bg-nexus-blue text-white shadow-[0_0_12px_rgba(11,64,193,0.3)]'
+                        : 'text-white/30 hover:text-white hover:bg-white/5'
+                    }`}
+                  >
+                    {c.symbol}
+                    {c.network && <span className="text-[8px] opacity-60">({c.network})</span>}
+                  </button>
+                );
+              })
+            ) : (
+              <span className="px-3 py-1.5 text-[10px] font-black text-white/20 uppercase tracking-widest">Sin monedas configuradas</span>
+            )}
           </div>
         </div>
 
@@ -149,7 +158,7 @@ export function WithdrawalForm() {
           </div>
         </div>
 
-        {/* Commission breakdown — occupies the right cell when active, empty placeholder otherwise */}
+        {/* Commission breakdown */}
         <div className="flex items-end">
           {hasCommission ? (
             <div className="w-full rounded-2xl border border-amber-500/20 bg-amber-500/5 px-5 py-4 space-y-2">
@@ -182,7 +191,7 @@ export function WithdrawalForm() {
         <div className="space-y-2">
           <label className="text-[9px] font-black uppercase tracking-[0.3em] text-white/30 flex items-center gap-1.5">
             <span className="w-1 h-3 bg-nexus-blue-light rounded-full inline-block" />
-            Dirección de Wallet ({selectedCurrency})
+            Dirección de Wallet {selectedCurrency ? `(${selectedCurrency})` : ''}
           </label>
           <input
             type="text"
@@ -217,7 +226,7 @@ export function WithdrawalForm() {
           )}
         </div>
 
-        {/* Critical warning — full width */}
+        {/* Critical warning */}
         <div className="md:col-span-2 flex gap-4 p-4 bg-red-500/5 border border-red-500/15 rounded-2xl relative overflow-hidden">
           <div className="absolute top-0 left-0 w-1 h-full bg-red-500" />
           <AlertTriangle className="h-4 w-4 shrink-0 text-red-400 mt-0.5" />
@@ -229,7 +238,7 @@ export function WithdrawalForm() {
           </div>
         </div>
 
-        {/* Info note — full width */}
+        {/* Info note */}
         <div className="md:col-span-2 flex gap-4 p-4 bg-white/5 border border-white/10 rounded-2xl relative overflow-hidden">
           <div className="absolute top-0 left-0 w-1 h-full bg-nexus-blue" />
           <ShieldAlert className="h-4 w-4 shrink-0 text-nexus-blue-light mt-0.5" />
@@ -238,7 +247,7 @@ export function WithdrawalForm() {
           </p>
         </div>
 
-        {/* Submit — full width */}
+        {/* Submit */}
         <div className="md:col-span-2">
           <button
             onClick={handleSubmit}

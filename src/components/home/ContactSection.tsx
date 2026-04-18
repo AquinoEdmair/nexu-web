@@ -1,16 +1,37 @@
 'use client';
 
 import { useState } from 'react';
-import { MapPin, Phone, Mail, Send, ShieldCheck } from 'lucide-react';
+import { MapPin, Phone, Mail, Send, ShieldCheck, Loader2 } from 'lucide-react';
+import { apiClient } from '@/lib/api/axios';
 
 export function ContactSection() {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [subject, setSubject] = useState('');
-  const [description, setDescription] = useState('');
+  const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const mailtoUrl = `mailto:aquinoedmair@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(description)}`;
-    window.location.href = mailtoUrl;
+    setLoading(true);
+    setErrorMsg('');
+    try {
+      await apiClient.post('/contact', { name, email, phone, subject, message });
+      setSuccess(true);
+      setName('');
+      setEmail('');
+      setPhone('');
+      setSubject('');
+      setMessage('');
+      setTimeout(() => setSuccess(false), 5000);
+    } catch (error: any) {
+      setErrorMsg(error.response?.data?.message || 'Error al enviar el mensaje. Intenta nuevamente.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -68,16 +89,53 @@ export function ContactSection() {
             </div>
 
             <div className="space-y-6">
-              <div className="space-y-3">
-                <label className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em] ml-2">Asunto del Mensaje</label>
-                <input 
-                  type="text"
-                  required
-                  value={subject}
-                  onChange={(e) => setSubject(e.target.value)}
-                  placeholder="INCIDENCIA TÉCNICA / CONSULTA DEPÓSITO"
-                  className="w-full bg-white/[0.02] border border-white/10 rounded-xl py-4 px-6 text-white font-bold text-xs outline-none focus:border-nexus-blue/50 focus:bg-white/[0.05] transition-all placeholder:text-white/10 tracking-widest"
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-3">
+                  <label className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em] ml-2">Nombre Completo</label>
+                  <input 
+                    type="text"
+                    required
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="INGRESAR NOMBRE"
+                    className="w-full bg-white/[0.02] border border-white/10 rounded-xl py-4 px-6 text-white font-bold text-xs outline-none focus:border-nexus-blue/50 focus:bg-white/[0.05] transition-all placeholder:text-white/10 tracking-widest"
+                  />
+                </div>
+                <div className="space-y-3">
+                  <label className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em] ml-2">Correo Electrónico</label>
+                  <input 
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="CORREO ELECTRÓNICO"
+                    className="w-full bg-white/[0.02] border border-white/10 rounded-xl py-4 px-6 text-white font-bold text-xs outline-none focus:border-nexus-blue/50 focus:bg-white/[0.05] transition-all placeholder:text-white/10 tracking-widest"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-3">
+                  <label className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em] ml-2">Teléfono (Opcional)</label>
+                  <input 
+                    type="tel"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="+1 234 567 8900"
+                    className="w-full bg-white/[0.02] border border-white/10 rounded-xl py-4 px-6 text-white font-bold text-xs outline-none focus:border-nexus-blue/50 focus:bg-white/[0.05] transition-all placeholder:text-white/10 tracking-widest"
+                  />
+                </div>
+                <div className="space-y-3">
+                  <label className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em] ml-2">Asunto del Mensaje</label>
+                  <input 
+                    type="text"
+                    required
+                    value={subject}
+                    onChange={(e) => setSubject(e.target.value)}
+                    placeholder="INCIDENCIA TÉCNICA / CONSULTA DEPÓSITO"
+                    className="w-full bg-white/[0.02] border border-white/10 rounded-xl py-4 px-6 text-white font-bold text-xs outline-none focus:border-nexus-blue/50 focus:bg-white/[0.05] transition-all placeholder:text-white/10 tracking-widest"
+                  />
+                </div>
               </div>
 
               <div className="space-y-3">
@@ -85,20 +143,41 @@ export function ContactSection() {
                 <textarea 
                   required
                   rows={4}
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
                   placeholder="ESCRIBE AQUÍ TU SOLICITUD DE SOPORTE..."
                   className="w-full bg-white/[0.02] border border-white/10 rounded-xl py-4 px-6 text-white font-bold text-xs outline-none focus:border-nexus-blue/50 focus:bg-white/[0.05] transition-all placeholder:text-white/10 tracking-widest resize-none"
                 ></textarea>
               </div>
             </div>
 
+            {errorMsg && (
+              <div className="text-red-400 text-xs font-bold bg-red-400/10 p-3 rounded-lg border border-red-400/20 text-center">
+                {errorMsg}
+              </div>
+            )}
+            
+            {success && (
+              <div className="text-green-400 text-xs font-bold bg-green-400/10 p-4 rounded-xl border border-green-400/20 text-center uppercase tracking-widest">
+                 Mensaje recibido exitosamente. El equipo de Nexu se pondrá en contacto pronto.
+              </div>
+            )}
+
             <button 
               type="submit"
-              className="w-full py-5 bg-nexus-blue text-white font-black text-[11px] uppercase tracking-[0.3em] rounded-xl hover:bg-nexus-blue-light hover:shadow-[0_0_30px_rgba(11,64,193,0.3)] transition-all flex items-center justify-center gap-4 group"
+              disabled={loading || success}
+              className="w-full py-5 bg-nexus-blue text-white font-black text-[11px] uppercase tracking-[0.3em] rounded-xl hover:bg-nexus-blue-light hover:shadow-[0_0_30px_rgba(11,64,193,0.3)] transition-all flex items-center justify-center gap-4 group disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Enviar Mensaje al Nodo
-              <Send className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+              {loading ? (
+                <>Enviando <Loader2 className="w-4 h-4 animate-spin" /></>
+              ) : success ? (
+                'Enviado'
+              ) : (
+                <>
+                  Enviar Mensaje al Nodo
+                  <Send className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                </>
+              )}
             </button>
 
             <div className="pt-4 flex items-center justify-center gap-2 text-nexus-text/40 italic">

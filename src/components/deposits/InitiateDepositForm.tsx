@@ -5,6 +5,7 @@ import { useInitiateDeposit } from '@/lib/hooks/useInitiateDeposit';
 import { usePendingInvoices } from '@/lib/hooks/usePendingInvoices';
 import { useCurrencies } from '@/lib/hooks/useCurrencies';
 import { DepositInvoice } from '@/types/models';
+import { formatCurrency } from '@/lib/utils/format';
 import { useNotificationStore } from '@/lib/store/notificationStore';
 import { ArrowRight, Loader2, Info, Zap, TrendingUp, Shield, Search, ChevronDown, X } from 'lucide-react';
 import { AxiosError } from 'axios';
@@ -255,18 +256,18 @@ export function InitiateDepositForm({ invoice, setInvoice }: InitiateDepositForm
             <div className="space-y-2">
               <div className="flex justify-between items-center">
                 <span className="text-[10px] text-white/40 font-black uppercase tracking-widest">Recibes en tu cuenta</span>
-                <span className="text-[11px] font-black text-white">${preview.net_amount.toFixed(2)}</span>
+                <span className="text-[11px] font-black text-white">${formatCurrency(preview.net_amount)}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-[10px] text-white/40 font-black uppercase tracking-widest">
                   Comisión de plataforma ({preview.rate}%)
                 </span>
-                <span className="text-[11px] font-black text-amber-400">+${preview.fee_amount.toFixed(2)}</span>
+                <span className="text-[11px] font-black text-amber-400">+${formatCurrency(preview.fee_amount)}</span>
               </div>
               <div className="h-px bg-white/10 my-1" />
               <div className="flex justify-between items-center">
                 <span className="text-[10px] text-white font-black uppercase tracking-widest">Total a enviar</span>
-                <span className="text-sm font-black text-nexus-blue-light">${preview.amount_charged.toFixed(2)}</span>
+                <span className="text-sm font-black text-nexus-blue-light">${formatCurrency(preview.amount_charged)}</span>
               </div>
             </div>
           </div>
@@ -278,7 +279,7 @@ export function InitiateDepositForm({ invoice, setInvoice }: InitiateDepositForm
             <div className="flex items-center gap-2">
               <TrendingUp className="w-3 h-3 text-emerald-400" />
               <span className="text-[9px] font-black uppercase tracking-[0.3em] text-emerald-400">
-                Sin comisión activa — recibes el 100% de ${numericAmount.toFixed(2)}
+                Sin comisión activa — recibes el 100% de ${formatCurrency(numericAmount)}
               </span>
             </div>
           </div>
@@ -302,7 +303,7 @@ export function InitiateDepositForm({ invoice, setInvoice }: InitiateDepositForm
             <Loader2 className="h-5 w-5 animate-spin" />
           ) : (
             <>
-              {hasCommission ? `Generar Dirección — Enviar $${preview.amount_charged.toFixed(2)}` : 'Generar Dirección de Pago'}
+              {hasCommission ? `Generar Dirección — Enviar $${formatCurrency(preview.amount_charged)}` : 'Generar Dirección de Pago'}
               <ArrowRight className="h-4 w-4" />
             </>
           )}

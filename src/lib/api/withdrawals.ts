@@ -1,5 +1,5 @@
 import { ApiResponse, PaginatedResponse } from '@/types/api';
-import { WithdrawalRequest } from '@/types/models';
+import { WithdrawalCurrency, WithdrawalRequest } from '@/types/models';
 import { apiClient } from './axios';
 
 export const withdrawalsApi = {
@@ -23,6 +23,11 @@ export const withdrawalsApi = {
 
   cancelWithdrawal: async (id: string): Promise<{ message: string }> => {
     const { data } = await apiClient.delete(`/withdrawals/${id}`);
+    return data;
+  },
+
+  getCurrencies: async (): Promise<ApiResponse<WithdrawalCurrency[]>> => {
+    const { data } = await apiClient.get('/withdrawals/currencies');
     return data;
   },
 };

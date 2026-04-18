@@ -1,17 +1,18 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { TrendingUp, Download, Cpu, Activity, ShieldCheck } from 'lucide-react';
 import { useYields } from '@/lib/hooks/useYields';
 import { useBalance } from '@/lib/hooks/useBalance';
 import { formatCurrency } from '@/lib/utils/format';
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
-type ChartRange = { label: string; days: number };
+type ChartRange = { label: string; hours: number; days: number };
 const CHART_RANGES: ChartRange[] = [
-  { label: 'Hoy',  days: 1  },
-  { label: '1S',   days: 7  },
-  { label: '1M',   days: 30 },
+  { label: '1H', hours: 1, days: 0 },
+  { label: '1D', hours: 0, days: 1 },
+  { label: '1S', hours: 0, days: 7 },
+  { label: '1M', hours: 0, days: 30 },
 ];
 
 export default function YieldsPage() {
@@ -19,8 +20,12 @@ export default function YieldsPage() {
   const [chartRangeIdx, setChartRangeIdx] = useState(0);
 
   const chartDays = CHART_RANGES[chartRangeIdx].days;
+  const chartHours = CHART_RANGES[chartRangeIdx].hours;
   const { data: yieldsData, isLoading: yieldsLoading } = useYields(page);
-  const { data: chartData, isLoading: chartLoading } = useYields(1, 500, chartDays);
+  
+  const fetchDays = chartDays > 0 ? (chartDays === 1 ? 2 : chartDays + 3) : 0;
+  const fetchHours = chartHours > 0 ? chartHours + 1 : 0;
+  const { data: chartData, isLoading: chartLoading } = useYields(1, 500, fetchDays, fetchHours);
   const { data: balanceData, isLoading: balanceLoading } = useBalance();
 
   const history = yieldsData?.data || [];
@@ -28,15 +33,78 @@ export default function YieldsPage() {
   const totalInOperation = balanceData?.data?.balance_in_operation || '0';
   const lastPage = yieldsData?.meta?.last_page ?? 1;
 
-  const chartEntries = (chartData?.data || []).slice().reverse();
-  const chartPoints = chartEntries.map((r) => ({
-    time: chartDays === 1
-      ? new Date(r.created_at).toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' })
-      : new Date(r.created_at).toLocaleDateString('es', { day: '2-digit', month: 'short' }) +
-        ' ' + new Date(r.created_at).toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' }),
-    amount: parseFloat(r.amount_applied),
-    balance: parseFloat(r.balance_after),
-  }));
+  const chartPoints = useMemo(() => {
+    const today = new Date();
+    let start: Date, end: Date, stepMs: number;
+    
+    if (chartHours === 1) {
+      stepMs = 10 * 60 * 1000;
+      end = new Date(today);
+      end.setSeconds(0, 0);
+      const m = end.getMinutes();
+      end.setMinutes(m - (m % 10) + 10);
+      start = new Date(end.getTime() - (60 * 60 * 1000));
+    } else if (chartDays === 1) {
+      stepMs = 60 * 60 * 1000;
+      end = new Date(today);
+      end.setMinutes(0, 0, 0);
+      end.setHours(end.getHours() + 1);
+      start = new Date(end.getTime() - (24 * 60 * 60 * 1000));
+    } else {
+      stepMs = 24 * 60 * 60 * 1000;
+      today.setHours(0, 0, 0, 0);
+      end = new Date(today);
+      start = new Date(today.getTime() - (chartDays * 24 * 60 * 60 * 1000));
+    }
+
+    const buckets: { time: Date; amount: number; balance: number | null }[] = [];
+    let cur = new Date(start);
+    while (cur <= end) {
+      buckets.push({ time: cur, amount: 0, balance: null });
+      cur = new Date(cur.getTime() + stepMs);
+    }
+
+    const entries = (chartData?.data || []).slice().reverse();
+    
+    let lastKnownBalance = entries.length > 0 ? parseFloat(entries[0].balance_before) : 0;
+
+    for (const entry of entries) {
+       const time = new Date(entry.created_at).getTime();
+       const diff = time - start.getTime();
+       if (diff < 0) {
+          lastKnownBalance = parseFloat(entry.balance_after); 
+          continue;
+       }
+       const index = Math.floor(diff / stepMs);
+       if (index >= 0 && index < buckets.length) {
+          buckets[index].amount += parseFloat(entry.amount_applied);
+          buckets[index].balance = parseFloat(entry.balance_after);
+          lastKnownBalance = buckets[index].balance;
+       }
+    }
+
+    for (let i = 0; i < buckets.length; i++) {
+        if (buckets[i].balance === null) {
+            buckets[i].balance = lastKnownBalance;
+        } else {
+            lastKnownBalance = buckets[i].balance!;
+        }
+    }
+
+    return buckets.map(b => {
+        let label = '';
+        if (chartHours === 1 || chartDays === 1) {
+          label = b.time.toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' });
+        } else {
+          label = b.time.toLocaleDateString('es', { day: '2-digit', month: 'short' });
+        }
+        return {
+           time: label,
+           amount: b.amount,
+           balance: b.balance
+        };
+    });
+  }, [chartData, chartDays, chartHours]);
 
   return (
     <main className="max-w-7xl mx-auto px-4 md:px-8 pt-6 pb-32 space-y-10">

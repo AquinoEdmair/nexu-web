@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { depositsApi } from '@/lib/api/deposits';
+import { formatCurrency } from '@/lib/utils/format';
 
 import { Modal } from '@/components/ui/Modal';
 import { DepositAddress } from '@/components/deposits/DepositAddress';
@@ -150,11 +151,11 @@ export function DepositHistory() {
                       <td className="px-8 py-6">
                         <div className="flex flex-col gap-1">
                           <span className="text-sm font-black text-white tracking-tight">
-                            ${parseFloat(invoice.amount_expected).toFixed(2)} <span className="text-[10px] text-white/20">USD</span>
+                            ${formatCurrency(invoice.amount_expected)} <span className="text-[10px] text-white/20">USD</span>
                           </span>
                           {invoice.pay_amount && (
                             <span className="text-[10px] font-black font-mono text-nexus-blue-light/60">
-                              {parseFloat(invoice.pay_amount).toFixed(8)} {invoice.currency}
+                              {formatCurrency(invoice.pay_amount)} {invoice.currency}
                             </span>
                           )}
                         </div>
