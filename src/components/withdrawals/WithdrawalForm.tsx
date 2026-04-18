@@ -7,6 +7,7 @@ import { useNotificationStore } from '@/lib/store/notificationStore';
 import { useWithdrawalCurrencies } from '@/lib/hooks/useWithdrawalCurrencies';
 import { formatCurrency } from '@/lib/utils/format';
 import { ArrowRight, Loader2, Wallet, Zap, ShieldAlert, TrendingDown, AlertTriangle } from 'lucide-react';
+import { FormattedAmount } from '@/components/ui/FormattedAmount';
 import { AxiosError } from 'axios';
 import { apiClient } from '@/lib/api/axios';
 import { useQuery } from '@tanstack/react-query';
@@ -90,7 +91,7 @@ export function WithdrawalForm() {
             </div>
             <div>
               <p className="text-[9px] font-black text-white/20 uppercase tracking-[0.3em]">Disponible</p>
-              <p className="text-xl font-black text-white tracking-tighter">${formatCurrency(availableBalance)}</p>
+              <FormattedAmount amount={availableBalance} className="text-xl" />
             </div>
           </div>
 

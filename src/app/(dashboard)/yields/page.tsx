@@ -6,6 +6,7 @@ import { useYields } from '@/lib/hooks/useYields';
 import { useBalance } from '@/lib/hooks/useBalance';
 import { formatCurrency } from '@/lib/utils/format';
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { FormattedAmount } from '@/components/ui/FormattedAmount';
 
 type ChartRange = { label: string; hours: number; days: number };
 const CHART_RANGES: ChartRange[] = [
@@ -138,7 +139,7 @@ export default function YieldsPage() {
                 {balanceLoading ? (
                   <div className="h-12 w-32 bg-white/5 animate-pulse rounded-lg" />
                 ) : (
-                  <h2 className="text-5xl font-black text-white tracking-tighter">{formatCurrency(totalInOperation)}</h2>
+                  <FormattedAmount amount={totalInOperation} className="text-5xl" />
                 )}
               </div>
               <div className="inline-flex items-center gap-2 px-2 py-0.5 rounded-full bg-nexus-blue/10 border border-nexus-blue/20">
@@ -156,7 +157,7 @@ export default function YieldsPage() {
                    {yieldsLoading ? (
                      <div className="h-8 w-24 bg-white/5 animate-pulse rounded-lg" />
                    ) : (
-                     <p className="text-2xl font-black text-white tracking-tighter">{formatCurrency(monthlyYield)}</p>
+                     <FormattedAmount amount={monthlyYield} className="text-2xl" />
                    )}
                    <div className="flex items-center gap-1 text-[10px] text-nexus-blue-light font-black mb-1">
                       <TrendingUp className="w-3 h-3" />
