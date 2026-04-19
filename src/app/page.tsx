@@ -10,6 +10,7 @@ import { GoldPriceChart } from '@/components/home/GoldPriceChart';
 import { GoldNewsFeed } from '@/components/home/GoldNewsFeed';
 import { AboutSection } from '@/components/home/AboutSection';
 import { ContactSection } from '@/components/home/ContactSection';
+import { TeamSection } from '@/components/home/TeamSection';
 
 export default function LandingPage() {
   return (
@@ -25,6 +26,7 @@ export default function LandingPage() {
           </div>
           <nav className="hidden lg:flex items-center gap-8">
             <Link href="#quienes-somos" className="text-[10px] font-black uppercase tracking-widest text-nexus-text hover:text-white transition-colors">Quiénes Somos</Link>
+            <Link href="#equipo" className="text-[10px] font-black uppercase tracking-widest text-nexus-text hover:text-white transition-colors">Equipo</Link>
             <Link href="#contacto" className="text-[10px] font-black uppercase tracking-widest text-nexus-text hover:text-white transition-colors">Contacto</Link>
             <Link href="/terms" className="text-[10px] font-black uppercase tracking-widest text-nexus-text hover:text-white transition-colors">Términos</Link>
           </nav>
@@ -163,6 +165,7 @@ export default function LandingPage() {
         {/* 🏢 SECCIÓN 5: Otros Protocolos (Sobre, Contacto) */}
         <div className="space-y-32">
           <AboutSection />
+          <TeamSection />
           <ContactSection />
         </div>
 
