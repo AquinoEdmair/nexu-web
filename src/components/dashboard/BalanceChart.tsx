@@ -21,6 +21,7 @@ const TOOLTIP_STYLE = {
   border: '1px solid rgba(11,64,193,0.3)',
   borderRadius: '12px',
   fontSize: '11px',
+  color: 'rgba(255,255,255,0.9)',
 } as const;
 
 const AXIS_TICK = { fontSize: 10, fill: 'rgba(255,255,255,0.3)', fontWeight: 700 } as const;

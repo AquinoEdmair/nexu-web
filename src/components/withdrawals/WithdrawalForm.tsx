@@ -72,7 +72,7 @@ export function WithdrawalForm() {
     );
   };
 
-  const handleMax = () => setAmount(parseFloat(availableBalance).toFixed(2));
+  const handleMax = () => setAmount((Math.floor(parseFloat(availableBalance) * 100) / 100).toFixed(2));
   const handleSelectCurrency = (currency: string) => { setSelectedCurrency(currency); reset(); };
 
   const addressMismatch = addressConfirm.length > 0 && address !== addressConfirm;

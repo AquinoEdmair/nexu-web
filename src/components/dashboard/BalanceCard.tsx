@@ -68,8 +68,8 @@ export function BalanceCard() {
           <div className="space-y-1">
             <p className="text-[10px] font-black text-white/40 uppercase tracking-widest pl-1">Balance Consolidado en Oro</p>
             <div className="flex items-baseline gap-4 flex-wrap">
-              <FormattedAmount 
-                value={balance.balance_total} 
+              <FormattedAmount
+                amount={balance.balance_total}
                 integerClassName="text-5xl md:text-6xl font-black text-white tracking-tighter drop-shadow-[0_0_20px_rgba(24,136,243,0.2)]"
                 decimalClassName="text-2xl md:text-3xl font-black text-white/40 tracking-tighter"
               />

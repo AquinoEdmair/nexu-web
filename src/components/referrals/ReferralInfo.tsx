@@ -18,7 +18,9 @@ export function ReferralInfo({ summary }: ReferralInfoProps) {
     setTimeout(() => setter(false), 2000);
   };
 
-  const commissionPct = (parseFloat(summary.commission_rate) * 100).toFixed(0);
+  const tier = summary.elite.tier;
+  const firstPct  = tier ? (parseFloat(tier.first_deposit_commission_rate) * 100).toFixed(0) : null;
+  const recurPct  = tier ? (parseFloat(tier.recurring_commission_rate)      * 100).toFixed(0) : null;
 
   return (
     <section className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -43,9 +45,21 @@ export function ReferralInfo({ summary }: ReferralInfoProps) {
           </button>
         </div>
         <p className="text-xs text-nexus-text/40 font-medium leading-relaxed uppercase tracking-wider">
-          Comparte tu código para obtener el{' '}
-          <span className="text-nexus-blue-light">{commissionPct}%</span>{' '}
-          de comisión por cada invitado activo.
+          {firstPct !== null ? (
+            <>
+              Atrae nuevos inversionistas a Nexu — comparte tu código y obtén una comisión del{' '}
+              <span className="text-nexus-blue-light">{firstPct}%</span>{' '}
+              en el primer depósito de tu invitado
+              {recurPct !== null && recurPct !== '0' && (
+                <> y <span className="text-nexus-blue-light">{recurPct}%</span> en depósitos recurrentes</>
+              )}.
+            </>
+          ) : (
+            <>
+              Atrae nuevos inversionistas a Nexu — comparte tu código y gana comisiones por cada invitado activo.
+              Completa tu perfil para ver tu tasa de comisión.
+            </>
+          )}
         </p>
       </div>
 
