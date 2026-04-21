@@ -10,21 +10,16 @@ import { DepositAddress } from '@/components/deposits/DepositAddress';
 import { useNotificationStore } from '@/lib/store/notificationStore';
 import { Copy, Check, Clock, CheckCircle2, XCircle, Eye, Activity, Database, UserCheck } from 'lucide-react';
 import { DepositInvoice } from '@/types/models';
+import { useTranslations } from 'next-intl';
 
-const STATUS_CONFIG: Record<string, { label: string; icon: React.ComponentType<{ className?: string }>; classes: string }> = {
-  completed:        { label: 'Sincronizado', icon: CheckCircle2, classes: 'text-nexus-blue-light bg-nexus-blue/10 border-nexus-blue/20 shadow-[0_0_12px_rgba(11,64,193,0.1)]' },
-  awaiting_payment: { label: 'Esperando Pago',  icon: Clock,        classes: 'text-yellow-400 bg-yellow-400/10 border-yellow-400/20 shadow-[0_0_12px_rgba(250,204,21,0.1)]' },
-  expired:          { label: 'Expirado',   icon: XCircle,      classes: 'text-white/20 bg-white/5 border-white/10 shadow-none grayscale' },
-};
-
-function RowCountdown({ expiresAt }: { expiresAt: string }) {
+function RowCountdown({ expiresAt, expiredLabel }: { expiresAt: string; expiredLabel: string }) {
   const [timeLeft, setTimeLeft] = useState('');
 
   useEffect(() => {
     const calculate = () => {
       const diff = new Date(expiresAt).getTime() - Date.now();
-      if (diff <= 0) return 'EXPIRADO';
-      
+      if (diff <= 0) return expiredLabel;
+
       const mins = Math.floor((diff % 3600000) / 60000);
       const secs = Math.floor((diff % 60000) / 1000);
       return `${mins}:${String(secs).padStart(2, '0')}`;
@@ -33,7 +28,7 @@ function RowCountdown({ expiresAt }: { expiresAt: string }) {
     const timer = setInterval(() => setTimeLeft(calculate()), 1000);
     setTimeLeft(calculate());
     return () => clearInterval(timer);
-  }, [expiresAt]);
+  }, [expiresAt, expiredLabel]);
 
   return <span className="text-[9px] font-black font-mono text-yellow-400/80 ml-2 tracking-widest">{timeLeft}</span>;
 }
@@ -51,6 +46,13 @@ export function DepositHistory() {
   const [selectedInvoice, setSelectedInvoice] = useState<DepositInvoice | null>(null);
   const addNotification = useNotificationStore(s => s.addNotification);
   const prevInvoicesRef = useRef<Record<string, string>>({});
+  const t = useTranslations('deposits');
+
+  const STATUS_CONFIG: Record<string, { label: string; icon: React.ComponentType<{ className?: string }>; classes: string }> = {
+    completed:        { label: t('statusSynced'),  icon: CheckCircle2, classes: 'text-nexus-blue-light bg-nexus-blue/10 border-nexus-blue/20 shadow-[0_0_12px_rgba(11,64,193,0.1)]' },
+    awaiting_payment: { label: t('statusPending'), icon: Clock,        classes: 'text-yellow-400 bg-yellow-400/10 border-yellow-400/20 shadow-[0_0_12px_rgba(250,204,21,0.1)]' },
+    expired:          { label: t('statusExpired'), icon: XCircle,      classes: 'text-white/20 bg-white/5 border-white/10 shadow-none grayscale' },
+  };
 
   const { data, isLoading } = useQuery({
     queryKey: ['deposits', 'invoices'],
@@ -67,15 +69,15 @@ export function DepositHistory() {
         if (prevStatus === 'awaiting_payment' && inv.status === 'completed') {
           addNotification({
             type: 'success',
-            title: 'Nodo Confirmado',
-            message: `Recepción de ${inv.amount_received ?? inv.amount_expected} ${inv.currency} validada exitosamente.`,
+            title: t('nodeConfirmed'),
+            message: t('nodeConfirmedMsg', { amount: inv.amount_received ?? inv.amount_expected, currency: inv.currency }),
             duration: 8000
           });
         }
         prevInvoicesRef.current[inv.invoice_id] = inv.status;
       });
     }
-  }, [invoices, addNotification]);
+  }, [invoices, addNotification, t]);
 
   const handleCopy = async (text: string, id: string) => {
     await navigator.clipboard.writeText(text);
@@ -87,7 +89,7 @@ export function DepositHistory() {
     return (
       <div className="bg-[#0a0f16]/40 border border-white/5 rounded-3xl p-10 backdrop-blur-xl flex flex-col items-center justify-center min-h-[400px]">
         <Activity className="w-10 h-10 text-nexus-blue-light animate-spin mb-4" />
-        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-nexus-blue-light/40">Sincronizando Ledger de Red...</p>
+        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-nexus-blue-light/40">{t('syncingLedger')}</p>
       </div>
     );
   }
@@ -97,11 +99,11 @@ export function DepositHistory() {
       <div className="flex items-center justify-between px-2">
         <div className="flex items-center gap-3">
           <Database className="w-5 h-5 text-nexus-blue-light" />
-          <h2 className="text-2xl font-black text-white tracking-tighter uppercase">Log de Operaciones</h2>
+          <h2 className="text-2xl font-black text-white tracking-tighter uppercase">{t('operationsLog')}</h2>
         </div>
         <div className="flex items-center gap-2">
           <span className="h-1.5 w-1.5 bg-nexus-blue-light rounded-full animate-pulse shadow-[0_0_10px_rgba(24,136,243,0.5)]" />
-          <span className="text-[9px] text-nexus-blue-light font-black uppercase tracking-[0.2em]">En Vivo</span>
+          <span className="text-[9px] text-nexus-blue-light font-black uppercase tracking-[0.2em]">{t('live')}</span>
         </div>
       </div>
 
@@ -110,8 +112,8 @@ export function DepositHistory() {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-white/5 border-b border-white/10">
-                {['Registro', 'Activo', 'Protocolo', 'Nodo de Recepción', 'Origen', 'Estatus', ''].map((header) => (
-                  <th key={header} className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-nexus-blue-light/60">
+                {[t('colRecord'), t('colAsset'), t('colProtocol'), t('colNode'), t('colOrigin'), t('colStatus'), ''].map((header, i) => (
+                  <th key={i} className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-nexus-blue-light/60">
                     {header}
                   </th>
                 ))}
@@ -121,7 +123,7 @@ export function DepositHistory() {
               {invoices.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="py-20 text-center opacity-20">
-                    <p className="text-xs font-black uppercase tracking-[0.5em]">Sin registros tácticos activos</p>
+                    <p className="text-xs font-black uppercase tracking-[0.5em]">{t('noRecords')}</p>
                   </td>
                 </tr>
               ) : (
@@ -187,7 +189,7 @@ export function DepositHistory() {
                             )}
                           </div>
                         ) : (
-                          <span className="text-[9px] text-white/20 font-black uppercase tracking-widest">Automático</span>
+                          <span className="text-[9px] text-white/20 font-black uppercase tracking-widest">{t('sourceAuto')}</span>
                         )}
                       </td>
                       <td className="px-8 py-6">
@@ -195,7 +197,9 @@ export function DepositHistory() {
                           <Icon className="h-3 w-3" />
                           <span className="flex items-center">
                             {status.label}
-                            {invoice.status === 'awaiting_payment' && <RowCountdown expiresAt={invoice.expires_at} />}
+                            {invoice.status === 'awaiting_payment' && (
+                              <RowCountdown expiresAt={invoice.expires_at} expiredLabel={t('expired')} />
+                            )}
                           </span>
                         </div>
                       </td>
@@ -216,11 +220,11 @@ export function DepositHistory() {
         </div>
       </div>
 
-      <Modal 
-        isOpen={!!selectedInvoice} 
+      <Modal
+        isOpen={!!selectedInvoice}
         onClose={() => setSelectedInvoice(null)}
-        title="Protocolo de Transferencia"
-        description="Escanea el código QR o utiliza el nodo de recepción para finalizar el fondeo."
+        title={t('transferProtocol')}
+        description={t('transferDesc')}
       >
         {selectedInvoice && <DepositAddress invoice={selectedInvoice} />}
       </Modal>

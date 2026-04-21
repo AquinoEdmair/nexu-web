@@ -5,14 +5,7 @@ import { useTransactions } from '@/lib/hooks/useTransactions';
 import { formatCurrency } from '@/lib/utils/format';
 import { Plus, Minus, TrendingUp, Gift, ArrowRightLeft, Activity, Loader2 } from 'lucide-react';
 import type { Transaction } from '@/types/models';
-
-const TYPE_CONFIG: Record<Transaction['type'], { icon: typeof Plus; color: string; bg: string; label: string }> = {
-  deposit:              { icon: Plus,            color: 'text-nexus-blue-light',  bg: 'bg-nexus-blue/10',    label: 'Depósito' },
-  withdrawal:           { icon: Minus,           color: 'text-red-400',          bg: 'bg-red-500/10',       label: 'Retiro' },
-  yield:                { icon: TrendingUp,      color: 'text-nexus-blue-light',  bg: 'bg-nexus-blue/10',    label: 'Rendimiento' },
-  commission:           { icon: ArrowRightLeft,  color: 'text-yellow-400',       bg: 'bg-yellow-500/10',    label: 'Comisión' },
-  referral_commission:  { icon: Gift,            color: 'text-nexus-blue-light',  bg: 'bg-nexus-blue/10',    label: 'Bono Referido' },
-};
+import { useTranslations } from 'next-intl';
 
 function formatDate(iso: string): string {
   const d = new Date(iso);
@@ -26,12 +19,21 @@ function formatSignedAmount(amount: string, type: Transaction['type']): string {
 
 export function RecentTransactions() {
   const { data, isLoading, isError, refetch } = useTransactions({ per_page: 5 });
+  const t = useTranslations('transactions');
+
+  const typeConfig: Record<Transaction['type'], { icon: typeof Plus; color: string; bg: string; label: string }> = {
+    deposit:             { icon: Plus,           color: 'text-nexus-blue-light', bg: 'bg-nexus-blue/10',   label: t('typeDeposit') },
+    withdrawal:          { icon: Minus,          color: 'text-red-400',         bg: 'bg-red-500/10',      label: t('typeWithdrawal') },
+    yield:               { icon: TrendingUp,     color: 'text-nexus-blue-light', bg: 'bg-nexus-blue/10',   label: t('typeYield') },
+    commission:          { icon: ArrowRightLeft, color: 'text-yellow-400',      bg: 'bg-yellow-500/10',   label: t('typeCommission') },
+    referral_commission: { icon: Gift,           color: 'text-nexus-blue-light', bg: 'bg-nexus-blue/10',   label: t('typeReferral') },
+  };
 
   if (isLoading) {
     return (
       <div className="bg-[#0a0f16]/40 border border-white/5 rounded-3xl p-8 backdrop-blur-xl h-full flex flex-col justify-center items-center gap-4 min-h-[460px]">
         <Loader2 className="w-8 h-8 text-nexus-blue-light animate-spin" />
-        <p className="text-[10px] font-black tracking-[0.3em] text-nexus-blue-light/40 uppercase">Sincronizando Ledger...</p>
+        <p className="text-[10px] font-black tracking-[0.3em] text-nexus-blue-light/40 uppercase">{t('syncingLedger')}</p>
       </div>
     );
   }
@@ -41,9 +43,9 @@ export function RecentTransactions() {
       <div className="bg-[#0a0f16]/40 border border-white/5 rounded-3xl p-8 backdrop-blur-xl h-full flex flex-col justify-center items-center text-center gap-4 min-h-[460px]">
         <Activity className="h-8 w-8 text-red-400 animate-pulse" />
         <div>
-          <h4 className="text-white font-black uppercase tracking-tight">Fallo en la Sincronía</h4>
+          <h4 className="text-white font-black uppercase tracking-tight">{t('syncFailed')}</h4>
           <button onClick={() => refetch()} className="text-nexus-blue-light text-xs font-black uppercase hover:underline mt-2">
-            Reintentar Protocolo
+            {t('retryProtocol')}
           </button>
         </div>
       </div>
@@ -58,26 +60,26 @@ export function RecentTransactions() {
         <div>
           <div className="flex items-center gap-2 mb-2">
             <Activity className="w-4 h-4 text-nexus-blue-light" />
-            <span className="text-[10px] font-black tracking-[0.3em] text-nexus-blue-light/80 uppercase">Registro de Operaciones</span>
+            <span className="text-[10px] font-black tracking-[0.3em] text-nexus-blue-light/80 uppercase">{t('operationsRecord')}</span>
           </div>
-          <h3 className="text-2xl font-black text-white tracking-tighter uppercase leading-none">Movimientos</h3>
+          <h3 className="text-2xl font-black text-white tracking-tighter uppercase leading-none">{t('movements')}</h3>
         </div>
         <Link
           href="/history"
           className="px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black text-white hover:bg-nexus-blue hover:border-nexus-blue transition-all uppercase tracking-widest shadow-[0_0_15px_rgba(24,136,243,0.05)]"
         >
-          Ver Todo
+          {t('viewAll')}
         </Link>
       </div>
 
       <div className="space-y-6 flex-grow">
         {transactions.length === 0 ? (
           <div className="py-12 text-center opacity-40">
-            <p className="text-xs font-black uppercase tracking-widest">Sin registros tácticos activos</p>
+            <p className="text-xs font-black uppercase tracking-widest">{t('noRecords')}</p>
           </div>
         ) : (
           transactions.map((tx) => {
-            const config = TYPE_CONFIG[tx.type] || TYPE_CONFIG.yield;
+            const config = typeConfig[tx.type] || typeConfig.yield;
             const Icon = config.icon;
 
             return (

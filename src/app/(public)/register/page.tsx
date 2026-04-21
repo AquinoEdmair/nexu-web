@@ -7,6 +7,7 @@ import { useSearchParams } from 'next/navigation';
 import { useRegister } from '@/lib/hooks/useAuth';
 import { registerSchema } from '@/lib/validators/auth';
 import { PhoneInput } from '@/components/ui/PhoneInput';
+import { useTranslations } from 'next-intl';
 
 export default function RegisterPageWrapper() {
   return (
@@ -19,6 +20,7 @@ export default function RegisterPageWrapper() {
 function RegisterPage() {
   const searchParams = useSearchParams();
   const refCode = searchParams.get('ref') ?? '';
+  const t = useTranslations('auth.register');
 
   const [form, setForm] = useState({
     name: '',
@@ -49,7 +51,7 @@ function RegisterPage() {
     setClientErrors({});
 
     if (!termsAccepted) {
-      setClientErrors({ terms: 'Debes aceptar los términos y condiciones.' });
+      setClientErrors({ terms: t('termsError') });
       return;
     }
 
@@ -75,8 +77,8 @@ function RegisterPage() {
   return (
     <div className="flex-grow flex flex-col px-6 pb-12 pt-8 z-10 max-w-md mx-auto w-full">
       <div className="mb-10">
-        <h1 className="text-4xl font-black text-white tracking-tighter leading-tight mb-2 uppercase">Registro de Inversor Élite</h1>
-        <p className="text-nexus-text text-base font-medium">Inicia tu portafolio de Oro Digital y accede a rendimientos automatizados.</p>
+        <h1 className="text-4xl font-black text-white tracking-tighter leading-tight mb-2 uppercase">{t('title')}</h1>
+        <p className="text-nexus-text text-base font-medium">{t('subtitle')}</p>
       </div>
 
       {error && (
@@ -88,13 +90,13 @@ function RegisterPage() {
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-1.5 group">
           <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-nexus-text/60 ml-1 group-focus-within:text-nexus-blue-light transition-colors" htmlFor="full_name">
-            Nombre Completo
+            {t('name')}
           </label>
           <div className="relative">
             <input
               className="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-4 pr-12 text-white focus:ring-1 focus:ring-nexus-blue-light placeholder:text-white/20 transition-all outline-none"
               id="full_name"
-              placeholder="Ej: Alexander Vault"
+              placeholder={t('namePlaceholder')}
               type="text"
               value={form.name}
               onChange={(e) => updateField('name', e.target.value)}
@@ -109,13 +111,13 @@ function RegisterPage() {
 
         <div className="space-y-1.5 group">
           <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-nexus-text/60 ml-1 group-focus-within:text-nexus-blue-light transition-colors" htmlFor="email">
-            Correo Electrónico
+            {t('email')}
           </label>
           <div className="relative">
             <input
               className="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-4 pr-12 text-white focus:ring-1 focus:ring-nexus-blue-light placeholder:text-white/20 transition-all outline-none"
               id="email"
-              placeholder="nombre@correo.com"
+              placeholder={t('emailPlaceholder')}
               type="email"
               value={form.email}
               onChange={(e) => updateField('email', e.target.value)}
@@ -130,7 +132,7 @@ function RegisterPage() {
 
         <div className="space-y-1.5 group">
           <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-nexus-text/60 ml-1 group-focus-within:text-nexus-blue-light transition-colors" htmlFor="phone">
-            Teléfono (Opcional)
+            {t('phone')}
           </label>
           <PhoneInput
             id="phone"
@@ -143,7 +145,7 @@ function RegisterPage() {
 
         <div className="space-y-1.5 group">
           <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-nexus-text/60 ml-1 group-focus-within:text-nexus-blue-light transition-colors" htmlFor="password">
-            Contraseña Segura
+            {t('password')}
           </label>
           <div className="relative">
             <input
@@ -168,7 +170,7 @@ function RegisterPage() {
 
         <div className="space-y-1.5 group">
           <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-nexus-text/60 ml-1 group-focus-within:text-nexus-blue-light transition-colors" htmlFor="confirm_password">
-            Confirmar Contraseña
+            {t('confirmPassword')}
           </label>
           <div className="relative">
             <input
@@ -193,13 +195,13 @@ function RegisterPage() {
 
         <div className="space-y-1.5 group">
           <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-nexus-text/60 ml-1 group-focus-within:text-nexus-blue-light transition-colors" htmlFor="referral">
-            Código Elite (Opcional)
+            {t('referralCode')}
           </label>
           <div className="relative">
             <input
               className="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-4 text-white focus:ring-1 focus:ring-nexus-blue-light placeholder:text-white/20 transition-all outline-none"
               id="referral"
-              placeholder="CÓDIGO DE INVITACIÓN"
+              placeholder={t('referralPlaceholder')}
               type="text"
               value={form.referral_code}
               onChange={(e) => updateField('referral_code', e.target.value)}
@@ -209,7 +211,6 @@ function RegisterPage() {
           </div>
         </div>
 
-        {/* Terms */}
         <div className="flex items-start gap-3 px-1 pt-2">
           <div className="relative flex items-center h-5">
             <input
@@ -231,12 +232,11 @@ function RegisterPage() {
             />
           </div>
           <label className="text-sm text-nexus-text/60 leading-snug font-medium" htmlFor="terms">
-            Acepto los <Link href="/terms" target="_blank" className="text-nexus-blue-light font-black hover:underline cursor-pointer transition-all">Términos de Servicio</Link> y la <Link href="/terms" target="_blank" className="text-nexus-blue-light font-black hover:underline cursor-pointer transition-all">Política de Privacidad</Link>.
+            {t('terms')} <Link href="/terms" target="_blank" className="text-nexus-blue-light font-black hover:underline cursor-pointer transition-all">{t('termsLink')}</Link> {t('and')} <Link href="/terms" target="_blank" className="text-nexus-blue-light font-black hover:underline cursor-pointer transition-all">{t('privacyLink')}</Link>.
           </label>
         </div>
         {getError('terms') && <p className="text-xs text-red-400 ml-1">{getError('terms')}</p>}
 
-        {/* Submit */}
         <div className="pt-4">
           <button
             type="submit"
@@ -246,10 +246,10 @@ function RegisterPage() {
             {isLoading ? (
               <>
                 <Loader2 className="w-5 h-5 animate-spin" />
-                Validando datos...
+                {t('submitting')}
               </>
             ) : (
-              'Crear Cuenta'
+              t('submit')
             )}
           </button>
         </div>
@@ -257,9 +257,9 @@ function RegisterPage() {
 
       <div className="mt-10 text-center pb-12 border-t border-white/5 pt-8">
         <p className="text-nexus-text/60 font-medium">
-          ¿Ya tienes una cuenta?
+          {t('hasAccount')}
           <Link href="/login" className="text-nexus-blue-light font-black ml-2 hover:text-white transition-all uppercase tracking-tighter">
-            Iniciar Sesión
+            {t('signIn')}
           </Link>
         </p>
       </div>

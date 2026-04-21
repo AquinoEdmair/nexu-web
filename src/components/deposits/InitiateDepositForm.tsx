@@ -11,6 +11,7 @@ import { ArrowRight, Loader2, Info, Zap, TrendingUp, Shield, Search, ChevronDown
 import { AxiosError } from 'axios';
 import { apiClient } from '@/lib/api/axios';
 import { useQuery } from '@tanstack/react-query';
+import { useTranslations } from 'next-intl';
 
 interface CommissionPreview {
   rate: number;
@@ -36,15 +37,14 @@ export function InitiateDepositForm({ invoice, setInvoice }: InitiateDepositForm
   const { mutate, isPending, error, reset } = useInitiateDeposit();
   const addNotification = useNotificationStore(s => s.addNotification);
   const lastAutoLoadedId = useRef<string | null>(null);
+  const t = useTranslations('deposits');
 
-  // Auto-select first currency once loaded
   useEffect(() => {
     if (currencies.length > 0 && !invoice) {
       setSelectedCurrency(prev => currencies.some(c => c.symbol === prev) ? prev : currencies[0].symbol);
     }
   }, [currencies, invoice]);
 
-  // Close dropdown on outside click
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
@@ -56,7 +56,6 @@ export function InitiateDepositForm({ invoice, setInvoice }: InitiateDepositForm
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
-  // Focus search input when dropdown opens
   useEffect(() => {
     if (isOpen) searchRef.current?.focus();
   }, [isOpen]);
@@ -98,7 +97,7 @@ export function InitiateDepositForm({ invoice, setInvoice }: InitiateDepositForm
         addNotification({
           type: 'success',
           title: 'Dirección Generada',
-          message: `Dirección de ${selectedCurrency} lista. Envía el monto exacto.`,
+          message: t('addressReady', { currency: selectedCurrency }),
           duration: 5000
         });
       },
@@ -132,12 +131,11 @@ export function InitiateDepositForm({ invoice, setInvoice }: InitiateDepositForm
   return (
     <div className="space-y-8 p-6">
       <div className="space-y-8">
-        {/* Currency Selection */}
         <div className="space-y-3">
           <div className="flex items-center gap-2">
             <Zap className="w-3 h-3 text-nexus-blue-light" />
             <label className="text-[10px] font-black uppercase tracking-[0.3em] text-nexus-blue-light/60">
-              Activo de Inversión
+              {t('currency')}
             </label>
           </div>
 
@@ -145,7 +143,6 @@ export function InitiateDepositForm({ invoice, setInvoice }: InitiateDepositForm
             <div className="h-14 rounded-2xl bg-white/5 animate-pulse" />
           ) : (
             <div className="relative" ref={dropdownRef}>
-              {/* Trigger button */}
               <button
                 type="button"
                 onClick={() => setIsOpen(v => !v)}
@@ -153,17 +150,15 @@ export function InitiateDepositForm({ invoice, setInvoice }: InitiateDepositForm
               >
                 {selectedCurrencyData
                   ? <span>{selectedCurrencyData.symbol}{selectedCurrencyData.network ? <span className="text-white/30 font-medium"> — {selectedCurrencyData.network}</span> : ''} <span className="text-white/30 font-medium">· {selectedCurrencyData.name}</span></span>
-                  : <span className="text-white/30">Selecciona una moneda</span>
+                  : <span className="text-white/30">{t('currencyPlaceholder')}</span>
                 }
               </button>
               <div className="pointer-events-none absolute inset-y-0 right-4 flex items-center">
                 <ChevronDown className={`w-4 h-4 text-nexus-blue-light/60 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
               </div>
 
-              {/* Dropdown */}
               {isOpen && (
                 <div className="absolute z-50 w-full mt-2 bg-[#0d1117] border border-white/10 rounded-2xl overflow-hidden shadow-[0_8px_30px_rgba(0,0,0,0.5)]">
-                  {/* Search */}
                   <div className="p-2 border-b border-white/5">
                     <div className="flex items-center gap-2 bg-white/5 rounded-xl px-3 py-2">
                       <Search className="w-3 h-3 text-white/30 shrink-0" />
@@ -172,7 +167,7 @@ export function InitiateDepositForm({ invoice, setInvoice }: InitiateDepositForm
                         type="text"
                         value={search}
                         onChange={e => setSearch(e.target.value)}
-                        placeholder="Buscar moneda..."
+                        placeholder={t('searchCurrency')}
                         className="flex-1 bg-transparent text-white text-xs font-black outline-none placeholder:text-white/20 tracking-wide"
                       />
                       {search && (
@@ -183,11 +178,10 @@ export function InitiateDepositForm({ invoice, setInvoice }: InitiateDepositForm
                     </div>
                   </div>
 
-                  {/* Options */}
                   <div className="max-h-52 overflow-y-auto">
                     {filtered.length === 0 ? (
                       <div className="py-6 text-center text-[10px] text-white/20 font-black uppercase tracking-widest">
-                        Sin resultados
+                        {t('noResults')}
                       </div>
                     ) : (
                       filtered.map(c => (
@@ -218,12 +212,11 @@ export function InitiateDepositForm({ invoice, setInvoice }: InitiateDepositForm
           )}
         </div>
 
-        {/* Amount Input */}
         <div className="space-y-4">
           <div className="flex items-center gap-2">
             <div className="w-1 h-3 bg-nexus-blue-light rounded-full"></div>
             <label className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40">
-              Monto a Invertir (USD)
+              {t('amount')}
             </label>
           </div>
           <div className="relative group">
@@ -240,52 +233,49 @@ export function InitiateDepositForm({ invoice, setInvoice }: InitiateDepositForm
           </div>
           <div className="flex items-center gap-2 text-[9px] font-black text-nexus-text/40 px-1 uppercase tracking-widest">
             <Info className="h-3 w-3" />
-            <span>Mínimo de inversión: $10.00 USD</span>
+            <span>{t('minimum')}</span>
           </div>
         </div>
 
-        {/* Commission Breakdown */}
         {hasCommission && (
           <div className="rounded-2xl border border-amber-500/20 bg-amber-500/5 p-4 space-y-3 animate-in fade-in slide-in-from-top-2">
             <div className="flex items-center gap-2">
               <Shield className="w-3 h-3 text-amber-400" />
               <span className="text-[9px] font-black uppercase tracking-[0.3em] text-amber-400/80">
-                Desglose de Inversión
+                {t('breakdown')}
               </span>
             </div>
             <div className="space-y-2">
               <div className="flex justify-between items-center">
-                <span className="text-[10px] text-white/40 font-black uppercase tracking-widest">Recibes en tu cuenta</span>
+                <span className="text-[10px] text-white/40 font-black uppercase tracking-widest">{t('youReceive')}</span>
                 <span className="text-[11px] font-black text-white">${formatCurrency(preview.net_amount)}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-[10px] text-white/40 font-black uppercase tracking-widest">
-                  Comisión de plataforma ({preview.rate}%)
+                  {t('platformFee')} ({preview.rate}%)
                 </span>
                 <span className="text-[11px] font-black text-amber-400">+${formatCurrency(preview.fee_amount)}</span>
               </div>
               <div className="h-px bg-white/10 my-1" />
               <div className="flex justify-between items-center">
-                <span className="text-[10px] text-white font-black uppercase tracking-widest">Total a enviar</span>
+                <span className="text-[10px] text-white font-black uppercase tracking-widest">{t('totalSend')}</span>
                 <span className="text-sm font-black text-nexus-blue-light">${formatCurrency(preview.amount_charged)}</span>
               </div>
             </div>
           </div>
         )}
 
-        {/* No commission notice */}
         {numericAmount >= 10 && preview && preview.rate === 0 && (
           <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-4 animate-in fade-in">
             <div className="flex items-center gap-2">
               <TrendingUp className="w-3 h-3 text-emerald-400" />
               <span className="text-[9px] font-black uppercase tracking-[0.3em] text-emerald-400">
-                Sin comisión activa — recibes el 100% de ${formatCurrency(numericAmount)}
+                {t('noFee')} ${formatCurrency(numericAmount)}
               </span>
             </div>
           </div>
         )}
 
-        {/* Error Feedback */}
         {errorMessage && (
           <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-start gap-3 animate-in fade-in slide-in-from-top-1">
             <Info className="h-4 w-4 text-red-400 shrink-0 mt-0.5" />
@@ -293,7 +283,6 @@ export function InitiateDepositForm({ invoice, setInvoice }: InitiateDepositForm
           </div>
         )}
 
-        {/* Generate Button */}
         <button
           onClick={handleGenerate}
           disabled={isPending || !amount || numericAmount < 10}
@@ -303,7 +292,7 @@ export function InitiateDepositForm({ invoice, setInvoice }: InitiateDepositForm
             <Loader2 className="h-5 w-5 animate-spin" />
           ) : (
             <>
-              {hasCommission ? `Generar Dirección — Enviar $${formatCurrency(preview.amount_charged)}` : 'Generar Dirección de Pago'}
+              {hasCommission ? `${t('generateAndSend')} $${formatCurrency(preview.amount_charged)}` : t('generateAddress')}
               <ArrowRight className="h-4 w-4" />
             </>
           )}

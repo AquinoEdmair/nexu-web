@@ -7,12 +7,15 @@ import { Search, User as UserIcon, Bell, LogOut, Shield, ChevronDown, Check, Che
 import { useAuthStore } from '@/lib/store/authStore';
 import { useUnreadCount, useNotifications, useMarkRead, useMarkAllRead } from '@/lib/hooks/useNotifications';
 import type { InAppNotification } from '@/lib/api/notifications';
+import { useTranslations } from 'next-intl';
+import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
 
 function NotificationDropdown({ onClose }: { onClose: () => void }) {
   const { data, isLoading } = useNotifications(1);
   const { mutate: markRead } = useMarkRead();
   const { mutate: markAllRead, isPending: markingAll } = useMarkAllRead();
   const router = useRouter();
+  const t = useTranslations('navbar');
 
   const handleClick = (n: InAppNotification) => {
     if (!n.read_at) markRead(n.id);
@@ -23,23 +26,23 @@ function NotificationDropdown({ onClose }: { onClose: () => void }) {
   return (
     <div className="absolute right-0 mt-4 w-80 bg-[#0d131c] border border-white/10 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden backdrop-blur-3xl animate-in fade-in zoom-in-95 duration-200">
       <div className="p-4 border-b border-white/5 flex items-center justify-between">
-        <p className="text-[9px] font-black text-white/40 uppercase tracking-[0.3em]">Notificaciones</p>
+        <p className="text-[9px] font-black text-white/40 uppercase tracking-[0.3em]">{t('notifications')}</p>
         <button
           onClick={() => markAllRead()}
           disabled={markingAll}
           className="flex items-center gap-1 text-[8px] font-black text-nexus-blue-light/60 hover:text-nexus-blue-light uppercase tracking-widest transition-all disabled:opacity-40"
         >
           <CheckCheck className="w-3 h-3" />
-          Marcar todas
+          {t('markAll')}
         </button>
       </div>
 
       <div className="max-h-[400px] overflow-y-auto divide-y divide-white/5">
         {isLoading && (
-          <div className="p-6 text-center text-[10px] text-white/20 uppercase tracking-widest">Cargando...</div>
+          <div className="p-6 text-center text-[10px] text-white/20 uppercase tracking-widest">{t('loading' as any) ?? 'Cargando...'}</div>
         )}
         {!isLoading && (!data?.data?.length) && (
-          <div className="p-6 text-center text-[10px] text-white/20 uppercase tracking-widest">Sin notificaciones</div>
+          <div className="p-6 text-center text-[10px] text-white/20 uppercase tracking-widest">{t('noNotifications')}</div>
         )}
         {data?.data?.map((n) => (
           <button
@@ -77,6 +80,8 @@ function NotificationDropdown({ onClose }: { onClose: () => void }) {
 export function Navbar() {
   const { user, logout } = useAuthStore();
   const router = useRouter();
+  const t = useTranslations('navbar');
+  const tNav = useTranslations('nav');
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isBellOpen, setIsBellOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -110,11 +115,12 @@ export function Navbar() {
           </Link>
           <div className="hidden md:flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/5 rounded-full">
             <div className="w-1.5 h-1.5 rounded-full bg-nexus-blue-light animate-pulse shadow-[0_0_8px_rgba(24,136,243,1)]"></div>
-            <span className="text-[9px] font-black text-white/40 uppercase tracking-[0.3em]">Estado: Protegido</span>
+            <span className="text-[9px] font-black text-white/40 uppercase tracking-[0.3em]">{t('status')}</span>
           </div>
         </div>
 
         <div className="flex items-center gap-4 md:gap-6">
+          <LanguageSwitcher />
           {/* Notification Bell */}
           <div className="relative" ref={bellRef}>
             <button
@@ -141,7 +147,7 @@ export function Navbar() {
             >
               <div className="text-right hidden sm:block">
                 <p className="text-[10px] font-black text-white uppercase tracking-tighter">
-                  {user?.name || 'Inversor NEXU'}
+                  {user?.name || t('defaultUser')}
                 </p>
                 <div className="flex items-center justify-end gap-1">
                   <Shield className="w-2 h-2 text-nexus-blue-light" />
@@ -164,7 +170,7 @@ export function Navbar() {
                 ></div>
                 <div className="absolute right-0 mt-4 w-64 bg-[#0d131c] border border-white/10 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden backdrop-blur-3xl animate-in fade-in zoom-in-95 duration-200">
                   <div className="p-5 border-b border-white/5 bg-white/[0.02]">
-                    <p className="text-[9px] font-black text-white/20 uppercase tracking-[0.3em] mb-1">Estatus de Perfil</p>
+                    <p className="text-[9px] font-black text-white/20 uppercase tracking-[0.3em] mb-1">{t('profileStatus')}</p>
                     <p className="text-xs font-black text-white uppercase truncate">{user?.email}</p>
                   </div>
                   <div className="p-2">
@@ -174,7 +180,7 @@ export function Navbar() {
                       className="flex items-center gap-3 px-4 py-3 text-[10px] font-black text-white/60 uppercase tracking-widest hover:text-white hover:bg-white/5 rounded-2xl transition-all"
                     >
                       <UserIcon className="w-4 h-4 text-nexus-blue-light" />
-                      Gestionar Perfil
+                      {t('manageProfile')}
                     </Link>
                     <div className="h-px bg-white/5 my-2 mx-4"></div>
                     <button
@@ -182,7 +188,7 @@ export function Navbar() {
                       className="w-full flex items-center gap-3 px-4 py-3 text-[10px] font-black text-red-400 uppercase tracking-widest hover:text-red-300 hover:bg-red-500/10 rounded-2xl transition-all"
                     >
                       <LogOut className="w-4 h-4" />
-                      Cerrar Sesión
+                      {tNav('logout')}
                     </button>
                   </div>
                 </div>
@@ -199,14 +205,14 @@ export function Navbar() {
                 <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-nexus-blue-light" />
                 <input
                   autoFocus
-                  placeholder="BUSCAR MOVIMIENTO, RENDIMIENTO O SOPORTE..."
+                  placeholder={t('searchPlaceholder')}
                   className="w-full bg-[#0d131c] border border-nexus-blue-light/30 rounded-[2rem] py-5 px-16 text-xs font-black uppercase text-white tracking-widest focus:outline-none focus:border-nexus-blue-light focus:ring-4 focus:ring-nexus-blue/10 transition-all"
                 />
                 <button
                   onClick={() => setIsSearchOpen(false)}
                   className="absolute right-6 top-1/2 -translate-y-1/2 text-[9px] font-black text-white/20 hover:text-white uppercase tracking-widest"
                 >
-                  [BORRAR]
+                  {t('searchClear')}
                 </button>
              </div>
           </div>

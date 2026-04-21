@@ -5,6 +5,7 @@ import { Mail, ArrowRight, CheckCircle2, Loader2, RefreshCw } from 'lucide-react
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { authApi } from '@/lib/api/auth';
+import { useTranslations } from 'next-intl';
 
 export default function VerifyEmailSentPageWrapper() {
   return (
@@ -17,6 +18,7 @@ export default function VerifyEmailSentPageWrapper() {
 function VerifyEmailSentPage() {
   const searchParams = useSearchParams();
   const emailFromQuery = searchParams.get('email') ?? '';
+  const t = useTranslations('auth.verifyEmailSent');
 
   const [email, setEmail] = useState(emailFromQuery);
   const [isResending, setIsResending] = useState(false);
@@ -29,7 +31,7 @@ function VerifyEmailSentPage() {
     setResent(false);
 
     if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
-      setError('Ingresa un correo electrónico válido.');
+      setError(t('invalidEmail'));
       return;
     }
 
@@ -38,7 +40,7 @@ function VerifyEmailSentPage() {
       await authApi.resendVerificationByEmail(email);
       setResent(true);
     } catch {
-      setError('No pudimos reenviar el correo. Inténtalo de nuevo.');
+      setError(t('resentError'));
     } finally {
       setIsResending(false);
     }
@@ -46,7 +48,6 @@ function VerifyEmailSentPage() {
 
   return (
     <div className="flex-1 w-full max-w-md px-6 flex flex-col justify-center pb-20 mx-auto pt-10">
-      {/* Visual Anchor */}
       <div className="mb-10 flex justify-center">
         <div className="relative">
           <div className="absolute inset-0 bg-nexus-blue blur-3xl opacity-20 rounded-full"></div>
@@ -56,30 +57,29 @@ function VerifyEmailSentPage() {
         </div>
       </div>
 
-      {/* Header */}
       <div className="text-center space-y-3 mb-10">
-        <h1 className="text-3xl font-black tracking-tighter text-white uppercase font-headline">Verifica tu correo</h1>
+        <h1 className="text-3xl font-black tracking-tighter text-white uppercase font-headline">{t('title')}</h1>
         <p className="text-nexus-text leading-relaxed px-4 font-medium">
-          Te enviamos un enlace de verificación{emailFromQuery ? ' a ' : '.'}
-          {emailFromQuery && <span className="text-nexus-blue-light font-black">{emailFromQuery}</span>}
-          {emailFromQuery ? '.' : ''} Haz click en el botón del correo para activar tu cuenta.
+          {emailFromQuery ? (
+            <>{t('sentTo')} <span className="text-nexus-blue-light font-black">{emailFromQuery}</span>. {t('clickButton')}</>
+          ) : (
+            <>{t('sentGeneric')} {t('clickButton')}</>
+          )}
         </p>
       </div>
 
-      {/* Info block */}
       <div className="bg-nexus-blue/5 rounded-xl p-5 border border-nexus-blue-light/20 flex items-start gap-4 mb-8">
         <div className="bg-nexus-blue/20 p-2 rounded-lg shrink-0">
           <CheckCircle2 className="text-nexus-blue-light w-6 h-6" />
         </div>
         <div>
-          <h4 className="text-sm font-black text-white mb-1 uppercase tracking-tight">Revisa tu bandeja de entrada</h4>
+          <h4 className="text-sm font-black text-white mb-1 uppercase tracking-tight">{t('checkInboxTitle')}</h4>
           <p className="text-xs text-nexus-text/80 font-medium leading-tight">
-            Si no lo encuentras, revisa tu carpeta de spam o correo no deseado. El enlace expira en 60 minutos.
+            {t('checkInboxDetail')}
           </p>
         </div>
       </div>
 
-      {/* Resend */}
       {error && (
         <div className="mb-6 rounded-xl bg-red-500/10 border border-red-500/20 px-4 py-3 text-sm text-red-400">
           {error}
@@ -88,13 +88,13 @@ function VerifyEmailSentPage() {
 
       {resent ? (
         <div className="mb-6 rounded-xl bg-emerald-500/10 border border-emerald-500/20 px-4 py-3 text-sm text-emerald-400">
-          Si el correo existe y aún no está verificado, enviamos un nuevo enlace.
+          {t('resentSuccess')}
         </div>
       ) : (
         <form onSubmit={handleResend} className="space-y-4">
           <div className="space-y-2 group">
             <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-nexus-text/60 pl-1 group-focus-within:text-nexus-blue-light transition-colors" htmlFor="resend-email">
-              ¿No recibiste el correo?
+              {t('notReceived')}
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors group-focus-within:text-nexus-blue-light">
@@ -121,32 +121,31 @@ function VerifyEmailSentPage() {
             {isResending ? (
               <>
                 <Loader2 className="w-5 h-5 animate-spin" />
-                Reenviando...
+                {t('resending')}
               </>
             ) : (
               <>
                 <RefreshCw className="w-5 h-5" />
-                <span>Reenviar enlace</span>
+                <span>{t('resend')}</span>
               </>
             )}
           </button>
         </form>
       )}
 
-      {/* CTA */}
       <Link
         href="/login"
         className="mt-6 w-full bg-nexus-blue text-white font-black py-5 rounded-xl shadow-[0_0_30px_rgba(11,64,193,0.3)] hover:scale-[1.02] active:scale-95 transition-all uppercase tracking-widest text-xs flex items-center justify-center gap-2 group"
       >
-        <span>Ir a iniciar sesión</span>
+        <span>{t('goToLogin')}</span>
         <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
       </Link>
 
       <div className="mt-12 text-center border-t border-white/5 pt-8">
         <p className="text-sm text-nexus-text font-medium">
-          ¿Ya verificaste tu cuenta?
+          {t('alreadyVerified')}
           <Link href="/login" className="text-nexus-blue-light font-black ml-2 hover:text-white transition-all uppercase tracking-tighter">
-            Iniciar Sesión
+            {t('signIn')}
           </Link>
         </p>
       </div>

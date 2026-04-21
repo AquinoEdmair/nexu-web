@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { useTeam } from '@/lib/hooks/useTeam';
 import { TeamMember } from '@/lib/api/team';
+import { useTranslations } from 'next-intl';
 
 function MemberCard({ member }: { member: TeamMember }) {
   const initials = member.name
@@ -48,6 +49,7 @@ function MemberCard({ member }: { member: TeamMember }) {
 
 export function TeamSection() {
   const { data: members, isLoading } = useTeam();
+  const t = useTranslations('home.team');
 
   if (isLoading || !members?.length) return null;
 
@@ -56,17 +58,17 @@ export function TeamSection() {
       <div className="flex flex-col md:flex-row items-end justify-between gap-4 border-b border-white/5 pb-8">
         <div>
           <h2 className="text-xs font-black uppercase tracking-[0.5em] text-nexus-blue-light mb-4">
-            Los Operadores
+            {t('sectionLabel')}
           </h2>
           <h3 className="text-4xl md:text-5xl font-black text-white tracking-tighter uppercase leading-none">
-            NUESTRO <br />
+            {t('title')} <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-nexus-blue to-white/60">
-              EQUIPO.
+              NEXU.
             </span>
           </h3>
         </div>
         <p className="max-w-md text-nexus-text text-sm font-medium leading-relaxed italic opacity-60">
-          "Profesionales comprometidos con llevar tu capital al siguiente nivel."
+          "{t('quote')}"
         </p>
       </div>
 

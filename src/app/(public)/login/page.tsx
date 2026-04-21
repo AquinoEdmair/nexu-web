@@ -5,6 +5,7 @@ import { AtSign, Eye, EyeOff, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { useLogin } from '@/lib/hooks/useAuth';
 import { loginSchema } from '@/lib/validators/auth';
+import { useTranslations } from 'next-intl';
 
 export default function LoginPageWrapper() {
   return (
@@ -19,6 +20,7 @@ function LoginPage() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const { login, isLoading, error, fieldErrors, reset } = useLogin();
+  const t = useTranslations('auth.login');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,8 +36,8 @@ function LoginPage() {
     <div className="flex-grow flex flex-col px-8 pb-10 max-w-md mx-auto w-full justify-center">
       {/* Welcome Section */}
       <div className="mt-4 mb-10">
-        <h1 className="text-4xl font-black tracking-tighter text-white mb-2 uppercase">Terminal de Acceso</h1>
-        <p className="text-nexus-text text-sm font-medium tracking-wide">Ingresa tus credenciales seguras para gestionar tu patrimonio.</p>
+        <h1 className="text-4xl font-black tracking-tighter text-white mb-2 uppercase">{t('title')}</h1>
+        <p className="text-nexus-text text-sm font-medium tracking-wide">{t('subtitle')}</p>
       </div>
 
       {/* Server Error */}
@@ -50,12 +52,12 @@ function LoginPage() {
         {/* Input Field: Email */}
         <div className="group">
           <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-nexus-text/60 mb-2 group-focus-within:text-nexus-blue-light transition-colors">
-            Correo Electrónico
+            {t('email')}
           </label>
           <div className="relative">
             <input
               className="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-4 text-white placeholder:text-white/20 focus:ring-1 focus:ring-nexus-blue-light transition-all outline-none"
-              placeholder="nombre@correo.com"
+              placeholder={t('emailPlaceholder')}
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -74,10 +76,10 @@ function LoginPage() {
         <div className="group">
           <div className="flex justify-between items-end mb-2">
             <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-nexus-text/60 group-focus-within:text-nexus-blue-light transition-colors">
-              Contraseña
+              {t('password')}
             </label>
             <Link href="/forgot-password" className="text-[10px] font-black uppercase tracking-widest text-nexus-blue-light hover:text-white transition-colors">
-              ¿Olvidaste tu contraseña?
+              {t('forgotPassword')}
             </Link>
           </div>
           <div className="relative">
@@ -109,10 +111,10 @@ function LoginPage() {
             {isLoading ? (
               <>
                 <Loader2 className="w-5 h-5 animate-spin" />
-                Iniciando sesión...
+                {t('submitting')}
               </>
             ) : (
-              'Iniciar Sesión'
+              t('submit')
             )}
           </button>
         </div>
@@ -121,9 +123,9 @@ function LoginPage() {
       {/* Registration Link */}
       <div className="mt-8 text-center pb-8 border-t border-white/5 pt-8">
         <p className="text-sm text-nexus-text/60 font-medium tracking-wide">
-          ¿No tienes una cuenta?
+          {t('noAccount')}
           <Link href="/register" className="text-nexus-blue-light font-black ml-2 hover:text-white transition-all uppercase tracking-tighter">
-            Únete a la Élite
+            {t('joinElite')}
           </Link>
         </p>
       </div>

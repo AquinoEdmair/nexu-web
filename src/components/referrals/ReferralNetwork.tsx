@@ -3,10 +3,12 @@
 import { useState } from 'react';
 import { Zap, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useReferralNetwork } from '@/lib/hooks/useReferrals';
+import { useTranslations } from 'next-intl';
 
 export function ReferralNetwork() {
   const [page, setPage] = useState(1);
   const { data, isLoading } = useReferralNetwork(page);
+  const t = useTranslations('referrals');
 
   const nodes    = data?.data ?? [];
   const lastPage = data?.meta.last_page ?? 1;
@@ -16,12 +18,12 @@ export function ReferralNetwork() {
     <section className="space-y-6">
       <div className="flex justify-between items-center px-2">
         <h2 className="text-2xl font-black text-white tracking-tighter uppercase">
-          Tu Red de Invitados
+          {t('networkTitle')}
         </h2>
         <div className="flex items-center gap-2">
           <Zap className="w-3 h-3 text-nexus-blue-light fill-nexus-blue-light" />
           <span className="text-[10px] font-black text-nexus-blue-light uppercase tracking-widest">
-            {total} invitados totales
+            {t('totalGuests', { total })}
           </span>
         </div>
       </div>
@@ -34,7 +36,7 @@ export function ReferralNetwork() {
         ) : nodes.length === 0 ? (
           <div className="px-8 py-16 text-center">
             <p className="text-white/20 font-black uppercase tracking-widest text-xs">
-              Sin invitados aún. Comparte tu enlace para comenzar tu red.
+              {t('noGuests')}
             </p>
           </div>
         ) : (
@@ -44,13 +46,13 @@ export function ReferralNetwork() {
                 <thead>
                   <tr className="bg-white/5 border-b border-white/10">
                     <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-nexus-blue-light/60">
-                      Invitado
+                      {t('headerGuest')}
                     </th>
                     <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-nexus-blue-light/60 text-center">
-                      Estado
+                      {t('headerStatus')}
                     </th>
                     <th className="px-8 py-5 text-right text-[10px] font-black uppercase tracking-[0.2em] text-nexus-blue-light/60">
-                      Comisión Generada
+                      {t('headerCommission')}
                     </th>
                   </tr>
                 </thead>
@@ -63,7 +65,7 @@ export function ReferralNetwork() {
                             {node.masked_email}
                           </span>
                           <span className="text-[9px] text-white/20 font-black uppercase tracking-widest">
-                            Inscrito: {new Date(node.joined_at).toLocaleDateString('es-MX', { year: 'numeric', month: 'short', day: 'numeric' })}
+                            {t('joined')} {new Date(node.joined_at).toLocaleDateString('es-MX', { year: 'numeric', month: 'short', day: 'numeric' })}
                           </span>
                         </div>
                       </td>
@@ -71,7 +73,7 @@ export function ReferralNetwork() {
                         <div className="flex items-center justify-center gap-3">
                           <div className={`w-1.5 h-1.5 rounded-full ${node.status === 'active' ? 'bg-nexus-blue-light animate-pulse shadow-[0_0_10px_rgba(24,136,243,1)]' : 'bg-white/10'}`} />
                           <span className={`text-[10px] font-black uppercase tracking-[0.2em] ${node.status === 'active' ? 'text-nexus-blue-light' : 'text-white/20'}`}>
-                            {node.status === 'active' ? 'Activo' : 'Inactivo'}
+                            {node.status === 'active' ? t('active') : t('inactive')}
                           </span>
                         </div>
                       </td>

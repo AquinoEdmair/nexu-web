@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Copy, Share2, CheckCircle2 } from 'lucide-react';
 import type { ReferralSummary } from '@/types/models';
+import { useTranslations } from 'next-intl';
 
 interface ReferralInfoProps {
   summary: ReferralSummary;
@@ -11,6 +12,7 @@ interface ReferralInfoProps {
 export function ReferralInfo({ summary }: ReferralInfoProps) {
   const [codeCopied,  setCodeCopied]  = useState(false);
   const [linkCopied,  setLinkCopied]  = useState(false);
+  const t = useTranslations('referrals');
 
   const copyToClipboard = async (text: string, setter: (v: boolean) => void) => {
     await navigator.clipboard.writeText(text);
@@ -28,7 +30,7 @@ export function ReferralInfo({ summary }: ReferralInfoProps) {
       <div className="bg-[#0a0f16]/40 border border-white/10 p-8 rounded-[2rem] backdrop-blur-xl flex flex-col justify-between space-y-8 hover:border-nexus-blue/20 transition-all shadow-[0_4px_30px_rgba(0,0,0,0.2)]">
         <div>
           <h3 className="text-white/20 font-black tracking-[0.3em] uppercase text-[9px] mb-4">
-            Tu Código Elite
+            {t('codeLabel')}
           </h3>
           <button
             type="button"
@@ -47,18 +49,13 @@ export function ReferralInfo({ summary }: ReferralInfoProps) {
         <p className="text-xs text-nexus-text/40 font-medium leading-relaxed uppercase tracking-wider">
           {firstPct !== null ? (
             <>
-              Atrae nuevos inversionistas a Nexu — comparte tu código y obtén una comisión del{' '}
-              <span className="text-nexus-blue-light">{firstPct}%</span>{' '}
-              en el primer depósito de tu invitado
+              {t('firstDepositCommission', { first: firstPct })}
               {recurPct !== null && recurPct !== '0' && (
-                <> y <span className="text-nexus-blue-light">{recurPct}%</span> en depósitos recurrentes</>
+                <> {t('recurringCommission', { recur: recurPct })}</>
               )}.
             </>
           ) : (
-            <>
-              Atrae nuevos inversionistas a Nexu — comparte tu código y gana comisiones por cada invitado activo.
-              Completa tu perfil para ver tu tasa de comisión.
-            </>
+            t('noTierText')
           )}
         </p>
       </div>
@@ -67,7 +64,7 @@ export function ReferralInfo({ summary }: ReferralInfoProps) {
       <div className="bg-[#0a0f16]/40 border border-white/10 p-8 rounded-[2rem] backdrop-blur-xl flex flex-col justify-between space-y-8 hover:border-nexus-blue/20 transition-all shadow-[0_4px_30px_rgba(0,0,0,0.2)]">
         <div>
           <h3 className="text-white/20 font-black tracking-[0.3em] uppercase text-[9px] mb-4">
-            Enlace de Invitación
+            {t('linkLabel')}
           </h3>
           <button
             type="button"
@@ -85,7 +82,7 @@ export function ReferralInfo({ summary }: ReferralInfoProps) {
         </div>
         <div className="pt-2">
           <p className="text-[10px] font-black text-white/20 uppercase tracking-[0.3em]">
-            Tu enlace de invitación es único y personal.
+            {t('uniqueLink')}
           </p>
         </div>
       </div>

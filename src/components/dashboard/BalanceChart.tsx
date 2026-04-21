@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react';
 import { useYields } from '@/lib/hooks/useYields';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { Loader2, TrendingUp } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 const PERIOD_OPTIONS = [
   { label: '1H', hours: 1, days: 0 },
@@ -42,6 +43,7 @@ function shortLabel(ymd: string): string {
 }
 
 export function BalanceChart() {
+  const t = useTranslations('dashboard');
   const [selectedPeriod, setSelectedPeriod] = useState(0);
   const selected = PERIOD_OPTIONS[selectedPeriod];
   const days = selected.days;
@@ -152,7 +154,7 @@ export function BalanceChart() {
       <div className="xl:col-span-2 relative h-[452px]">
         <div className="h-full bg-white/5 border border-white/5 rounded-3xl flex flex-col justify-center items-center gap-4">
           <Loader2 className="w-8 h-8 text-nexus-blue-light animate-spin" />
-          <p className="text-[10px] font-black tracking-[0.3em] text-nexus-blue-light/40 uppercase">Analizando Trayectoria...</p>
+          <p className="text-[10px] font-black tracking-[0.3em] text-nexus-blue-light/40 uppercase">{t('chartAnalyzing')}</p>
         </div>
       </div>
     );
@@ -165,14 +167,14 @@ export function BalanceChart() {
           <div>
             <div className="flex items-center gap-2 mb-2">
               <TrendingUp className="w-4 h-4 text-nexus-blue-light" />
-              <span className="text-[10px] font-black tracking-[0.3em] text-nexus-blue-light/80 uppercase">Análisis Temporal de Activos</span>
+              <span className="text-[10px] font-black tracking-[0.3em] text-nexus-blue-light/80 uppercase">{t('chartLabel')}</span>
             </div>
-            <h3 className="text-3xl font-black text-white tracking-tighter uppercase">Radar de Crecimiento</h3>
+            <h3 className="text-3xl font-black text-white tracking-tighter uppercase">{t('chartTitle')}</h3>
             <p className="text-xs text-nexus-text/40 font-medium tracking-tight mt-1">
-              Rendimientos por día — período seleccionado
+              {t('chartSubtitle')}
               {hasData && (
                 <span className="text-nexus-blue-light ml-2 font-black">
-                  Total: +${totalYield.toFixed(2)}
+                  {t('chartTotal', { total: totalYield.toFixed(2) })}
                 </span>
               )}
             </p>
@@ -198,7 +200,7 @@ export function BalanceChart() {
           {!hasData ? (
             <div className="h-[300px] flex flex-col items-center justify-center gap-3">
               <TrendingUp className="w-10 h-10 text-white/5" />
-              <p className="text-[10px] font-black text-white/20 uppercase tracking-widest">Sin rendimientos en el período</p>
+              <p className="text-[10px] font-black text-white/20 uppercase tracking-widest">{t('chartNoData')}</p>
             </div>
           ) : (
             <ResponsiveContainer width="100%" height={300}>
@@ -225,7 +227,7 @@ export function BalanceChart() {
                   cursor={{ fill: 'rgba(255,255,255,0.03)' }}
                   formatter={(value) => [
                     Number(value) > 0 ? `+$${Number(value).toFixed(2)}` : '$0.00',
-                    'Rendimiento'
+                    t('chartYield'),
                   ]}
                 />
                 <Bar dataKey="total" radius={[4, 4, 0, 0]} maxBarSize={40}>
@@ -252,13 +254,13 @@ export function BalanceChart() {
         {/* Legend */}
         <div className="mt-4 pt-4 border-t border-white/5 flex items-center gap-6 text-[9px] font-black uppercase tracking-widest text-white/20">
           <span className="flex items-center gap-1.5">
-            <span className="w-3 h-3 rounded-sm bg-nexus-blue inline-block" /> Hoy
+            <span className="w-3 h-3 rounded-sm bg-nexus-blue inline-block" /> {t('legendToday')}
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="w-3 h-3 rounded-sm bg-nexus-blue/60 inline-block" /> Período
+            <span className="w-3 h-3 rounded-sm bg-nexus-blue/60 inline-block" /> {t('legendPeriod')}
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="w-3 h-3 rounded-sm bg-nexus-blue/25 inline-block" /> ±3 días
+            <span className="w-3 h-3 rounded-sm bg-nexus-blue/25 inline-block" /> {t('legendPad')}
           </span>
         </div>
       </div>

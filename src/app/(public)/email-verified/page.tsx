@@ -4,39 +4,17 @@ import React, { Suspense } from 'react';
 import { CheckCircle2, XCircle, AlertCircle, ArrowRight, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 
 type Status = 'success' | 'already' | 'invalid' | 'not_found' | 'unknown';
+type Tone = 'success' | 'error' | 'warn';
 
-const STATUS_MAP: Record<Status, {
-  title: string;
-  message: string;
-  tone: 'success' | 'error' | 'warn';
-}> = {
-  success: {
-    title: 'Correo verificado',
-    message: 'Tu cuenta ha sido activada exitosamente. Ya puedes iniciar sesión y comenzar a invertir.',
-    tone: 'success',
-  },
-  already: {
-    title: 'Ya estaba verificado',
-    message: 'Esta cuenta ya había sido verificada anteriormente. Inicia sesión para continuar.',
-    tone: 'warn',
-  },
-  invalid: {
-    title: 'Enlace inválido o expirado',
-    message: 'El enlace de verificación no es válido o ha expirado. Solicita un nuevo enlace desde la pantalla de inicio.',
-    tone: 'error',
-  },
-  not_found: {
-    title: 'Cuenta no encontrada',
-    message: 'No encontramos una cuenta asociada a este enlace. Es posible que haya sido eliminada.',
-    tone: 'error',
-  },
-  unknown: {
-    title: 'Estado desconocido',
-    message: 'No pudimos determinar el estado de la verificación. Intenta de nuevo.',
-    tone: 'error',
-  },
+const STATUS_TONES: Record<Status, Tone> = {
+  success:   'success',
+  already:   'warn',
+  invalid:   'error',
+  not_found: 'error',
+  unknown:   'error',
 };
 
 export default function EmailVerifiedPageWrapper() {
@@ -49,6 +27,8 @@ export default function EmailVerifiedPageWrapper() {
 
 function EmailVerifiedPage() {
   const searchParams = useSearchParams();
+  const t = useTranslations('auth.emailVerified');
+
   const rawStatus = (searchParams.get('status') ?? 'unknown') as Status;
   const status: Status = (['success', 'already', 'invalid', 'not_found'] as const).includes(
     rawStatus as 'success' | 'already' | 'invalid' | 'not_found'
@@ -56,7 +36,23 @@ function EmailVerifiedPage() {
     ? rawStatus
     : 'unknown';
 
-  const { title, message, tone } = STATUS_MAP[status];
+  const tone = STATUS_TONES[status];
+
+  const titleMap: Record<Status, string> = {
+    success:   t('verified'),
+    already:   t('alreadyVerified'),
+    invalid:   t('invalidLink'),
+    not_found: t('notFound'),
+    unknown:   t('unknownStatus'),
+  };
+
+  const messageMap: Record<Status, string> = {
+    success:   t('verifiedMessage'),
+    already:   t('alreadyMessage'),
+    invalid:   t('invalidMessage'),
+    not_found: t('notFoundMessage'),
+    unknown:   t('unknownMessage'),
+  };
 
   const Icon = tone === 'success' ? CheckCircle2 : tone === 'warn' ? AlertCircle : XCircle;
 
@@ -84,7 +80,6 @@ function EmailVerifiedPage() {
 
   return (
     <div className="flex-1 w-full max-w-md px-6 flex flex-col justify-center pb-20 mx-auto pt-10">
-      {/* Visual Anchor */}
       <div className="mb-10 flex justify-center">
         <div className="relative">
           <div className={`absolute inset-0 ${toneClasses.glow} blur-3xl opacity-20 rounded-full`}></div>
@@ -94,19 +89,17 @@ function EmailVerifiedPage() {
         </div>
       </div>
 
-      {/* Header */}
       <div className="text-center space-y-3 mb-10">
-        <h1 className="text-3xl font-black tracking-tighter text-white uppercase font-headline">{title}</h1>
-        <p className="text-nexus-text leading-relaxed px-4 font-medium">{message}</p>
+        <h1 className="text-3xl font-black tracking-tighter text-white uppercase font-headline">{titleMap[status]}</h1>
+        <p className="text-nexus-text leading-relaxed px-4 font-medium">{messageMap[status]}</p>
       </div>
 
-      {/* CTA */}
       {tone === 'success' || tone === 'warn' ? (
         <Link
           href="/login"
           className="w-full bg-nexus-blue text-white font-black py-5 rounded-xl shadow-[0_0_30px_rgba(11,64,193,0.3)] hover:scale-[1.02] active:scale-95 transition-all uppercase tracking-widest text-xs flex items-center justify-center gap-2 group"
         >
-          <span>Iniciar Sesión</span>
+          <span>{t('signIn')}</span>
           <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
         </Link>
       ) : (
@@ -115,14 +108,14 @@ function EmailVerifiedPage() {
             href="/verify-email-sent"
             className="w-full bg-nexus-blue text-white font-black py-5 rounded-xl shadow-[0_0_30px_rgba(11,64,193,0.3)] hover:scale-[1.02] active:scale-95 transition-all uppercase tracking-widest text-xs flex items-center justify-center gap-2 group"
           >
-            <span>Reenviar enlace</span>
+            <span>{t('resend')}</span>
             <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
           </Link>
           <Link
             href="/login"
             className="w-full bg-white/5 border border-white/10 text-white font-black py-4 rounded-xl hover:bg-white/10 active:scale-95 transition-all uppercase tracking-widest text-xs flex items-center justify-center gap-2"
           >
-            Volver al inicio
+            {t('backHome')}
           </Link>
         </div>
       )}
