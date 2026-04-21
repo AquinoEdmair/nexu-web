@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
 
 export default function PublicLayout({
   children,
@@ -52,8 +53,12 @@ export default function PublicLayout({
 
       {/* Right Column: Interactive Content */}
       <div className="w-full lg:w-1/2 flex flex-col relative">
+        {/* Desktop language switcher */}
+        <div className="hidden lg:flex absolute top-6 right-6 z-50">
+          <LanguageSwitcher />
+        </div>
         {/* Mobile Header */}
-        <header className="lg:hidden w-full sticky top-0 bg-[#111318]/80 backdrop-blur-md flex justify-center items-center px-6 py-4 z-50 border-b border-outline-variant/5">
+        <header className="lg:hidden w-full sticky top-0 bg-[#111318]/80 backdrop-blur-md flex justify-between items-center px-6 py-4 z-50 border-b border-outline-variant/5">
           <Link href="/" className="group">
             <Image
               src="/nexu.png"
@@ -63,6 +68,7 @@ export default function PublicLayout({
               className="h-9 w-auto brightness-110 drop-shadow-[0_0_14px_rgba(24,136,243,0.5)] group-hover:drop-shadow-[0_0_24px_rgba(24,136,243,0.7)] transition-all"
             />
           </Link>
+          <LanguageSwitcher />
         </header>
 
         {/* Background Decorative Elements for Mobile */}

@@ -12,6 +12,7 @@ import { AboutSection } from '@/components/home/AboutSection';
 import { ContactSection } from '@/components/home/ContactSection';
 import { TeamSection } from '@/components/home/TeamSection';
 import { useTranslations } from 'next-intl';
+import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
 
 export default function LandingPage() {
   const t = useTranslations('home');
@@ -35,7 +36,8 @@ export default function LandingPage() {
             <Link href="/terms" className="text-[10px] font-black uppercase tracking-widest text-nexus-text hover:text-white transition-colors">{t('nav.terms')}</Link>
           </nav>
 
-          <div className="flex items-center gap-4 lg:gap-8">
+          <div className="flex items-center gap-4 lg:gap-6">
+            <LanguageSwitcher />
             <Link href="/login" className="text-xs font-black uppercase tracking-widest text-nexus-text hover:text-white transition-colors">
               {t('nav.signIn')}
             </Link>
