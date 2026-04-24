@@ -47,11 +47,10 @@ export function UserRankingTable() {
             {/* User Info */}
             <div className="flex-1 flex items-center gap-4">
               <div className={`relative w-12 h-12 flex items-center justify-center rounded-xl bg-white/5 border border-white/10 ${config.color} group-hover:scale-110 transition-transform`}>
-                <Icon className="w-8 h-8 drop-shadow-[0_0_8px_currentColor] opacity-20 absolute" />
                 {item.flag ? (
-                  <span className="text-2xl z-10 drop-shadow-md leading-none" title={item.flag}>{item.flag}</span>
+                  <span className="text-3xl drop-shadow-md leading-none" title={item.flag}>{item.flag}</span>
                 ) : (
-                  <Icon className="w-5 h-5 drop-shadow-[0_0_8px_currentColor] z-10" />
+                  <Icon className="w-6 h-6 drop-shadow-[0_0_8px_currentColor]" />
                 )}
               </div>
               <div className="flex flex-col">
