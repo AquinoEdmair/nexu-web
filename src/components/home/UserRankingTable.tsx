@@ -50,7 +50,8 @@ export function UserRankingTable() {
                 <Icon className="w-5 h-5 drop-shadow-[0_0_8px_currentColor]" />
               </div>
               <div className="flex flex-col">
-                <span className="text-sm lg:text-base font-black text-white tracking-tight uppercase group-hover:text-nexus-blue transition-colors">
+                <span className="text-sm lg:text-base font-black text-white tracking-tight uppercase group-hover:text-nexus-blue transition-colors flex items-center gap-2">
+                  {item.flag && <span className="text-base">{item.flag}</span>}
                   {item.user_name}
                 </span>
                 <span className="text-[10px] font-bold text-nexus-text uppercase tracking-[.2em] opacity-80">

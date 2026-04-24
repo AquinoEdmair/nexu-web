@@ -60,6 +60,7 @@ export function NetworkStats() {
     {
       label: 'Capital en Bóveda',
       value: displayInvestment,
+      suffix: ' USD',
       icon: <ShieldCheck className="w-5 h-5 text-nexus-blue-light" />,
       sub: 'Respaldo total en activos',
     },
@@ -72,6 +73,7 @@ export function NetworkStats() {
     {
       label: 'Volumen 24H',
       value: displayVolume,
+      suffix: ' USD',
       icon: <Activity className="w-5 h-5 text-nexus-blue-light" />,
       sub: 'Depósitos de las últimas 24h',
     }
@@ -91,8 +93,9 @@ export function NetworkStats() {
             <span className="text-[11px] font-black uppercase tracking-[0.3em] text-white/50">{stat.label}</span>
           </div>
 
-          <div className="text-3xl lg:text-4xl font-black text-white tracking-widest drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">
+          <div className="text-3xl lg:text-4xl font-black text-white tracking-widest drop-shadow-[0_0_10px_rgba(255,255,255,0.2)] flex items-end gap-2">
             <motion.div>{stat.value}</motion.div>
+            {stat.suffix && <span className="text-xl lg:text-2xl text-white/50 tracking-normal mb-0.5">{stat.suffix}</span>}
           </div>
           
           <div className="text-[10px] text-nexus-blue-light/80 mt-4 flex items-center gap-2 font-black tracking-widest uppercase italic">

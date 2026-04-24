@@ -9,6 +9,7 @@ export interface UserRankingItem {
   amount: number;
   category: string;
   level_pts: number;
+  flag: string;
 }
 
 export interface UserRankingResponse {
