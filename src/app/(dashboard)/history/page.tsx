@@ -4,17 +4,19 @@ import { useState } from 'react';
 import {
   ArrowDownLeft, ArrowUpRight,
   TrendingUp, Users, ChevronLeft, ChevronRight, Hash,
-  Loader2, AlertCircle
+  Loader2, AlertCircle, Download
 } from 'lucide-react';
 import { useTransactions } from '@/lib/hooks/useTransactions';
 import { formatCurrency } from '@/lib/utils/format';
 import type { Transaction } from '@/types/models';
 import { useTranslations } from 'next-intl';
+import { ExportModal } from '@/components/ui/ExportModal';
 
 const ADMIN_TYPES = new Set(['withdrawal', 'yield', 'admin_adjustment']);
 
 export default function HistoryPage() {
   const [page, setPage] = useState(1);
+  const [showExport, setShowExport] = useState(false);
   const t = useTranslations('history');
   const tTx = useTranslations('transactions');
 
@@ -51,7 +53,16 @@ export default function HistoryPage() {
           <h1 className="text-4xl font-black text-white tracking-tighter uppercase">{t('pageTitle')}</h1>
           <p className="text-sm text-nexus-text/40 font-medium tracking-tight">{t('pageSubtitle')}</p>
         </div>
+        <button
+          onClick={() => setShowExport(true)}
+          className="flex items-center gap-2 px-5 py-3 rounded-xl bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-widest text-white/60 hover:text-white hover:border-nexus-blue/40 hover:bg-nexus-blue/10 transition-all"
+        >
+          <Download className="w-3.5 h-3.5" />
+          Exportar
+        </button>
       </header>
+
+      {showExport && <ExportModal onClose={() => setShowExport(false)} />}
 
       <div className="bg-[#0a0f16]/40 border border-white/10 rounded-[2.5rem] overflow-hidden backdrop-blur-xl shadow-[0_8px_40px_rgba(0,0,0,0.3)] min-h-[400px]">
         {isLoading ? (

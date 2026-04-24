@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useLogin } from '@/lib/hooks/useAuth';
 import { loginSchema } from '@/lib/validators/auth';
 import { useTranslations } from 'next-intl';
+import { TurnstileWidget } from '@/components/ui/TurnstileWidget';
 
 export default function LoginPageWrapper() {
   return (
@@ -19,6 +20,7 @@ function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const { login, isLoading, error, fieldErrors, reset } = useLogin();
   const t = useTranslations('auth.login');
 
@@ -26,7 +28,9 @@ function LoginPage() {
     e.preventDefault();
     reset();
 
-    const result = loginSchema.safeParse({ email, password });
+    if (!captchaToken) return;
+
+    const result = loginSchema.safeParse({ email, password, captcha_token: captchaToken });
     if (!result.success) return;
 
     login(result.data);
@@ -101,11 +105,18 @@ function LoginPage() {
           </div>
         </div>
 
+        {/* CAPTCHA */}
+        <TurnstileWidget
+          onSuccess={(token) => setCaptchaToken(token)}
+          onExpire={() => setCaptchaToken(null)}
+          onError={() => setCaptchaToken(null)}
+        />
+
         {/* CTA Section */}
-        <div className="pt-6">
+        <div className="pt-2">
           <button
             type="submit"
-            disabled={isLoading}
+            disabled={isLoading || !captchaToken}
             className="w-full bg-nexus-blue text-white font-black py-5 rounded-xl shadow-[0_0_30px_rgba(11,64,193,0.3)] hover:scale-[1.02] active:scale-95 transition-all uppercase tracking-widest text-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {isLoading ? (

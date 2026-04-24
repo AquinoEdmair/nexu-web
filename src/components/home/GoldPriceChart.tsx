@@ -126,7 +126,7 @@ export function GoldPriceChart() {
                 dy={6}
               />
               <YAxis
-                domain={['dataMin - 2', 'dataMax + 2']}
+                domain={[(dataMin: number) => dataMin - 2, (dataMax: number) => dataMax + 2]}
                 tick={{ fill: '#ffffff25', fontSize: 9, fontWeight: 700 }}
                 axisLine={false}
                 tickLine={false}

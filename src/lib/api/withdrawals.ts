@@ -7,8 +7,24 @@ export const withdrawalsApi = {
     amount: number;
     currency: string;
     destination_address: string;
+    qr_image?: File | null;
   }): Promise<ApiResponse<WithdrawalRequest>> => {
-    const { data: response } = await apiClient.post('/withdrawals', data);
+    if (data.qr_image) {
+      const form = new FormData();
+      form.append('amount', String(data.amount));
+      form.append('currency', data.currency);
+      form.append('destination_address', data.destination_address);
+      form.append('qr_image', data.qr_image);
+      const { data: response } = await apiClient.post('/withdrawals', form, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      return response;
+    }
+    const { data: response } = await apiClient.post('/withdrawals', {
+      amount: data.amount,
+      currency: data.currency,
+      destination_address: data.destination_address,
+    });
     return response;
   },
 

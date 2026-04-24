@@ -3,6 +3,7 @@ import { z } from 'zod';
 export const loginSchema = z.object({
   email: z.email('Email inválido'),
   password: z.string().min(1, 'Requerido'),
+  captcha_token: z.string().optional(),
 });
 
 export const registerSchema = z
@@ -18,6 +19,7 @@ export const registerSchema = z
     password_confirmation: z.string(),
     phone: z.string().optional().or(z.literal('')),
     referral_code: z.string().max(10).optional().or(z.literal('')),
+    captcha_token: z.string().optional(),
   })
   .refine((data) => data.password === data.password_confirmation, {
     message: 'Las contraseñas no coinciden',

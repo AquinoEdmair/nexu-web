@@ -8,6 +8,7 @@ import { useRegister } from '@/lib/hooks/useAuth';
 import { registerSchema } from '@/lib/validators/auth';
 import { PhoneInput } from '@/components/ui/PhoneInput';
 import { useTranslations } from 'next-intl';
+import { TurnstileWidget } from '@/components/ui/TurnstileWidget';
 
 export default function RegisterPageWrapper() {
   return (
@@ -34,6 +35,7 @@ function RegisterPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [clientErrors, setClientErrors] = useState<Record<string, string>>({});
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const { register, isLoading, error, fieldErrors, reset } = useRegister();
 
   const updateField = (field: string, value: string) => {
@@ -55,7 +57,12 @@ function RegisterPage() {
       return;
     }
 
-    const result = registerSchema.safeParse(form);
+    if (!captchaToken) {
+      setClientErrors({ captcha: 'Completa la verificación de seguridad.' });
+      return;
+    }
+
+    const result = registerSchema.safeParse({ ...form, captcha_token: captchaToken });
     if (!result.success) {
       const flat: Record<string, string> = {};
       for (const issue of result.error.issues) {
@@ -66,7 +73,6 @@ function RegisterPage() {
       return;
     }
 
-    console.log('Registering with data:', result.data);
     register(result.data);
   };
 
@@ -237,10 +243,18 @@ function RegisterPage() {
         </div>
         {getError('terms') && <p className="text-xs text-red-400 ml-1">{getError('terms')}</p>}
 
-        <div className="pt-4">
+        {/* CAPTCHA */}
+        <TurnstileWidget
+          onSuccess={(token) => setCaptchaToken(token)}
+          onExpire={() => setCaptchaToken(null)}
+          onError={() => setCaptchaToken(null)}
+        />
+        {clientErrors.captcha && <p className="text-xs text-red-400 ml-1">{clientErrors.captcha}</p>}
+
+        <div className="pt-2">
           <button
             type="submit"
-            disabled={isLoading}
+            disabled={isLoading || !captchaToken}
             className="w-full py-5 bg-nexus-blue text-white font-black rounded-xl shadow-[0_0_30px_rgba(11,64,193,0.3)] hover:scale-[1.02] active:scale-95 transition-all uppercase tracking-widest text-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {isLoading ? (

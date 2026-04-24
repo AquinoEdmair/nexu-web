@@ -25,6 +25,11 @@ const TOOLTIP_STYLE = {
   color: 'rgba(255,255,255,0.9)',
 } as const;
 
+const TOOLTIP_ITEM_STYLE = {
+  color: 'rgba(255,255,255,0.9)',
+  fontWeight: 900,
+} as const;
+
 const AXIS_TICK = { fontSize: 10, fill: 'rgba(255,255,255,0.3)', fontWeight: 700 } as const;
 
 function toYMD(d: Date): string {
@@ -224,6 +229,7 @@ export function BalanceChart() {
                 <Tooltip
                   contentStyle={TOOLTIP_STYLE}
                   labelStyle={{ color: 'rgba(255,255,255,0.4)', fontWeight: 900, fontSize: '9px', marginBottom: '4px' }}
+                  itemStyle={TOOLTIP_ITEM_STYLE}
                   cursor={{ fill: 'rgba(255,255,255,0.03)' }}
                   formatter={(value) => [
                     Number(value) > 0 ? `+$${Number(value).toFixed(2)}` : '$0.00',

@@ -42,6 +42,8 @@ export interface BalanceData {
   balance_in_operation: string;
   balance_total: string;
   currency: string;
+  member_since: string;
+  first_deposit_amount: string | null;
 }
 
 export interface BalanceHistoryEntry {
@@ -215,6 +217,7 @@ export interface WithdrawalRequest {
   reviewed_at: string | null;
   rejection_reason: string | null;
   tx_hash: string | null;
+  qr_image_url: string | null;
   created_at: string;
   updated_at: string;
 }

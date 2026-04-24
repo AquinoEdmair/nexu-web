@@ -6,7 +6,7 @@ import { useCreateWithdrawal } from '@/lib/hooks/useCreateWithdrawal';
 import { useNotificationStore } from '@/lib/store/notificationStore';
 import { useWithdrawalCurrencies } from '@/lib/hooks/useWithdrawalCurrencies';
 import { formatCurrency } from '@/lib/utils/format';
-import { ArrowRight, Loader2, Wallet, Zap, ShieldAlert, TrendingDown, AlertTriangle } from 'lucide-react';
+import { ArrowRight, Loader2, Wallet, Zap, ShieldAlert, TrendingDown, AlertTriangle, QrCode, X } from 'lucide-react';
 import { FormattedAmount } from '@/components/ui/FormattedAmount';
 import { AxiosError } from 'axios';
 import { apiClient } from '@/lib/api/axios';
@@ -25,6 +25,8 @@ export function WithdrawalForm() {
   const [amount, setAmount] = useState('');
   const [address, setAddress] = useState('');
   const [addressConfirm, setAddressConfirm] = useState('');
+  const [qrFile, setQrFile] = useState<File | null>(null);
+  const [qrPreview, setQrPreview] = useState<string | null>(null);
   const t = useTranslations('withdrawals');
 
   const { data: balanceData } = useBalance();
@@ -51,17 +53,33 @@ export function WithdrawalForm() {
 
   const preview = commissionData?.data;
 
+  const handleQrChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] ?? null;
+    setQrFile(file);
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setQrPreview(url);
+    } else {
+      setQrPreview(null);
+    }
+  };
+
+  const handleQrRemove = () => {
+    setQrFile(null);
+    setQrPreview(null);
+  };
+
   const handleSubmit = () => {
     if (isNaN(numericAmount) || numericAmount <= 0) return;
     if (address.length < 20) return;
     if (address !== addressConfirm) return;
     reset();
     mutate(
-      { amount: numericAmount, currency: selectedCurrency, destination_address: address },
+      { amount: numericAmount, currency: selectedCurrency, destination_address: address, qr_image: qrFile },
       {
         onSuccess: () => {
           addNotification({ type: 'success', title: 'Protocolo de Salida Iniciado', message: `Solicitud de ${numericAmount} ${selectedCurrency} en proceso de validación.` });
-          setAmount(''); setAddress(''); setAddressConfirm('');
+          setAmount(''); setAddress(''); setAddressConfirm(''); setQrFile(null); setQrPreview(null);
         },
         onError: (err) => {
           const message = err instanceof AxiosError
@@ -218,6 +236,45 @@ export function WithdrawalForm() {
             <p className="text-[10px] font-black text-red-400 uppercase tracking-widest flex items-center gap-1.5">
               <TrendingDown className="w-3 h-3" /> {t('addressMismatch')}
             </p>
+          )}
+        </div>
+
+        {/* QR Image Upload */}
+        <div className="md:col-span-2 space-y-2">
+          <label className="text-[9px] font-black uppercase tracking-[0.3em] text-white/30 flex items-center gap-1.5">
+            <span className="w-1 h-3 bg-nexus-blue rounded-full inline-block" />
+            QR de destino <span className="text-white/20 normal-case tracking-normal font-medium ml-1">(opcional)</span>
+          </label>
+
+          {qrPreview ? (
+            <div className="relative w-fit">
+              <img
+                src={qrPreview}
+                alt="QR preview"
+                className="h-36 w-36 object-contain rounded-2xl border border-nexus-blue/30 bg-white/5 p-2"
+              />
+              <button
+                type="button"
+                onClick={handleQrRemove}
+                className="absolute -top-2 -right-2 bg-red-500/80 hover:bg-red-500 rounded-full p-1 transition-colors"
+              >
+                <X className="w-3 h-3 text-white" />
+              </button>
+            </div>
+          ) : (
+            <label className="flex flex-col items-center justify-center gap-2 w-full border-2 border-dashed border-white/10 hover:border-nexus-blue/40 rounded-2xl py-6 px-4 cursor-pointer transition-colors group bg-white/[0.02] hover:bg-white/5">
+              <QrCode className="w-6 h-6 text-white/20 group-hover:text-nexus-blue-light transition-colors" />
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/20 group-hover:text-white/40 transition-colors">
+                Adjuntar imagen del QR
+              </span>
+              <span className="text-[9px] text-white/10 uppercase tracking-widest">JPG, PNG, WEBP · Máx. 5 MB</span>
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                className="hidden"
+                onChange={handleQrChange}
+              />
+            </label>
           )}
         </div>
 

@@ -211,7 +211,7 @@ export default function YieldsPage() {
                       interval="preserveStartEnd"
                       dy={6}
                     />
-                    <YAxis hide domain={['dataMin - 1', 'dataMax + 1']} />
+                    <YAxis hide domain={[(dataMin: number) => dataMin - 1, (dataMax: number) => dataMax + 1]} />
                     <Tooltip
                       content={({ active, payload }) =>
                         active && payload?.length ? (
