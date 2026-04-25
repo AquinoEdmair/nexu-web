@@ -1,24 +1,35 @@
 import { ApiResponse, PaginatedResponse } from '@/types/api';
-import { DepositInvoice, Transaction } from '@/types/models';
+import { DepositCurrency, DepositRequest } from '@/types/models';
 import { apiClient } from './axios';
 
+export interface DepositCurrenciesResponse {
+  data: DepositCurrency[];
+  minimum_deposit_amount: number;
+}
+
 export const depositsApi = {
-  initiateDeposit: async (currency: string, amount: number): Promise<ApiResponse<DepositInvoice>> => {
-    const { data } = await apiClient.post('/deposits/initiate', { currency, amount });
+  getCurrencies: async (): Promise<DepositCurrenciesResponse> => {
+    const { data } = await apiClient.get('/deposits/currencies');
     return data;
   },
 
-  getDeposits: async (params?: { page?: number; per_page?: number }): Promise<PaginatedResponse<Transaction>> => {
+  createDeposit: async (payload: { currency: string; amount: number }): Promise<ApiResponse<DepositRequest>> => {
+    const { data } = await apiClient.post('/deposits', payload);
+    return data;
+  },
+
+  getDeposits: async (params?: { page?: number; per_page?: number }): Promise<PaginatedResponse<DepositRequest>> => {
     const { data } = await apiClient.get('/deposits', { params });
     return data;
   },
 
-  getPendingInvoices: async (): Promise<ApiResponse<DepositInvoice[]>> => {
-    const { data } = await apiClient.get('/deposits/pending');
+  getDeposit: async (id: string): Promise<ApiResponse<DepositRequest>> => {
+    const { data } = await apiClient.get(`/deposits/${id}`);
     return data;
   },
-  getInvoiceHistory: async (): Promise<ApiResponse<DepositInvoice[]>> => {
-    const { data } = await apiClient.get('/deposits/invoices');
+
+  confirmPayment: async (id: string, tx_hash: string): Promise<ApiResponse<DepositRequest>> => {
+    const { data } = await apiClient.post(`/deposits/${id}/confirm`, { tx_hash });
     return data;
   },
 };

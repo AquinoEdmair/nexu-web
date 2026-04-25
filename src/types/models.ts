@@ -52,20 +52,27 @@ export interface BalanceHistoryEntry {
   balance_in_operation: string;
 }
 
-export interface DepositInvoice {
-  invoice_id: string;
-  address: string;
+export interface DepositCurrency {
+  symbol: string;
+  name: string;
+  network: string | null;
+}
+
+export interface DepositRequest {
+  id: string;
   currency: string;
   network: string | null;
-  qr_code_url: string | null;
-  status: 'awaiting_payment' | 'completed' | 'expired';
+  address: string;
+  qr_image_url: string | null;
   amount_expected: string;
-  pay_amount: string | null;
-  amount_received: string | null;
-  expires_at: string;
+  tx_hash: string | null;
+  status: 'pending' | 'client_confirmed' | 'completed' | 'cancelled';
+  client_confirmed_at: string | null;
+  reviewed_by_name: string | null;
+  reviewed_at: string | null;
+  rejection_reason: string | null;
   created_at: string;
-  confirmed_manually: boolean;
-  confirmed_by_name: string | null;
+  updated_at: string;
 }
 
 export interface CryptoCurrency {
