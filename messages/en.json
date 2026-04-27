@@ -190,7 +190,7 @@
     "confirmAddress": "Confirm Address",
     "addressMismatch": "Addresses do not match",
     "criticalWarning": "Critical Warning",
-    "criticalWarningDetail": "An incorrect address will result in permanent and irrecoverable loss of funds. Verify every character before continuing.",
+    "criticalWarningDetail": "An incorrect address will result in permanent and irrecoverable loss of funds. Send exact value, a different amount entails delays and lags while the transaction is confirmed and edited. Verify every character before continuing.",
     "processInfo": "Requests are manually validated under HMAC protocol. You will receive notification after confirmation. The process may take up to 48 business hours.",
     "submitLabel": "Withdraw — Net",
     "submitting": "Processing...",

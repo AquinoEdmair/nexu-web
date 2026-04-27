@@ -190,7 +190,7 @@
     "confirmAddress": "Confirmar Dirección",
     "addressMismatch": "Las direcciones no coinciden",
     "criticalWarning": "Advertencia Crítica",
-    "criticalWarningDetail": "Una dirección incorrecta resultará en la pérdida permanente e irrecuperable de fondos. Verifica cada caracter antes de continuar.",
+    "criticalWarningDetail": "Una dirección incorrecta resultará en la pérdida permanente e irrecuperable de fondos. Enviar valor exacto, un monto distinto conlleva demoras y retrasos mientras se confirma y edita la transacción. Verifica cada caracter antes de continuar.",
     "processInfo": "Las solicitudes son validadas manualmente bajo protocolo HMAC. Recibirás notificación tras la confirmación. El proceso puede tomar hasta 48 horas hábiles.",
     "submitLabel": "Retirar — Neto",
     "submitting": "Procesando...",
