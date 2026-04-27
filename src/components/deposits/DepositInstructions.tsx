@@ -127,12 +127,31 @@ export function DepositInstructions({ deposit, onUpdated }: DepositInstructionsP
           </div>
         </div>
 
-        {/* Monto */}
-        <div className="flex items-center justify-between p-4 bg-nexus-blue/5 border border-nexus-blue/20 rounded-2xl">
-          <span className="text-[10px] font-black text-white/40 uppercase tracking-widest">Monto exacto a enviar</span>
-          <span className="text-nexus-blue-light font-black text-lg">
-            ${parseFloat(deposit.amount_expected).toFixed(2)} USD
-          </span>
+        {/* Monto y Comisión */}
+        <div className="space-y-3 p-5 bg-nexus-blue/5 border border-nexus-blue/20 rounded-2xl">
+          <div className="flex justify-between items-center">
+            <span className="text-[10px] text-white/40 font-black uppercase tracking-widest">Se acreditará a tu cuenta</span>
+            <span className="text-sm font-black text-white">
+              ${parseFloat(deposit.net_amount || deposit.amount_expected).toFixed(2)} USD
+            </span>
+          </div>
+          {parseFloat(deposit.fee_amount || '0') > 0 && (
+            <div className="flex justify-between items-center">
+              <span className="text-[10px] text-white/40 font-black uppercase tracking-widest">
+                Comisión de plataforma ({deposit.commission_rate}%)
+              </span>
+              <span className="text-xs font-black text-amber-400">
+                +${parseFloat(deposit.fee_amount || '0').toFixed(2)} USD
+              </span>
+            </div>
+          )}
+          <div className="h-px bg-white/10 my-2" />
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-black text-white uppercase tracking-widest">Monto exacto a enviar</span>
+            <span className="text-nexus-blue-light font-black text-lg">
+              ${parseFloat(deposit.amount_expected).toFixed(2)} USD
+            </span>
+          </div>
         </div>
 
         {/* Confirmar pago — solo visible en pending */}

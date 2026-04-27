@@ -65,6 +65,9 @@ export interface DepositRequest {
   address: string;
   qr_image_url: string | null;
   amount_expected: string;
+  fee_amount: string | null;
+  net_amount: string | null;
+  commission_rate: string | null;
   tx_hash: string | null;
   status: 'pending' | 'client_confirmed' | 'completed' | 'cancelled';
   client_confirmed_at: string | null;
