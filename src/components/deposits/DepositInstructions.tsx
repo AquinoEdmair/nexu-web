@@ -196,9 +196,31 @@ export function DepositInstructions({ deposit, onUpdated }: DepositInstructionsP
 
         {/* Estado client_confirmed */}
         {deposit.status === 'client_confirmed' && (
-          <div className="p-4 bg-blue-500/5 border border-blue-500/15 rounded-2xl space-y-1">
-            <p className="text-[10px] font-black text-blue-400 uppercase tracking-widest">Pago en revisión</p>
-            <p className="text-[10px] text-blue-400/60 font-bold">Hash enviado: <span className="font-mono">{deposit.tx_hash}</span></p>
+          <div className="relative overflow-hidden rounded-2xl border border-blue-500/20 bg-blue-500/5">
+            <div className="absolute top-0 left-0 w-1 h-full bg-blue-400" />
+            <div className="p-5 pl-6 space-y-3">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
+                <p className="text-[10px] font-black text-blue-400 uppercase tracking-[0.25em]">Pago en revisión</p>
+              </div>
+              <p className="text-[11px] text-blue-300/70 font-bold leading-relaxed">
+                Le indicamos que en un máximo de <span className="text-blue-300 font-black">24 horas laborales</span> su pago será confirmado y los fondos agregados a su capital en operación.
+              </p>
+              <p className="text-[11px] text-blue-300/70 font-bold leading-relaxed">
+                Si tiene dudas o consultas adicionales, contáctenos a través de{' '}
+                <span className="text-blue-300 font-black">Soporte</span> con el ID de la transacción:
+              </p>
+              <div className="flex items-center gap-2 px-3 py-2 bg-white/5 border border-white/10 rounded-xl">
+                <span className="text-[9px] text-white/30 font-black uppercase tracking-widest shrink-0">ID:</span>
+                <span className="font-mono text-[10px] text-white/60 break-all">{deposit.id}</span>
+              </div>
+              {deposit.tx_hash && (
+                <div className="flex items-center gap-2 px-3 py-2 bg-white/5 border border-white/10 rounded-xl">
+                  <span className="text-[9px] text-white/30 font-black uppercase tracking-widest shrink-0">TX:</span>
+                  <span className="font-mono text-[10px] text-white/60 break-all">{deposit.tx_hash}</span>
+                </div>
+              )}
+            </div>
           </div>
         )}
 
