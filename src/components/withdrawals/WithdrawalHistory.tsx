@@ -187,7 +187,7 @@ function WithdrawalDetailPanel({ w }: { w: WithdrawalRequest }) {
           </div>
           {w.fee_amount && parseFloat(w.fee_amount) > 0 && (
             <div className="flex justify-between">
-              <span className="text-amber-400/60 uppercase tracking-widest">Comisión ({Number(w.commission_rate).toLocaleString('en-US', { maximumFractionDigits: 2 })}%)</span>
+              <span className="text-amber-400/60 uppercase tracking-widest">FEE DE INFRAESTRUCTURA ({Number(w.commission_rate).toLocaleString('en-US', { maximumFractionDigits: 2 })}%)</span>
               <span className="text-amber-400/80">-${formatCurrency(w.fee_amount)}</span>
             </div>
           )}
