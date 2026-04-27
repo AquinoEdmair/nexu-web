@@ -1,11 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { ChevronLeft, ChevronRight, Database, CheckCircle2, Clock, XCircle, Eye, Copy, Check } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Database, CheckCircle2, Clock, XCircle, Eye, Copy, Check, Download } from 'lucide-react';
 import { useDeposits } from '@/lib/hooks/useDeposits';
 import { formatCurrency } from '@/lib/utils/format';
 import type { DepositRequest } from '@/types/models';
 import { DepositInstructions } from './DepositInstructions';
+import { ExportModal } from '@/components/ui/ExportModal';
 
 const STATUS_CONFIG: Record<string, { label: string; icon: typeof Clock; className: string }> = {
   pending:          { label: 'Pendiente',          icon: Clock,         className: 'bg-amber-500/10 border-amber-500/30 text-amber-400' },
@@ -31,6 +32,7 @@ function CopyButton({ text }: { text: string }) {
 export function DepositHistory() {
   const [page, setPage] = useState(1);
   const [selected, setSelected] = useState<DepositRequest | null>(null);
+  const [showExport, setShowExport] = useState(false);
 
   const { data, isLoading } = useDeposits(page);
   const deposits = data?.data ?? [];
@@ -56,10 +58,20 @@ export function DepositHistory() {
 
   return (
     <div className="bg-[#0a0f16]/40 border border-white/10 rounded-3xl backdrop-blur-xl overflow-hidden">
-      <div className="px-8 py-5 border-b border-white/5 flex items-center gap-3">
-        <Database className="w-4 h-4 text-nexus-blue-light" />
-        <span className="text-[10px] font-black text-nexus-blue-light/60 uppercase tracking-[0.4em]">Historial de depósitos</span>
+      <div className="px-8 py-5 border-b border-white/5 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <Database className="w-4 h-4 text-nexus-blue-light" />
+          <span className="text-[10px] font-black text-nexus-blue-light/60 uppercase tracking-[0.4em]">Historial de depósitos</span>
+        </div>
+        <button
+          onClick={() => setShowExport(true)}
+          className="flex items-center gap-2 text-[9px] font-black text-white/30 hover:text-white uppercase tracking-widest px-3 py-1.5 rounded-lg hover:bg-white/5 transition-all"
+        >
+          Exportar <Download className="w-3 h-3" />
+        </button>
       </div>
+
+      {showExport && <ExportModal onClose={() => setShowExport(false)} />}
 
       {isLoading ? (
         <div className="py-20 flex justify-center">

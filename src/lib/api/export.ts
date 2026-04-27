@@ -6,8 +6,9 @@ export interface ExportRow {
 
 export interface ExportData {
   transactions?: ExportRow[];
-  withdrawals?: ExportRow[];
-  yields?: ExportRow[];
+  deposits?:     ExportRow[];
+  withdrawals?:  ExportRow[];
+  yields?:       ExportRow[];
 }
 
 export interface ExportParams {

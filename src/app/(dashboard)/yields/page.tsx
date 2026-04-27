@@ -8,6 +8,7 @@ import { formatCurrency } from '@/lib/utils/format';
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { FormattedAmount } from '@/components/ui/FormattedAmount';
 import { useTranslations } from 'next-intl';
+import { ExportModal } from '@/components/ui/ExportModal';
 
 type ChartRange = { label: string; hours: number; days: number };
 const CHART_RANGES: ChartRange[] = [
@@ -20,6 +21,7 @@ const CHART_RANGES: ChartRange[] = [
 export default function YieldsPage() {
   const [page, setPage] = useState(1);
   const [chartRangeIdx, setChartRangeIdx] = useState(0);
+  const [showExport, setShowExport] = useState(false);
   const t = useTranslations('yields');
 
   const chartDays = CHART_RANGES[chartRangeIdx].days;
@@ -240,9 +242,13 @@ export default function YieldsPage() {
         </aside>
 
         <section className="lg:col-span-8 space-y-6">
+          {showExport && <ExportModal onClose={() => setShowExport(false)} />}
           <div className="flex justify-between items-center px-2">
             <h2 className="text-2xl font-black text-white tracking-tighter uppercase">{t('historyTitle')}</h2>
-            <button className="text-[10px] text-nexus-blue-light font-black tracking-widest uppercase flex items-center gap-2 px-4 py-2 bg-nexus-blue/5 border border-nexus-blue/10 rounded-xl hover:bg-nexus-blue hover:text-white transition-all">
+            <button
+              onClick={() => setShowExport(true)}
+              className="text-[10px] text-nexus-blue-light font-black tracking-widest uppercase flex items-center gap-2 px-4 py-2 bg-nexus-blue/5 border border-nexus-blue/10 rounded-xl hover:bg-nexus-blue hover:text-white transition-all"
+            >
               {t('export')} <Download className="w-3 h-3" />
             </button>
           </div>

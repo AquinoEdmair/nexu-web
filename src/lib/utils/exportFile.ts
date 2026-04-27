@@ -2,7 +2,8 @@ import * as XLSX from 'xlsx';
 import type { ExportData, ExportRow } from '@/lib/api/export';
 
 const SHEET_LABELS: Record<string, string> = {
-  transactions: 'Transacciones',
+  transactions: 'Historial',
+  deposits:     'Depósitos',
   withdrawals:  'Retiros',
   yields:       'Rendimientos',
 };
@@ -16,7 +17,7 @@ function buildFilename(format: 'xlsx' | 'csv', dateFrom?: string, dateTo?: strin
 export function downloadExcel(data: ExportData, dateFrom?: string, dateTo?: string): void {
   const workbook = XLSX.utils.book_new();
 
-  const order: (keyof ExportData)[] = ['transactions', 'withdrawals', 'yields'];
+  const order: (keyof ExportData)[] = ['transactions', 'deposits', 'withdrawals', 'yields'];
 
   for (const key of order) {
     const rows = data[key];
@@ -35,7 +36,7 @@ export function downloadExcel(data: ExportData, dateFrom?: string, dateTo?: stri
 }
 
 export function downloadCSV(data: ExportData, dateFrom?: string, dateTo?: string): void {
-  const order: (keyof ExportData)[] = ['transactions', 'withdrawals', 'yields'];
+  const order: (keyof ExportData)[] = ['transactions', 'deposits', 'withdrawals', 'yields'];
   const allRows: ExportRow[] = [];
 
   for (const key of order) {

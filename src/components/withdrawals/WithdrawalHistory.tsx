@@ -4,8 +4,9 @@ import { useState, useEffect } from 'react';
 import { useWithdrawals } from '@/lib/hooks/useWithdrawals';
 import { useCancelWithdrawal } from '@/lib/hooks/useCancelWithdrawal';
 import { formatCurrency } from '@/lib/utils/format';
-import { X, Activity, Database, ArrowRight, ArrowLeft, Clock, ChevronDown, Copy, Check, ExternalLink, Hash, AlertTriangle } from 'lucide-react';
+import { X, Activity, Database, ArrowRight, ArrowLeft, Clock, ChevronDown, Copy, Check, ExternalLink, Hash, AlertTriangle, Download } from 'lucide-react';
 import type { WithdrawalRequest } from '@/types/models';
+import { ExportModal } from '@/components/ui/ExportModal';
 
 const STATUS_CONFIG: Record<string, { label: string; classes: string }> = {
   pending:   { label: 'Pendiente',  classes: 'bg-yellow-400/10 text-yellow-400 border-yellow-400/20 shadow-[0_0_10px_rgba(250,204,21,0.1)]' },
@@ -268,6 +269,7 @@ function WithdrawalDetailPanel({ w }: { w: WithdrawalRequest }) {
 export function WithdrawalHistory() {
   const [page, setPage] = useState(1);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [showExport, setShowExport] = useState(false);
   const { data, isLoading, isError, refetch } = useWithdrawals({
     page,
     refetchInterval: 8000
@@ -308,14 +310,23 @@ export function WithdrawalHistory() {
 
   return (
     <div className="space-y-6">
+      {showExport && <ExportModal onClose={() => setShowExport(false)} />}
       <div className="flex items-center justify-between px-2">
         <div className="flex items-center gap-3">
           <Database className="w-5 h-5 text-nexus-blue-light" />
           <h2 className="text-2xl font-black text-white tracking-tighter uppercase">Registro de Salida</h2>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="h-1.5 w-1.5 bg-nexus-blue-light rounded-full animate-pulse shadow-[0_0_10px_rgba(24,136,243,0.5)]" />
-          <span className="text-[9px] text-nexus-blue-light font-black uppercase tracking-[0.2em]">En Vivo</span>
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => setShowExport(true)}
+            className="flex items-center gap-2 text-[10px] font-black text-white/30 hover:text-white uppercase tracking-widest px-4 py-2 bg-white/5 border border-white/10 rounded-xl hover:border-nexus-blue/40 hover:bg-nexus-blue/10 transition-all"
+          >
+            Exportar <Download className="w-3.5 h-3.5" />
+          </button>
+          <div className="flex items-center gap-2">
+            <span className="h-1.5 w-1.5 bg-nexus-blue-light rounded-full animate-pulse shadow-[0_0_10px_rgba(24,136,243,0.5)]" />
+            <span className="text-[9px] text-nexus-blue-light font-black uppercase tracking-[0.2em]">En Vivo</span>
+          </div>
         </div>
       </div>
 

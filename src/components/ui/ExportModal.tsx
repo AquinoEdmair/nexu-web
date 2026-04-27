@@ -9,12 +9,13 @@ interface ExportModalProps {
   onClose: () => void;
 }
 
-type Section = 'transactions' | 'withdrawals' | 'yields';
+type Section = 'transactions' | 'withdrawals' | 'yields' | 'deposits';
 type Format = 'xlsx' | 'csv';
 type QuickRange = 'week' | 'month' | 'quarter' | 'all';
 
 const SECTIONS: { id: Section; label: string }[] = [
-  { id: 'transactions', label: 'Transacciones' },
+  { id: 'transactions', label: 'Historial' },
+  { id: 'deposits',     label: 'Depósitos' },
   { id: 'withdrawals',  label: 'Retiros' },
   { id: 'yields',       label: 'Rendimientos' },
 ];
@@ -42,7 +43,7 @@ function quickRangeDates(range: QuickRange): { from: string; to: string } | null
 }
 
 export function ExportModal({ onClose }: ExportModalProps) {
-  const [sections, setSections]   = useState<Set<Section>>(new Set(['transactions', 'withdrawals', 'yields']));
+  const [sections, setSections]   = useState<Set<Section>>(new Set(['transactions', 'deposits', 'withdrawals', 'yields']));
   const [format, setFormat]       = useState<Format>('xlsx');
   const [quickRange, setQuickRange] = useState<QuickRange>('all');
   const [dateFrom, setDateFrom]   = useState('');
@@ -87,7 +88,7 @@ export function ExportModal({ onClose }: ExportModalProps) {
 
       const data = await exportApi.fetch(params);
 
-      const totalRows = (data.transactions?.length ?? 0) + (data.withdrawals?.length ?? 0) + (data.yields?.length ?? 0);
+      const totalRows = (data.transactions?.length ?? 0) + (data.deposits?.length ?? 0) + (data.withdrawals?.length ?? 0) + (data.yields?.length ?? 0);
       if (totalRows === 0) {
         setError('No hay registros para el rango y secciones seleccionadas.');
         return;
