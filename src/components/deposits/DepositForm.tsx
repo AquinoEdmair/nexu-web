@@ -9,6 +9,15 @@ import { useBalance } from '@/lib/hooks/useBalance';
 import { FormattedAmount } from '@/components/ui/FormattedAmount';
 import type { DepositRequest } from '@/types/models';
 import { AxiosError } from 'axios';
+import { useQuery } from '@tanstack/react-query';
+import { apiClient } from '@/lib/api/axios';
+
+interface CommissionPreview {
+  rate: number;
+  net_amount: number;
+  fee_amount: number;
+  amount_charged: number;
+}
 
 interface DepositFormProps {
   onCreated: (deposit: DepositRequest) => void;
@@ -35,6 +44,16 @@ export function DepositForm({ onCreated }: DepositFormProps) {
   const numericAmount  = parseFloat(amount) || 0;
   const belowMinimum   = minimum > 0 && numericAmount > 0 && numericAmount < minimum;
   const isValid        = numericAmount > 0 && !!selectedCurrency && !belowMinimum;
+
+  const { data: commissionData } = useQuery<{ data: CommissionPreview }>({
+    queryKey: ['deposit-commission', numericAmount],
+    queryFn: () => apiClient.get(`/deposits/commission-rate?amount=${numericAmount}`).then(r => r.data),
+    enabled: isValid,
+    staleTime: 30_000,
+  });
+
+  const preview = commissionData?.data;
+  const hasCommission = preview && preview.rate > 0 && isValid;
 
   const handleSubmit = () => {
     if (!isValid) return;
@@ -139,6 +158,33 @@ export function DepositForm({ onCreated }: DepositFormProps) {
           Envía únicamente el monto exacto a la dirección asignada. No envíes desde un exchange directamente.
         </p>
       </div>
+
+      {/* Breakdown */}
+      {hasCommission && (
+        <div className="space-y-3 p-5 bg-nexus-blue/5 border border-nexus-blue/20 rounded-2xl animate-in fade-in">
+          <div className="flex justify-between items-center">
+            <span className="text-[10px] text-white/40 font-black uppercase tracking-widest">Se acreditará a tu cuenta</span>
+            <span className="text-sm font-black text-white">
+              ${preview.net_amount.toFixed(2)} USD
+            </span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-[10px] text-white/40 font-black uppercase tracking-widest">
+              FEE DE INFRAESTRUCTURA ({preview.rate}%)
+            </span>
+            <span className="text-xs font-black text-amber-400">
+              +${preview.fee_amount.toFixed(2)} USD
+            </span>
+          </div>
+          <div className="h-px bg-white/10 my-2" />
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-black text-white uppercase tracking-widest">Monto exacto a enviar</span>
+            <span className="text-nexus-blue-light font-black text-lg">
+              ${preview.amount_charged.toFixed(2)} USD
+            </span>
+          </div>
+        </div>
+      )}
 
       {/* Submit */}
       <button

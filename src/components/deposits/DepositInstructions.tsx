@@ -138,7 +138,7 @@ export function DepositInstructions({ deposit, onUpdated }: DepositInstructionsP
           {parseFloat(deposit.fee_amount || '0') > 0 && (
             <div className="flex justify-between items-center">
               <span className="text-[10px] text-white/40 font-black uppercase tracking-widest">
-                Comisión de plataforma ({deposit.commission_rate}%)
+                FEE DE INFRAESTRUCTURA ({deposit.commission_rate}%)
               </span>
               <span className="text-xs font-black text-amber-400">
                 +${parseFloat(deposit.fee_amount || '0').toFixed(2)} USD
