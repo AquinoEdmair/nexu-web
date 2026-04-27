@@ -7,10 +7,10 @@ import { Trophy, Medal, Star, Shield, Crown } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
 const CATEGORY_CONFIG: Record<string, { icon: any, color: string, glow: string }> = {
-  'Platino': { icon: Crown,  color: 'text-nexus-blue', glow: 'border-nexus-blue/30 shadow-[0_0_15px_rgba(0,242,254,0.1)]' },
-  'Oro':     { icon: Medal,  color: 'text-amber-400',   glow: 'border-amber-500/20' },
-  'Plata':   { icon: Star,   color: 'text-slate-300',   glow: 'border-slate-500/20' },
-  'Bronce':  { icon: Shield, color: 'text-orange-400',  glow: 'border-orange-500/10' },
+  'PLATINUM': { icon: Crown,  color: 'text-nexus-blue', glow: 'border-nexus-blue/30 shadow-[0_0_15px_rgba(0,242,254,0.1)]' },
+  'GOLD':     { icon: Medal,  color: 'text-amber-400',   glow: 'border-amber-500/20' },
+  'SILVER':   { icon: Star,   color: 'text-slate-300',   glow: 'border-slate-500/20' },
+  'BRONZE':   { icon: Shield, color: 'text-orange-400',  glow: 'border-orange-500/10' },
 };
 
 export function UserRankingTable() {
@@ -60,7 +60,7 @@ export function UserRankingTable() {
                   {item.user_name}
                 </span>
                 <span className="text-[10px] font-bold text-nexus-text uppercase tracking-[.2em] opacity-80">
-                  {t('investorLabel')} {item.category}
+                  {t('investorLabel')} {t(`tier${item.category.charAt(0) + item.category.slice(1).toLowerCase()}`)}
                 </span>
               </div>
             </div>

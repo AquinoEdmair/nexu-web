@@ -62,7 +62,7 @@ export function GoldPriceChart() {
       <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
         <div>
           <h3 className="text-slate-300 text-[10px] font-black uppercase tracking-[0.2em] mb-1">
-            MÉTRICA DE VALOR: XAU / USD
+            {t('valueMetric')}: XAU / USD
           </h3>
           <div className="flex items-end gap-3 flex-wrap">
             <span className="text-4xl font-black text-white tracking-tighter">

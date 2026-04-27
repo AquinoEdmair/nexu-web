@@ -34,3 +34,12 @@ export const useGoldNews = () => {
     staleTime: 60 * 60 * 1000, // 1 hour
   });
 };
+
+export const useRecentActivity = () => {
+  return useQuery({
+    queryKey: ['metrics', 'recent-activity'],
+    queryFn: metricsApi.getRecentActivity,
+    staleTime: 30_000,          // 30s
+    refetchInterval: 30_000,    // auto-refetch every 30s
+  });
+};

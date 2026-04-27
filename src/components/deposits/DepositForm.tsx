@@ -155,7 +155,7 @@ export function DepositForm({ onCreated }: DepositFormProps) {
       <div className="flex gap-3 p-4 bg-amber-500/5 border border-amber-500/15 rounded-2xl">
         <ShieldAlert className="h-4 w-4 shrink-0 text-amber-400 mt-0.5" />
         <p className="text-[10px] font-black text-amber-400/60 uppercase tracking-tight leading-relaxed">
-          Envía únicamente el monto exacto a la dirección asignada. No envíes desde un exchange directamente.
+          Atención: Envíe exclusivamente el monto asignado. El envío de montos diferentes conlleva procesos extendidos de verificación y ajustes técnicos que retrasarán la disponibilidad de sus fondos.
         </p>
       </div>
 

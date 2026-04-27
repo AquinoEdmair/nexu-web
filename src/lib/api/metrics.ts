@@ -21,4 +21,9 @@ export const metricsApi = {
     const { data } = await apiClient.get<{ data: GoldNewsItem[] }>('/metrics/news');
     return data.data;
   },
+  
+  getRecentActivity: async () => {
+    const { data } = await apiClient.get<{ data: any[] }>('/metrics/activity');
+    return data.data;
+  },
 };

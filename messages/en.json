@@ -416,7 +416,11 @@
     "ranking": {
       "title": "Investor Ranking",
       "investorLabel": "Investor",
-      "operatingCapital": "Operating Capital"
+      "operatingCapital": "Operating Capital",
+      "tierPlatinum": "Platinum",
+      "tierGold": "Gold",
+      "tierSilver": "Silver",
+      "tierBronze": "Bronze"
     },
     "networkStats": {
       "vaultCapital": "Vault Capital",
@@ -432,7 +436,15 @@
       "range1w": "Last week",
       "range1m": "Last month",
       "live": "Live · every 10s",
-      "updating": "Updating..."
+      "updating": "Updating...",
+      "valueMetric": "Value Metric"
+    },
+    "activityTicker": {
+      "deposit": "Deposit",
+      "yield": "Yield",
+      "withdrawal": "Withdrawal",
+      "justNow": "Just now",
+      "minutesAgo": "{minutes}m ago"
     },
     "newsFeed": {
       "readMore": "Read More"

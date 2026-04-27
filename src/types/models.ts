@@ -142,6 +142,7 @@ export interface ElitePointEntry {
   points: string;
   source: string;
   amount_usd: string;
+  source_user_masked: string | null;
   created_at: string;
 }
 
