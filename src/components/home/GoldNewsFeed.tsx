@@ -2,6 +2,7 @@
 
 import { Clock, ExternalLink } from 'lucide-react';
 import { useGoldNews } from '@/lib/hooks/useMetrics';
+import { useTranslations } from 'next-intl';
 
 const MOCK_NEWS = [
   {
@@ -40,6 +41,7 @@ const MOCK_NEWS = [
 
 export function GoldNewsFeed() {
   const { data: newsApi, isLoading } = useGoldNews();
+  const t = useTranslations('home.newsFeed');
 
   const news = newsApi && newsApi.length > 0 ? newsApi : MOCK_NEWS;
 
@@ -90,7 +92,7 @@ export function GoldNewsFeed() {
                     {item.source}
                   </span>
                   <div className="flex items-center gap-2 text-white/20 group-hover:text-nexus-blue-light transition-colors">
-                    <span className="text-[9px] font-bold uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">Leer Más</span>
+                    <span className="text-[9px] font-bold uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">{t('readMore')}</span>
                     <ExternalLink className="w-3.5 h-3.5" />
                   </div>
                 </div>

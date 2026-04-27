@@ -5,9 +5,11 @@ import { motion, useSpring, useTransform } from 'framer-motion';
 import { useGlobalInvestment } from '@/lib/hooks/useMetrics';
 import { formatCurrency } from '@/lib/utils/format';
 import { Users, TrendingUp, ShieldCheck, Activity } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 export function NetworkStats() {
   const { data, isLoading } = useGlobalInvestment();
+  const t = useTranslations('home.networkStats');
   const [target, setTarget] = useState({ investment: 0, investors: 0, volume: 0 });
 
   useEffect(() => {
@@ -58,24 +60,24 @@ export function NetworkStats() {
 
   const stats = [
     {
-      label: 'Capital en Bóveda',
+      label: t('vaultCapital'),
       value: displayInvestment,
       suffix: ' USD',
       icon: <ShieldCheck className="w-5 h-5 text-nexus-blue-light" />,
-      sub: 'Respaldo total en activos',
+      sub: t('vaultCapitalSub'),
     },
     {
-      label: 'Inversores Activos',
+      label: t('activeInvestors'),
       value: displayInvestors,
       icon: <Users className="w-5 h-5 text-nexus-blue-light" />,
-      sub: 'Usuarios con capital iniciado',
+      sub: t('activeInvestorsSub'),
     },
     {
-      label: 'Volumen 24H',
+      label: t('volume24h'),
       value: displayVolume,
       suffix: ' USD',
       icon: <Activity className="w-5 h-5 text-nexus-blue-light" />,
-      sub: 'Depósitos de las últimas 24h',
+      sub: t('volume24hSub'),
     }
   ];
 

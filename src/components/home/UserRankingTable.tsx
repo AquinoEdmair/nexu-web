@@ -4,6 +4,7 @@ import { useUserRanking } from '@/lib/hooks/useMetrics';
 import { formatCurrency } from '@/lib/utils/format';
 import { Card } from '@/components/ui/Card';
 import { Trophy, Medal, Star, Shield, Crown } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 const CATEGORY_CONFIG: Record<string, { icon: any, color: string, glow: string }> = {
   'Platino': { icon: Crown,  color: 'text-nexus-blue', glow: 'border-nexus-blue/30 shadow-[0_0_15px_rgba(0,242,254,0.1)]' },
@@ -14,6 +15,7 @@ const CATEGORY_CONFIG: Record<string, { icon: any, color: string, glow: string }
 
 export function UserRankingTable() {
   const { data, isLoading } = useUserRanking();
+  const t = useTranslations('home.ranking');
 
   if (isLoading) {
     return (
@@ -58,7 +60,7 @@ export function UserRankingTable() {
                   {item.user_name}
                 </span>
                 <span className="text-[10px] font-bold text-nexus-text uppercase tracking-[.2em] opacity-80">
-                  Inversor {item.category}
+                  {t('investorLabel')} {item.category}
                 </span>
               </div>
             </div>
@@ -69,7 +71,7 @@ export function UserRankingTable() {
                 {formatCurrency(item.amount)}
               </div>
               <div className="text-[10px] font-black text-nexus-text uppercase tracking-tighter opacity-60">
-                Capital Operativo
+                {t('operatingCapital')}
               </div>
             </div>
           </div>

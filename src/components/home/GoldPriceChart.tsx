@@ -5,6 +5,7 @@ import { useGoldPrice } from '@/lib/hooks/useMetrics';
 import { Area, AreaChart, ResponsiveContainer, Tooltip, YAxis, XAxis, CartesianGrid } from 'recharts';
 import { TrendingUp, TrendingDown, Activity } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils/format';
+import { useTranslations } from 'next-intl';
 
 type Range = '1h' | '1d' | '1w' | '1m';
 
@@ -15,12 +16,6 @@ const RANGES: { label: string; value: Range }[] = [
   { label: '1M', value: '1m' },
 ];
 
-const RANGE_LABELS: Record<Range, string> = {
-  '1h': 'Última hora',
-  '1d': 'Últimas 24h',
-  '1w': 'Última semana',
-  '1m': 'Último mes',
-};
 
 // How many X-axis ticks to show per range
 const X_TICK_COUNT: Record<Range, number> = {
@@ -33,6 +28,14 @@ const X_TICK_COUNT: Record<Range, number> = {
 export function GoldPriceChart() {
   const [range, setRange] = useState<Range>('1w');
   const { data, isLoading, isFetching } = useGoldPrice(range);
+  const t = useTranslations('home.goldChart');
+
+  const RANGE_LABELS: Record<Range, string> = {
+    '1h': t('range1h'),
+    '1d': t('range1d'),
+    '1w': t('range1w'),
+    '1m': t('range1m'),
+  };
 
   const currentPrice = data?.current ?? 0;
   const chartData    = data?.data ?? [];
@@ -171,7 +174,7 @@ export function GoldPriceChart() {
         <span>{RANGE_LABELS[range]}</span>
         <span className="flex items-center gap-1.5">
           <span className={`w-1.5 h-1.5 rounded-full ${isFetching ? 'bg-amber-400' : 'bg-nexus-blue-light'} animate-pulse`} />
-          {isFetching ? 'Actualizando...' : 'Live · cada 10s'}
+          {isFetching ? t('updating') : t('live')}
         </span>
       </div>
     </div>

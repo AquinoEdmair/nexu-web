@@ -414,7 +414,43 @@
       "chartTitle": "Mercado de Oro en Tiempo Real"
     },
     "ranking": {
-      "title": "Ranking de Inversores"
+      "title": "Ranking de Inversores",
+      "investorLabel": "Inversor",
+      "operatingCapital": "Capital Operativo"
+    },
+    "networkStats": {
+      "vaultCapital": "Capital en Bóveda",
+      "vaultCapitalSub": "Respaldo total en activos",
+      "activeInvestors": "Inversores Activos",
+      "activeInvestorsSub": "Usuarios con capital iniciado",
+      "volume24h": "Volumen 24H",
+      "volume24hSub": "Depósitos de las últimas 24h"
+    },
+    "goldChart": {
+      "range1h": "Última hora",
+      "range1d": "Últimas 24h",
+      "range1w": "Última semana",
+      "range1m": "Último mes",
+      "live": "Live · cada 10s",
+      "updating": "Actualizando..."
+    },
+    "newsFeed": {
+      "readMore": "Leer Más"
+    },
+    "terms": {
+      "badge": "Base Legal del Protocolo",
+      "title": "Términos y Condiciones",
+      "intro": "Lea cuidadosamente los protocolos de uso de la terminal NEXU. Al interactuar con el sistema, usted acepta los siguientes términos de operación y seguridad.",
+      "s1Title": "[01. NATURALEZA DEL PROTOCOLO]",
+      "s1Body": "NEXU ES UNA PLATAFORMA FINTECH DISEÑADA PARA LA INTERMEDIACIÓN Y GESTIÓN DE ACTIVOS DIGITALES BASADOS EN ORO. AL UTILIZAR EL SISTEMA, USTED RECONOCE QUE NEXU ACTÚA COMO INTERMEDIARIO SEGURO Y QUE LOS RENDIMIENTOS SON GENERADOS POR SISTEMAS EXTERNOS DE TRADING ASISTIDO POR IA.",
+      "s2Title": "[02. SEGURIDAD Y TOKENIZACIÓN]",
+      "s2Body": "USTED ES EL ÚNICO RESPONSABLE DE LA CUSTODIA DE SUS CREDENCIALES DE ACCESO. TODA OPERACIÓN VALIDADA MEDIANTE SU TOKEN DE SESIÓN SE CONSIDERARÁ AUTORIZADA POR EL TITULAR. NEXU SE RESERVA EL DERECHO DE SUSPENDER ACCESOS BAJO SOSPECHA DE ACTIVIDAD ANÓMALA O ATAQUES DE FUERZA BRUTA.",
+      "s3Title": "[03. LIQUIDÉZ Y RETIROS]",
+      "s3Body": "LAS SOLICITUDES DE RETIRO SE PROCESAN MEDIANTE PROTOCOLOS DE VERIFICACIÓN MANUAL PARA GARANTIZAR LA INTEGRIDAD DEL CAPITAL. LOS TIEMPOS DE EJECUCIÓN PUEDEN VARIAR SEGÚN LA RED BLOCKCHAIN SELECCIONADA Y LOS PROCESOS DE SEGURIDAD INTERNOS.",
+      "s4Title": "[04. RIESGOS OPERATIVOS]",
+      "s4Body": "LA INVERSIÓN EN ACTIVOS DIGITALES CONLLEVA RIESGOS INHERENTES A LA VOLATILIDAD DEL MERCADO. NEXU NO SE HACE RESPONSABLE POR PÉRDIDAS DERIVADAS DE FLUCTUACIONES EXTREMAS EN EL SISTEMA DE TRADING EXTERNO O FALLOS EN LAS REDES DE COMUNICACIÓN GLOBALES.",
+      "pending": "ESPACIO PARA TEXTO DEFINITIVO ADICIONAL - ARCHIVO EN ESPERA DE SINCRONIZACIÓN FINAL",
+      "lastUpdate": "Última Actualización del Registro: 11.04.2026"
     },
     "joinElite": "ÚNETE A LA ÉLITE NEXU",
     "joinEliteSubtitle": "Estás a un paso de automatizar tu futuro financiero sobre el activo más estable de la historia.",
