@@ -213,7 +213,7 @@ export default function YieldsPage() {
                       interval="preserveStartEnd"
                       dy={6}
                     />
-                    <YAxis hide domain={[(dataMin: number) => dataMin - 1, (dataMax: number) => dataMax + 1]} />
+                    <YAxis hide domain={[0, (dataMax: number) => Math.max(dataMax * 1.2, 0.1)]} />
                     <Tooltip
                       content={({ active, payload }) =>
                         active && payload?.length ? (
@@ -227,7 +227,7 @@ export default function YieldsPage() {
                     />
                     <Area
                       type="monotone"
-                      dataKey="balance"
+                      dataKey="amount"
                       stroke="#1888F3"
                       strokeWidth={2}
                       fill="url(#yieldGrad)"
