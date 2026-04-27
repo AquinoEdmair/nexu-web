@@ -108,7 +108,7 @@ function explorerUrl(currency: string, hash: string): string | null {
 
 function WithdrawalDetailPanel({ w }: { w: WithdrawalRequest }) {
   const hashCopy = useCopy(w.tx_hash ?? '');
-  const addrCopy = useCopy(w.destination_address);
+  const addrCopy = useCopy(w.destination_address ?? '');
   const explorer = w.tx_hash ? explorerUrl(w.currency, w.tx_hash) : null;
 
   const sentAt = w.status === 'completed'
@@ -162,19 +162,46 @@ function WithdrawalDetailPanel({ w }: { w: WithdrawalRequest }) {
         )}
       </div>
 
-      {/* Full address */}
-      <div className="space-y-2">
-        <p className="text-[9px] font-black uppercase tracking-[0.3em] text-nexus-blue-light/40">Dirección Completa</p>
-        <div className="flex items-center gap-2">
-          <code className="text-[10px] font-mono text-white/40 bg-white/5 border border-white/5 px-3 py-2 rounded-xl flex-1 break-all">
-            {w.destination_address}
-          </code>
-          <button onClick={addrCopy.copy} className="p-2 bg-white/5 hover:bg-nexus-blue/20 border border-white/5 rounded-xl transition-all shrink-0">
-            {addrCopy.copied
-              ? <Check className="w-3.5 h-3.5 text-green-400" />
-              : <Copy className="w-3.5 h-3.5 text-white/30" />}
-          </button>
+      {/* Full address / QR */}
+      <div className="space-y-4">
+        <div className="space-y-2">
+          <p className="text-[9px] font-black uppercase tracking-[0.3em] text-nexus-blue-light/40">Dirección de Destino</p>
+          {w.destination_address ? (
+            <div className="flex items-center gap-2">
+              <code className="text-[10px] font-mono text-white/40 bg-white/5 border border-white/5 px-3 py-2 rounded-xl flex-1 break-all">
+                {w.destination_address}
+              </code>
+              <button onClick={addrCopy.copy} className="p-2 bg-white/5 hover:bg-nexus-blue/20 border border-white/5 rounded-xl transition-all shrink-0">
+                {addrCopy.copied
+                  ? <Check className="w-3.5 h-3.5 text-green-400" />
+                  : <Copy className="w-3.5 h-3.5 text-white/30" />}
+              </button>
+            </div>
+          ) : (
+            <p className="text-[10px] font-black text-white/20 uppercase tracking-widest">No proporcionada — Usar QR</p>
+          )}
         </div>
+
+        {w.qr_image_url && (
+          <div className="space-y-2">
+            <p className="text-[9px] font-black uppercase tracking-[0.3em] text-nexus-blue-light/40">Comprobante QR</p>
+            <div className="relative group/qr w-fit">
+              <img 
+                src={w.qr_image_url} 
+                alt="Withdrawal QR" 
+                className="h-32 w-32 object-contain rounded-2xl border border-white/10 bg-white/5 p-2 transition-all group-hover/qr:border-nexus-blue/50"
+              />
+              <a 
+                href={w.qr_image_url} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 group-hover/qr:opacity-100 transition-opacity rounded-2xl"
+              >
+                <ExternalLink className="w-5 h-5 text-white" />
+              </a>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Breakdown */}
@@ -346,11 +373,16 @@ export function WithdrawalHistory() {
                         <td className="px-8 py-6">
                           <div className="flex flex-col gap-1">
                             <code className="text-[10px] font-black font-mono text-white/40 tracking-tighter bg-white/5 px-3 py-1.5 rounded-xl border border-white/5">
-                              {truncateAddress(w.destination_address)}
+                              {w.destination_address ? truncateAddress(w.destination_address) : '(SOLO QR)'}
                             </code>
                             {hasHash && (
                               <span className="text-[8px] font-black text-nexus-blue-light/50 uppercase tracking-widest flex items-center gap-1">
                                 <Hash className="w-2.5 h-2.5" /> TX hash disponible
+                              </span>
+                            )}
+                            {!w.destination_address && w.qr_image_url && (
+                              <span className="text-[8px] font-black text-amber-400/50 uppercase tracking-widest flex items-center gap-1">
+                                <QrCode className="w-2.5 h-2.5" /> QR Adjunto
                               </span>
                             )}
                           </div>

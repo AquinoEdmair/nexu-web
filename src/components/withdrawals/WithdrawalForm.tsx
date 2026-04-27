@@ -71,8 +71,11 @@ export function WithdrawalForm() {
 
   const handleSubmit = () => {
     if (isNaN(numericAmount) || numericAmount <= 0) return;
-    if (address.length < 20) return;
-    if (address !== addressConfirm) return;
+    
+    const isAddressValid = address.length >= 20 && address === addressConfirm;
+    const isQrValid = qrFile !== null;
+
+    if (!isAddressValid && !isQrValid) return;
     reset();
     mutate(
       { amount: numericAmount, currency: selectedCurrency, destination_address: address, qr_image: qrFile },
@@ -94,9 +97,11 @@ export function WithdrawalForm() {
   const handleMax = () => setAmount((Math.floor(parseFloat(availableBalance) * 100) / 100).toFixed(2));
   const handleSelectCurrency = (currency: string) => { setSelectedCurrency(currency); reset(); };
 
+  const isAddressValid   = address.length >= 20 && address === addressConfirm;
+  const isQrValid        = qrFile !== null;
   const addressMismatch = addressConfirm.length > 0 && address !== addressConfirm;
   const hasCommission    = preview && preview.rate > 0 && numericAmount > 0;
-  const isFormValid      = numericAmount > 0 && address.length >= 20 && address === addressConfirm && numericAmount <= parseFloat(availableBalance) && !!selectedCurrency;
+  const isFormValid      = numericAmount > 0 && (isAddressValid || isQrValid) && numericAmount <= parseFloat(availableBalance) && !!selectedCurrency;
 
   return (
     <div className="bg-[#0a0f16]/40 border border-white/10 rounded-3xl backdrop-blur-xl shadow-[0_8px_40px_rgba(0,0,0,0.3)] overflow-hidden">
@@ -206,6 +211,7 @@ export function WithdrawalForm() {
           <label className="text-[9px] font-black uppercase tracking-[0.3em] text-white/30 flex items-center gap-1.5">
             <span className="w-1 h-3 bg-nexus-blue-light rounded-full inline-block" />
             {t('walletAddress')} {selectedCurrency ? `(${selectedCurrency})` : ''}
+            {!isQrValid && <span className="text-nexus-blue-light/40 normal-case tracking-normal font-bold ml-auto">* REQUERIDO</span>}
           </label>
           <input
             type="text"
@@ -243,7 +249,7 @@ export function WithdrawalForm() {
         <div className="md:col-span-2 space-y-2">
           <label className="text-[9px] font-black uppercase tracking-[0.3em] text-white/30 flex items-center gap-1.5">
             <span className="w-1 h-3 bg-nexus-blue rounded-full inline-block" />
-            QR de destino <span className="text-white/20 normal-case tracking-normal font-medium ml-1">(opcional)</span>
+            QR de destino {!isAddressValid && <span className="text-nexus-blue-light/40 normal-case tracking-normal font-bold ml-auto">* REQUERIDO</span>}
           </label>
 
           {qrPreview ? (
