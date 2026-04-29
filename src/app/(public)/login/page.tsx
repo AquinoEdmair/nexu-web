@@ -21,8 +21,9 @@ function LoginPage() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
-  const { login, isLoading, error, fieldErrors, reset } = useLogin();
+    const { login, isLoading, error, fieldErrors, reset } = useLogin();
   const t = useTranslations('auth.login');
+  const vt = useTranslations('validation');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,6 +37,12 @@ function LoginPage() {
     login(result.data);
   };
 
+  const getFieldError = (field: string): string | undefined => {
+    const err = fieldErrors?.[field]?.[0];
+    if (!err) return undefined;
+    return err.startsWith('validation.') ? vt(err.replace('validation.', '') as any) : err;
+  };
+
   return (
     <div className="flex-grow flex flex-col px-8 pb-10 max-w-md mx-auto w-full justify-center">
       {/* Welcome Section */}
@@ -47,7 +54,7 @@ function LoginPage() {
       {/* Server Error */}
       {error && (
         <div className="mb-6 rounded-xl bg-red-500/10 border border-red-500/20 px-4 py-3 text-sm text-red-400">
-          {error}
+          {error.startsWith('common.') ? vt(error.replace('common.', '') as any) : error}
         </div>
       )}
 
@@ -71,8 +78,8 @@ function LoginPage() {
               <AtSign className="w-5 h-5" />
             </div>
           </div>
-          {fieldErrors?.email && (
-            <p className="mt-1 text-xs text-red-400">{fieldErrors.email[0]}</p>
+          {getFieldError('email') && (
+            <p className="mt-1 text-xs text-red-400">{getFieldError('email')}</p>
           )}
         </div>
 
@@ -103,6 +110,9 @@ function LoginPage() {
               {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
             </button>
           </div>
+          {getFieldError('password') && (
+            <p className="mt-1 text-xs text-red-400">{getFieldError('password')}</p>
+          )}
         </div>
 
         {/* CAPTCHA */}

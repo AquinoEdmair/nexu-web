@@ -9,32 +9,32 @@ const MOCK_NEWS = [
     title: 'XAU/USD: El oro alcanza nuevos máximos ante debilidad del dólar',
     excerpt: 'El precio del oro supera resistencias clave mientras el índice dólar retrocede en sesiones consecutivas. Analistas apuntan a $2,500 como próximo objetivo.',
     source: 'Financial Intelligence',
-    date: 'Hace 1h',
-    category: 'XAU/USD',
+    date: new Date(Date.now() - 3600000).toISOString(),
+    category: 'xauusd',
     url: '#',
   },
   {
     title: 'Bancos centrales acumulan reservas de oro al ritmo más alto desde 1967',
     excerpt: 'La demanda institucional de oro físico marca récord anual, impulsada por la diversificación de reservas y la cobertura ante la inflación global.',
     source: 'World Gold Council',
-    date: 'Hace 3h',
-    category: 'Institucional',
+    date: new Date(Date.now() - 10800000).toISOString(),
+    category: 'institutional',
     url: '#',
   },
   {
     title: 'Oro digital: plataformas tokenizadas registran flujo récord en Q1',
     excerpt: 'Las plataformas de inversión respaldadas en oro superan los $4,000M en activos gestionados, consolidándose como alternativa al oro físico tradicional.',
     source: 'NEXU Insight',
-    date: 'Hace 5h',
-    category: 'Ecosistema',
+    date: new Date(Date.now() - 18000000).toISOString(),
+    category: 'ecosystem',
     url: '#',
   },
   {
     title: 'Tensiones geopolíticas impulsan el precio del oro como activo refugio',
     excerpt: 'En contextos de incertidumbre global, el XAU mantiene su rol histórico de depósito de valor, con entradas netas récord en ETFs respaldados en oro.',
     source: 'Reuters Commodities',
-    date: 'Hace 8h',
-    category: 'Mercado',
+    date: new Date(Date.now() - 28800000).toISOString(),
+    category: 'market',
     url: '#',
   },
 ];
@@ -42,6 +42,33 @@ const MOCK_NEWS = [
 export function GoldNewsFeed() {
   const { data: newsApi, isLoading } = useGoldNews();
   const t = useTranslations('home.newsFeed');
+  const tc = useTranslations('home.newsFeed.categories');
+  const ta = useTranslations('home.activityTicker');
+
+  const formatTime = (isoTime: string) => {
+    try {
+      const diffInMinutes = Math.floor((new Date().getTime() - new Date(isoTime).getTime()) / 60000);
+      
+      if (diffInMinutes < 1) return ta('justNow');
+      if (diffInMinutes < 60) return ta('minutesAgo', { minutes: diffInMinutes });
+      
+      const diffInHours = Math.floor(diffInMinutes / 60);
+      if (diffInHours < 24) return ta('hoursAgo', { hours: diffInHours });
+      
+      const diffInDays = Math.floor(diffInHours / 24);
+      return ta('daysAgo', { days: diffInDays });
+    } catch (e) {
+      return isoTime;
+    }
+  };
+
+  const getCategoryLabel = (cat: string) => {
+    try {
+      return tc(cat as any);
+    } catch (e) {
+      return cat;
+    }
+  };
 
   const news = newsApi && newsApi.length > 0 ? newsApi : MOCK_NEWS;
 
@@ -70,11 +97,11 @@ export function GoldNewsFeed() {
               <div className="flex flex-col space-y-3 relative z-10">
                 <div className="flex items-center justify-between">
                   <span className="text-[9px] font-black uppercase tracking-[.2em] text-nexus-blue-light bg-nexus-blue-light/10 px-2.5 py-1 rounded-md border border-nexus-blue/20">
-                    {item.category}
+                    {getCategoryLabel(item.category)}
                   </span>
                   <div className="flex items-center gap-1.5 text-nexus-text text-[10px] font-bold">
                     <Clock className="w-3 h-3 text-nexus-blue-light" />
-                    {item.date.toUpperCase()}
+                    {formatTime(item.date).toUpperCase()}
                   </div>
                 </div>
 

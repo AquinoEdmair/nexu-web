@@ -10,9 +10,20 @@ export function ActivityTicker() {
   const t = useTranslations('home.activityTicker');
 
   const formatTime = (isoTime: string) => {
-    const diff = Math.floor((new Date().getTime() - new Date(isoTime).getTime()) / 60000);
-    if (diff < 1) return t('justNow');
-    return t('minutesAgo', { minutes: diff });
+    try {
+      const diffInMinutes = Math.floor((new Date().getTime() - new Date(isoTime).getTime()) / 60000);
+      
+      if (diffInMinutes < 1) return t('justNow');
+      if (diffInMinutes < 60) return t('minutesAgo', { minutes: diffInMinutes });
+      
+      const diffInHours = Math.floor(diffInMinutes / 60);
+      if (diffInHours < 24) return t('hoursAgo', { hours: diffInHours });
+      
+      const diffInDays = Math.floor(diffInHours / 24);
+      return t('daysAgo', { days: diffInDays });
+    } catch (e) {
+      return isoTime;
+    }
   };
 
   const getLabel = (type: string) => {

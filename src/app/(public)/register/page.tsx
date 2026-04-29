@@ -22,6 +22,7 @@ function RegisterPage() {
   const searchParams = useSearchParams();
   const refCode = searchParams.get('ref') ?? '';
   const t = useTranslations('auth.register');
+  const vt = useTranslations('validation');
 
   const [form, setForm] = useState({
     name: '',
@@ -58,7 +59,7 @@ function RegisterPage() {
     }
 
     if (!captchaToken) {
-      setClientErrors({ captcha: 'Completa la verificación de seguridad.' });
+      setClientErrors({ captcha: vt('captchaRequired') });
       return;
     }
 
@@ -77,7 +78,9 @@ function RegisterPage() {
   };
 
   const getError = (field: string): string | undefined => {
-    return clientErrors[field] ?? fieldErrors?.[field]?.[0];
+    const err = clientErrors[field] ?? fieldErrors?.[field]?.[0];
+    if (!err) return undefined;
+    return err.startsWith('validation.') ? vt(err.replace('validation.', '') as any) : err;
   };
 
   return (
@@ -89,7 +92,7 @@ function RegisterPage() {
 
       {error && (
         <div className="mb-6 rounded-xl bg-red-500/10 border border-red-500/20 px-4 py-3 text-sm text-red-400">
-          {error}
+          {error.startsWith('common.') ? vt(error.replace('common.', '') as any) : error}
         </div>
       )}
 

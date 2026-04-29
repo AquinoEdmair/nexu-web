@@ -168,6 +168,14 @@ export default function LandingPage() {
           <ContactSection />
         </div>
 
+        <footer className="pt-20 pb-12 border-t border-white/5 text-center">
+          <p className="text-[10px] font-black uppercase tracking-[0.4em] text-nexus-text/40 max-w-2xl mx-auto leading-relaxed">
+            {t('footer.message')}
+          </p>
+          <div className="mt-8 font-manrope text-[9px] tracking-[0.5em] uppercase text-nexus-text/20">
+            © {new Date().getFullYear()} NEXU ALCHEMY. ALL RIGHTS RESERVED.
+          </div>
+        </footer>
       </main>
 
       <div className="fixed top-0 left-0 -z-10 w-full h-full overflow-hidden pointer-events-none">

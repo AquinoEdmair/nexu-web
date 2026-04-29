@@ -1,44 +1,44 @@
 'use client';
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { Phone, ChevronDown, Search } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 type Country = {
   code: string;
-  name: string;
   dial: string;
   flag: string;
 };
 
-// Latin America + common international
+// Dial codes + flags (names moved to translations)
 const COUNTRIES: Country[] = [
-  { code: 'MX', name: 'México',          dial: '+52',  flag: '🇲🇽' },
-  { code: 'US', name: 'Estados Unidos',  dial: '+1',   flag: '🇺🇸' },
-  { code: 'AR', name: 'Argentina',       dial: '+54',  flag: '🇦🇷' },
-  { code: 'BO', name: 'Bolivia',         dial: '+591', flag: '🇧🇴' },
-  { code: 'BR', name: 'Brasil',          dial: '+55',  flag: '🇧🇷' },
-  { code: 'CA', name: 'Canadá',          dial: '+1',   flag: '🇨🇦' },
-  { code: 'CL', name: 'Chile',           dial: '+56',  flag: '🇨🇱' },
-  { code: 'CO', name: 'Colombia',        dial: '+57',  flag: '🇨🇴' },
-  { code: 'CR', name: 'Costa Rica',      dial: '+506', flag: '🇨🇷' },
-  { code: 'CU', name: 'Cuba',            dial: '+53',  flag: '🇨🇺' },
-  { code: 'DO', name: 'Rep. Dominicana', dial: '+1',   flag: '🇩🇴' },
-  { code: 'EC', name: 'Ecuador',         dial: '+593', flag: '🇪🇨' },
-  { code: 'SV', name: 'El Salvador',     dial: '+503', flag: '🇸🇻' },
-  { code: 'ES', name: 'España',          dial: '+34',  flag: '🇪🇸' },
-  { code: 'GT', name: 'Guatemala',       dial: '+502', flag: '🇬🇹' },
-  { code: 'HN', name: 'Honduras',        dial: '+504', flag: '🇭🇳' },
-  { code: 'NI', name: 'Nicaragua',       dial: '+505', flag: '🇳🇮' },
-  { code: 'PA', name: 'Panamá',          dial: '+507', flag: '🇵🇦' },
-  { code: 'PY', name: 'Paraguay',        dial: '+595', flag: '🇵🇾' },
-  { code: 'PE', name: 'Perú',            dial: '+51',  flag: '🇵🇪' },
-  { code: 'PR', name: 'Puerto Rico',     dial: '+1',   flag: '🇵🇷' },
-  { code: 'UY', name: 'Uruguay',         dial: '+598', flag: '🇺🇾' },
-  { code: 'VE', name: 'Venezuela',       dial: '+58',  flag: '🇻🇪' },
-  { code: 'GB', name: 'Reino Unido',     dial: '+44',  flag: '🇬🇧' },
-  { code: 'FR', name: 'Francia',         dial: '+33',  flag: '🇫🇷' },
-  { code: 'DE', name: 'Alemania',        dial: '+49',  flag: '🇩🇪' },
-  { code: 'IT', name: 'Italia',          dial: '+39',  flag: '🇮🇹' },
+  { code: 'MX', dial: '+52',  flag: '🇲🇽' },
+  { code: 'US', dial: '+1',   flag: '🇺🇸' },
+  { code: 'AR', dial: '+54',  flag: '🇦🇷' },
+  { code: 'BO', dial: '+591', flag: '🇧🇴' },
+  { code: 'BR', dial: '+55',  flag: '🇧🇷' },
+  { code: 'CA', dial: '+1',   flag: '🇨🇦' },
+  { code: 'CL', dial: '+56',  flag: '🇨🇱' },
+  { code: 'CO', dial: '+57',  flag: '🇨🇴' },
+  { code: 'CR', dial: '+506', flag: '🇨🇷' },
+  { code: 'CU', dial: '+53',  flag: '🇨🇺' },
+  { code: 'DO', dial: '+1',   flag: '🇩🇴' },
+  { code: 'EC', dial: '+593', flag: '🇪🇨' },
+  { code: 'SV', dial: '+503', flag: '🇸🇻' },
+  { code: 'ES', dial: '+34',  flag: '🇪🇸' },
+  { code: 'GT', dial: '+502', flag: '🇬🇹' },
+  { code: 'HN', dial: '+504', flag: '🇭🇳' },
+  { code: 'NI', dial: '+505', flag: '🇳🇮' },
+  { code: 'PA', dial: '+507', flag: '🇵🇦' },
+  { code: 'PY', dial: '+595', flag: '🇵🇾' },
+  { code: 'PE', dial: '+51',  flag: '🇵🇪' },
+  { code: 'PR', dial: '+1',   flag: '🇵🇷' },
+  { code: 'UY', dial: '+598', flag: '🇺🇾' },
+  { code: 'VE', dial: '+58',  flag: '🇻🇪' },
+  { code: 'GB', dial: '+44',  flag: '🇬🇧' },
+  { code: 'FR', dial: '+33',  flag: '🇫🇷' },
+  { code: 'DE', dial: '+49',  flag: '🇩🇪' },
+  { code: 'IT', dial: '+39',  flag: '🇮🇹' },
 ];
 
 interface PhoneInputProps {
@@ -84,6 +84,7 @@ export function PhoneInput({
   placeholder = '55 1234 5678',
   id = 'phone',
 }: PhoneInputProps) {
+  const t = useTranslations('countries');
   const [defaultDial] = useState(() => detectDialFromLocale());
   const { dial: initialDial, number: initialNumber } = splitPhone(value, defaultDial);
   const [selectedDial, setSelectedDial] = useState(initialDial);
@@ -105,14 +106,23 @@ export function PhoneInput({
   const selectedCountry =
     COUNTRIES.find((c) => c.dial === selectedDial) ?? COUNTRIES[0];
 
-  const filteredCountries = COUNTRIES.filter((c) => {
+  const countriesWithNames = useMemo(() => {
+    return COUNTRIES.map(c => ({
+      ...c,
+      name: t(c.code as any)
+    }));
+  }, [t]);
+
+  const filteredCountries = useMemo(() => {
     const q = search.toLowerCase();
-    return (
-      c.name.toLowerCase().includes(q) ||
-      c.dial.includes(q) ||
-      c.code.toLowerCase().includes(q)
-    );
-  });
+    return countriesWithNames.filter((c) => {
+      return (
+        c.name.toLowerCase().includes(q) ||
+        c.dial.includes(q) ||
+        c.code.toLowerCase().includes(q)
+      );
+    });
+  }, [countriesWithNames, search]);
 
   const emit = (dial: string, num: string) => {
     const cleaned = num.replace(/[^\d\s-]/g, '').trim();
@@ -176,7 +186,7 @@ export function PhoneInput({
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Buscar país..."
+                placeholder={t('searchPlaceholder')}
                 className="w-full bg-white/5 border border-white/5 rounded-lg pl-9 pr-3 py-2 text-sm text-white placeholder:text-white/20 focus:ring-1 focus:ring-nexus-blue-light outline-none"
                 autoFocus
               />
@@ -187,7 +197,7 @@ export function PhoneInput({
           <div className="max-h-64 overflow-y-auto">
             {filteredCountries.length === 0 ? (
               <div className="px-4 py-6 text-center text-xs text-white/30 font-medium uppercase tracking-widest">
-                Sin resultados
+                {t('noResults')}
               </div>
             ) : (
               filteredCountries.map((country) => (

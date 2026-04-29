@@ -2,12 +2,15 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
+import { useTranslations } from 'next-intl';
 
 export default function PublicLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const t = useTranslations('auth.sidebar');
+
   return (
     <div className="flex min-h-screen bg-background text-on-surface">
       {/* Left Branding Presentation (Desktop Only) */}
@@ -24,16 +27,16 @@ export default function PublicLayout({
         <div className="relative z-10 p-12 lg:p-16 flex-grow flex flex-col justify-center">
           <div className="inline-flex items-center gap-2 px-3 py-1 mb-8 rounded-full bg-nexus-blue/10 border border-nexus-blue-light/20 w-fit backdrop-blur-md">
             <div className="w-2 h-2 rounded-full bg-nexus-blue-light animate-pulse"></div>
-            <span className="text-[10px] font-black uppercase tracking-widest text-nexus-blue-light">Infraestructura Segura</span>
+            <span className="text-[10px] font-black uppercase tracking-widest text-nexus-blue-light">{t('secureInfra')}</span>
           </div>
 
           <h1 className="text-5xl lg:text-7xl font-black tracking-tighter leading-none text-white mb-6 uppercase">
-            EL PUENTE HACIA<br/>
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-nexus-blue to-nexus-blue-light">EL ORO DIGITAL.</span>
+            {t('titlePart1')}<br/>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-nexus-blue to-nexus-blue-light">{t('titlePart2')}</span>
           </h1>
 
           <p className="text-nexus-text text-lg leading-relaxed max-w-md font-medium">
-            Gestiona tu patrimonio basado en el activo más estable de la historia. Seguridad HMAC y rendimientos automatizados para la élite financiera cripto.
+            {t('description')}
           </p>
         </div>
 
@@ -47,7 +50,7 @@ export default function PublicLayout({
               className="h-10 w-auto brightness-110 drop-shadow-[0_0_16px_rgba(24,136,243,0.5)] group-hover:drop-shadow-[0_0_28px_rgba(24,136,243,0.7)] transition-all"
             />
           </Link>
-          <div className="text-[10px] uppercase tracking-widest text-nexus-blue-light font-black">Protocolo de Alquimia Digital</div>
+          <div className="text-[10px] uppercase tracking-widest text-nexus-blue-light font-black">{t('protocol')}</div>
         </div>
       </div>
 
@@ -81,7 +84,7 @@ export default function PublicLayout({
         {/* Mobile Footer */}
         <footer className="lg:hidden w-full py-8 text-center mt-auto">
            <div className="font-manrope text-[10px] tracking-widest uppercase text-gray-600 opacity-50">
-            © 2024 NEXU ALCHEMY. TODOS LOS DERECHOS RESERVADOS.
+            {t('copyright')}
           </div>
         </footer>
       </div>

@@ -130,7 +130,25 @@
       "goToLogin": "Go to sign in",
       "alreadyVerified": "Already verified your account?",
       "signIn": "Sign In"
+    },
+    "sidebar": {
+      "secureInfra": "Secure Infrastructure",
+      "titlePart1": "THE BRIDGE TO",
+      "titlePart2": "DIGITAL GOLD.",
+      "description": "Manage your wealth based on the most stable asset in history. HMAC security and automated yields for the crypto financial elite.",
+      "protocol": "Digital Alchemy Protocol",
+      "copyright": "© 2024 NEXU ALCHEMY. ALL RIGHTS RESERVED."
     }
+  },
+  "validation": {
+    "invalidEmail": "Invalid email",
+    "required": "Required",
+    "minChars": "Minimum {count} characters",
+    "uppercase": "Must include at least one uppercase letter",
+    "lowercase": "Must include at least one lowercase letter",
+    "number": "Must include at least one number",
+    "passwordMismatch": "Passwords do not match",
+    "captchaRequired": "Please complete the security verification."
   },
   "dashboard": {
     "status": "Status: Active Protection",
@@ -444,10 +462,26 @@
       "yield": "Yield",
       "withdrawal": "Withdrawal",
       "justNow": "Just now",
-      "minutesAgo": "{minutes}m ago"
+      "minutesAgo": "{minutes}m ago",
+      "hoursAgo": "{hours}h ago",
+      "daysAgo": "{days}d ago"
     },
     "newsFeed": {
-      "readMore": "Read More"
+      "readMore": "Read More",
+      "categories": {
+        "centralBank": "Central Bank",
+        "etfFunds": "ETF / Funds",
+        "geopolitics": "Geopolitics",
+        "xauusd": "XAU/USD",
+        "digitalGold": "Digital Gold",
+        "crypto": "Crypto",
+        "ecosystem": "Ecosystem",
+        "institutional": "Institutional",
+        "market": "Market"
+      }
+    },
+    "footer": {
+      "message": "Operating since 2021. Technology platform with integration to liquidity providers, advanced security protocols, and continuous monitoring."
     },
     "terms": {
       "badge": "Protocol Legal Base",
@@ -551,7 +585,37 @@
     "typeReferral": "Referral Bonus"
   },
   "metadata": {
-    "title": "NEXU - Gold Investment",
     "description": "High-yield fintech investment platform."
+  },
+  "countries": {
+    "MX": "Mexico",
+    "US": "United States",
+    "AR": "Argentina",
+    "BO": "Bolivia",
+    "BR": "Brazil",
+    "CA": "Canada",
+    "CL": "Chile",
+    "CO": "Colombia",
+    "CR": "Costa Rica",
+    "CU": "Cuba",
+    "DO": "Dominican Republic",
+    "EC": "Ecuador",
+    "SV": "El Salvador",
+    "ES": "Spain",
+    "GT": "Guatemala",
+    "HN": "Honduras",
+    "NI": "Nicaragua",
+    "PA": "Panama",
+    "PY": "Paraguay",
+    "PE": "Peru",
+    "PR": "Puerto Rico",
+    "UY": "Uruguay",
+    "VE": "Venezuela",
+    "GB": "United Kingdom",
+    "FR": "France",
+    "DE": "Germany",
+    "IT": "Italy",
+    "searchPlaceholder": "Search country...",
+    "noResults": "No results"
   }
 }

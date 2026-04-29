@@ -130,7 +130,25 @@
       "goToLogin": "Ir a iniciar sesión",
       "alreadyVerified": "¿Ya verificaste tu cuenta?",
       "signIn": "Iniciar Sesión"
+    },
+    "sidebar": {
+      "secureInfra": "Infraestructura Segura",
+      "titlePart1": "EL PUENTE HACIA",
+      "titlePart2": "EL ORO DIGITAL.",
+      "description": "Gestiona tu patrimonio basado en el activo más estable de la historia. Seguridad HMAC y rendimientos automatizados para la élite financiera cripto.",
+      "protocol": "Protocolo de Alquimia Digital",
+      "copyright": "© 2024 NEXU ALCHEMY. TODOS LOS DERECHOS RESERVADOS."
     }
+  },
+  "validation": {
+    "invalidEmail": "Email inválido",
+    "required": "Requerido",
+    "minChars": "Mínimo {count} caracteres",
+    "uppercase": "Debe incluir al menos una mayúscula",
+    "lowercase": "Debe incluir al menos una minúscula",
+    "number": "Debe incluir al menos un número",
+    "passwordMismatch": "Las contraseñas no coinciden",
+    "captchaRequired": "Completa la verificación de seguridad."
   },
   "dashboard": {
     "status": "Estado: Protección Activa",
@@ -443,11 +461,27 @@
       "deposit": "Depósito",
       "yield": "Rendimiento",
       "withdrawal": "Retiro",
-      "justNow": "Justo ahora",
-      "minutesAgo": "Hace {minutes}m"
+      "justNow": "Recién",
+      "minutesAgo": "Hace {minutes}m",
+      "hoursAgo": "Hace {hours}h",
+      "daysAgo": "Hace {days}d"
     },
     "newsFeed": {
-      "readMore": "Leer Más"
+      "readMore": "Leer Más",
+      "categories": {
+        "centralBank": "Banco Central",
+        "etfFunds": "ETF / Fondos",
+        "geopolitics": "Geopolítica",
+        "xauusd": "XAU/USD",
+        "digitalGold": "Oro Digital",
+        "crypto": "Cripto",
+        "ecosystem": "Ecosistema",
+        "institutional": "Institucional",
+        "market": "Mercado"
+      }
+    },
+    "footer": {
+      "message": "Operando desde 2021. Plataforma tecnológica con integración a proveedores de liquidez, protocolos de seguridad avanzados y monitoreo continuo."
     },
     "terms": {
       "badge": "Base Legal del Protocolo",
@@ -553,5 +587,36 @@
   "metadata": {
     "title": "NEXU - Inversión en Oro",
     "description": "Plataforma fintech de inversión de alto rendimiento."
+  },
+  "countries": {
+    "MX": "México",
+    "US": "Estados Unidos",
+    "AR": "Argentina",
+    "BO": "Bolivia",
+    "BR": "Brasil",
+    "CA": "Canadá",
+    "CL": "Chile",
+    "CO": "Colombia",
+    "CR": "Costa Rica",
+    "CU": "Cuba",
+    "DO": "Rep. Dominicana",
+    "EC": "Ecuador",
+    "SV": "El Salvador",
+    "ES": "España",
+    "GT": "Guatemala",
+    "HN": "Honduras",
+    "NI": "Nicaragua",
+    "PA": "Panamá",
+    "PY": "Paraguay",
+    "PE": "Perú",
+    "PR": "Puerto Rico",
+    "UY": "Uruguay",
+    "VE": "Venezuela",
+    "GB": "Reino Unido",
+    "FR": "Francia",
+    "DE": "Alemania",
+    "IT": "Italia",
+    "searchPlaceholder": "Buscar país...",
+    "noResults": "Sin resultados"
   }
 }

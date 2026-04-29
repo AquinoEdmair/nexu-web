@@ -8,7 +8,7 @@ import { AxiosError } from 'axios';
 
 function extractErrorMessage(error: unknown): string {
   const axiosErr = error as AxiosError<ApiError>;
-  return axiosErr.response?.data?.message ?? 'Ocurrió un error inesperado.';
+  return axiosErr.response?.data?.message ?? 'validation.unexpectedError';
 }
 
 function extractFieldErrors(error: unknown): Record<string, string[]> | undefined {

@@ -26,6 +26,7 @@ function ResetPasswordPage() {
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const { resetPassword, isLoading, error, fieldErrors, reset } = useResetPassword();
+  const vt = useTranslations('validation');
 
   const requirements = useMemo(() => ({
     minLength: password.length >= 8,
@@ -72,7 +73,7 @@ function ResetPasswordPage() {
 
       {error && (
         <div className="w-full mb-6 rounded-xl bg-red-500/10 border border-red-500/20 px-4 py-3 text-sm text-red-400">
-          {error}
+          {error.startsWith('common.') || error.startsWith('validation.') ? vt(error.replace(/^(common|validation)\./, '') as any) : error}
         </div>
       )}
 
@@ -100,7 +101,7 @@ function ResetPasswordPage() {
               )}
             </button>
           </div>
-          {fieldErrors?.password && <p className="text-xs text-red-400 ml-1">{fieldErrors.password[0]}</p>}
+          {fieldErrors?.password && <p className="text-xs text-red-400 ml-1">{fieldErrors.password[0].startsWith('validation.') ? vt(fieldErrors.password[0].replace('validation.', '') as any) : fieldErrors.password[0]}</p>}
         </div>
 
         <div className="space-y-2 group">

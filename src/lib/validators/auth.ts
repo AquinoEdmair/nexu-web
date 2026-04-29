@@ -1,49 +1,49 @@
 import { z } from 'zod';
 
 export const loginSchema = z.object({
-  email: z.email('Email inválido'),
-  password: z.string().min(1, 'Requerido'),
+  email: z.email('validation.invalidEmail'),
+  password: z.string().min(1, 'validation.required'),
   captcha_token: z.string().optional(),
 });
 
 export const registerSchema = z
   .object({
-    name: z.string().min(2, 'Mínimo 2 caracteres').max(100),
-    email: z.email('Email inválido'),
+    name: z.string().min(2, 'validation.minChars').max(100),
+    email: z.email('validation.invalidEmail'),
     password: z
       .string()
-      .min(8, 'Mínimo 8 caracteres')
-      .regex(/[A-Z]/, 'Debe incluir al menos una mayúscula')
-      .regex(/[a-z]/, 'Debe incluir al menos una minúscula')
-      .regex(/[0-9]/, 'Debe incluir al menos un número'),
+      .min(8, 'validation.minChars')
+      .regex(/[A-Z]/, 'validation.uppercase')
+      .regex(/[a-z]/, 'validation.lowercase')
+      .regex(/[0-9]/, 'validation.number'),
     password_confirmation: z.string(),
     phone: z.string().optional().or(z.literal('')),
     referral_code: z.string().max(10).optional().or(z.literal('')),
     captcha_token: z.string().optional(),
   })
   .refine((data) => data.password === data.password_confirmation, {
-    message: 'Las contraseñas no coinciden',
+    message: 'validation.passwordMismatch',
     path: ['password_confirmation'],
   });
 
 export const forgotPasswordSchema = z.object({
-  email: z.email('Email inválido'),
+  email: z.email('validation.invalidEmail'),
 });
 
 export const resetPasswordSchema = z
   .object({
-    email: z.email('Email inválido'),
+    email: z.email('validation.invalidEmail'),
     token: z.string().min(1),
     password: z
       .string()
-      .min(8, 'Mínimo 8 caracteres')
-      .regex(/[A-Z]/, 'Debe incluir al menos una mayúscula')
-      .regex(/[a-z]/, 'Debe incluir al menos una minúscula')
-      .regex(/[0-9]/, 'Debe incluir al menos un número'),
+      .min(8, 'validation.minChars')
+      .regex(/[A-Z]/, 'validation.uppercase')
+      .regex(/[a-z]/, 'validation.lowercase')
+      .regex(/[0-9]/, 'validation.number'),
     password_confirmation: z.string(),
   })
   .refine((data) => data.password === data.password_confirmation, {
-    message: 'Las contraseñas no coinciden',
+    message: 'validation.passwordMismatch',
     path: ['password_confirmation'],
   });
 
