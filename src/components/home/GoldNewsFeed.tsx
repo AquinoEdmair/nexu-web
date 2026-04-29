@@ -47,7 +47,10 @@ export function GoldNewsFeed() {
 
   const formatTime = (isoTime: string) => {
     try {
-      const diffInMinutes = Math.floor((new Date().getTime() - new Date(isoTime).getTime()) / 60000);
+      const date = new Date(isoTime);
+      if (isNaN(date.getTime())) return isoTime;
+
+      const diffInMinutes = Math.floor((new Date().getTime() - date.getTime()) / 60000);
       
       if (diffInMinutes < 1) return ta('justNow');
       if (diffInMinutes < 60) return ta('minutesAgo', { minutes: diffInMinutes });
