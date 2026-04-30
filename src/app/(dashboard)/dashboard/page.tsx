@@ -47,6 +47,7 @@ export default function DashboardPage() {
             <p className="text-[10px] font-black text-nexus-blue-light/60 uppercase tracking-widest">{t('capitalSecurity')}</p>
             <h4 className="text-xl font-black text-white uppercase tracking-tighter">{t('goldBacking')}</h4>
             <p className="text-xs text-nexus-text/40 leading-relaxed">{t('goldBackingDetail')}</p>
+            <p className="text-xs text-nexus-text/40 leading-relaxed mt-2">{t('forexOperationDetail')}</p>
           </div>
 
           {(memberSince || firstDeposit) && (
