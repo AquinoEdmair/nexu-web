@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
-import { MapPin, Phone, Mail, Send, ShieldCheck, Loader2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { MapPin, Phone, Mail, Send, ShieldCheck, Loader2, MessageCircle } from 'lucide-react';
 import { apiClient } from '@/lib/api/axios';
+import { configApi, PublicConfig } from '@/lib/api/config';
 import { useTranslations } from 'next-intl';
 
 export function ContactSection() {
@@ -14,7 +15,12 @@ export function ContactSection() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const [config, setConfig] = useState<PublicConfig | null>(null);
   const t = useTranslations('home.contact');
+
+  useEffect(() => {
+    configApi.getPublicConfig().then(setConfig).catch(console.error);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -76,6 +82,25 @@ export function ContactSection() {
               </p>
             </div>
           </a>
+
+          {config?.telegram_community_url && (
+            <a
+              href={config.telegram_community_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-start gap-4 p-6 rounded-2xl bg-nexus-blue/5 border border-nexus-blue/20 group hover:border-nexus-blue/40 transition-all active:scale-[0.98] shadow-[0_0_20px_rgba(11,64,193,0.1)]"
+            >
+              <div className="w-12 h-12 rounded-xl bg-nexus-blue/20 flex items-center justify-center shrink-0">
+                <MessageCircle className="w-5 h-5 text-nexus-blue-light" />
+              </div>
+              <div>
+                <h4 className="text-[10px] font-black text-white/30 uppercase tracking-[0.3em] mb-2">{t('telegramLabel')}</h4>
+                <p className="text-sm font-black text-nexus-blue-light leading-tight uppercase tracking-widest italic">
+                  {t('telegramButton')}
+                </p>
+              </div>
+            </a>
+          )}
         </div>
       </div>
 

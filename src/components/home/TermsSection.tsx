@@ -24,25 +24,14 @@ export function TermsSection() {
         </div>
         
         <div className="space-y-10 text-[13px] text-nexus-text/80 font-medium leading-[1.8] tracking-tight uppercase italic indent-8">
-          <div className="space-y-4">
-            <h4 className="text-white font-black tracking-widest text-[11px] uppercase">{t('s1Title')}</h4>
-            <p>{t('s1Body')}</p>
-          </div>
-
-          <div className="space-y-4">
-             <h4 className="text-white font-black tracking-widest text-[11px] uppercase">{t('s2Title')}</h4>
-             <p>{t('s2Body')}</p>
-          </div>
-
-          <div className="space-y-4">
-             <h4 className="text-white font-black tracking-widest text-[11px] uppercase">{t('s3Title')}</h4>
-             <p>{t('s3Body')}</p>
-          </div>
-
-          <div className="space-y-4">
-             <h4 className="text-white font-black tracking-widest text-[11px] uppercase">{t('s4Title')}</h4>
-             <p>{t('s4Body')}</p>
-          </div>
+          {[...Array(12)].map((_, i) => (
+            <div key={i} className="space-y-4">
+              <h4 className="text-white font-black tracking-widest text-[11px] uppercase">
+                {t(`s${i + 1}Title`)}
+              </h4>
+              <p>{t(`s${i + 1}Body`)}</p>
+            </div>
+          ))}
 
           <div className="p-6 bg-nexus-blue/5 border border-nexus-blue/20 rounded-2xl flex items-center gap-4 text-nexus-blue-light animate-pulse">
              <ShieldCheck className="w-6 h-6 shrink-0" />
