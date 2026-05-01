@@ -1,6 +1,7 @@
 import { Navbar } from "@/components/layout/Navbar";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { AuthGuard } from "@/components/auth/AuthGuard";
+import { GlobalCampaignManager } from "@/components/campaigns/GlobalCampaignManager";
 
 export default function DashboardLayout({
   children,
@@ -20,6 +21,7 @@ export default function DashboardLayout({
           </main>
         </div>
       </div>
+      <GlobalCampaignManager />
     </AuthGuard>
   );
 }
