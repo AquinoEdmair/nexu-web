@@ -6,7 +6,7 @@ import { useCreateWithdrawal } from '@/lib/hooks/useCreateWithdrawal';
 import { useNotificationStore } from '@/lib/store/notificationStore';
 import { useWithdrawalCurrencies } from '@/lib/hooks/useWithdrawalCurrencies';
 import { formatCurrency } from '@/lib/utils/format';
-import { ArrowRight, Loader2, Wallet, Zap, ShieldAlert, TrendingDown, AlertTriangle, QrCode, X } from 'lucide-react';
+import { ArrowRight, Loader2, Wallet, Zap, ShieldAlert, TrendingDown, AlertTriangle, QrCode, X, Lock } from 'lucide-react';
 import { FormattedAmount } from '@/components/ui/FormattedAmount';
 import { AxiosError } from 'axios';
 import { apiClient } from '@/lib/api/axios';
@@ -41,7 +41,9 @@ export function WithdrawalForm() {
   }, [currencies, selectedCurrency]);
 
   const balance = balanceData?.data;
-  const availableBalance = balance?.balance_in_operation ?? '0';
+  const inOperation = balance?.balance_in_operation ?? '0';
+  const availableBalance = balance?.balance_available ?? inOperation;
+  const activatingBalance = balance?.balance_activating ?? '0';
   const numericAmount = parseFloat(amount) || 0;
 
   const { data: commissionData } = useQuery<{ data: WithdrawalPreview }>({
@@ -115,6 +117,16 @@ export function WithdrawalForm() {
             <div>
               <p className="text-[9px] font-black text-white/20 uppercase tracking-[0.3em]">{t('available')}</p>
               <FormattedAmount amount={availableBalance} className="text-xl" />
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 bg-amber-500/10 rounded-xl border border-amber-500/20">
+              <Lock className="h-4 w-4 text-amber-500" />
+            </div>
+            <div>
+              <p className="text-[9px] font-black text-white/20 uppercase tracking-[0.3em]">EN ACTIVACIÓN</p>
+              <FormattedAmount amount={activatingBalance} className="text-xl text-amber-500" />
             </div>
           </div>
 
@@ -291,6 +303,17 @@ export function WithdrawalForm() {
             <p className="text-[9px] font-black text-red-400 uppercase tracking-[0.2em] mb-0.5">{t('criticalWarning')}</p>
             <p className="text-[10px] font-black leading-relaxed text-red-400/60 uppercase tracking-tight">
               {t('criticalWarningDetail')}
+            </p>
+          </div>
+        </div>
+
+        <div className="md:col-span-2 flex gap-4 p-4 bg-amber-500/5 border border-amber-500/15 rounded-2xl relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-1 h-full bg-amber-500" />
+          <Lock className="h-4 w-4 shrink-0 text-amber-500 mt-0.5" />
+          <div>
+            <p className="text-[9px] font-black text-amber-500 uppercase tracking-[0.2em] mb-0.5">Activación de fondos.</p>
+            <p className="text-[10px] font-black leading-relaxed text-amber-500/60 uppercase tracking-tight">
+              Los fondos se habilitan progresivamente tras su integración en el sistema operativo. Cada tipo de saldo cuenta con un periodo de activación específico que garantiza la correcta ejecución y estabilidad de las operaciones.
             </p>
           </div>
         </div>
