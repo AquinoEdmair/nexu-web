@@ -115,7 +115,14 @@ export function ElitePointsHistory() {
                   <span className={`font-black text-sm tracking-tighter text-right ${expired ? 'text-white/20' : 'text-nexus-blue-light'}`}>
                     +{pts} <span className="text-[10px] text-white/30">pts</span>
                   </span>
-                  <span className="text-white/30 text-xs font-medium text-right whitespace-nowrap">{formatDate(entry.created_at)}</span>
+                  <div className="flex flex-col items-end gap-1 whitespace-nowrap">
+                    <span className="text-white/30 text-xs font-medium text-right">{formatDate(entry.created_at)}</span>
+                    {entry.expires_at && (
+                      <span className={`text-[9px] font-medium ${expired ? 'text-red-500/50' : 'text-amber-500/70'}`}>
+                        {expired ? 'Venció: ' : 'Vence: '}{formatDate(entry.expires_at)}
+                      </span>
+                    )}
+                  </div>
                 </div>
               );
             })}
