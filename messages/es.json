@@ -337,7 +337,10 @@
     "earningsTitle": "Comisiones de Red Acumuladas",
     "activeGuests": "{count} invitados activos",
     "inactiveGuests": "{count} inactivos",
-    "withdraw": "Retirar Ganancias"
+    "withdraw": "Retirar Ganancias",
+    "pointsExpiringSoon": "Tienes {points} pts por vencer el {date}",
+    "pointsValidity": "Los puntos Elite tienen una validez de 12 meses. Los beneficios e incentivos de cada nivel serán comunicados a través de correo electrónico.",
+    "expiredBadge": "VENCIDO"
   },
   "profile": {
     "pageStatus": "Módulo: Identidad Operativa",

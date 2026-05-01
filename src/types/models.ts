@@ -134,6 +134,8 @@ export interface ReferralElite {
   next_tier: NextTierData | null;
   points_to_next: string | null;
   progress_pct: number;
+  points_expiring_soon: string | null;
+  next_expiry_date: string | null;
   tiers: EliteTierSummary[];
 }
 
@@ -144,6 +146,8 @@ export interface ElitePointEntry {
   amount_usd: string;
   source_user_masked: string | null;
   created_at: string;
+  expires_at: string | null;
+  is_expired: boolean;
 }
 
 export interface ReferralStats {

@@ -337,7 +337,10 @@
     "earningsTitle": "Accumulated Network Commissions",
     "activeGuests": "{count} active guests",
     "inactiveGuests": "{count} inactive",
-    "withdraw": "Withdraw Earnings"
+    "withdraw": "Withdraw Earnings",
+    "pointsExpiringSoon": "You have {points} pts expiring on {date}",
+    "pointsValidity": "Elite points are valid for 12 months. Benefits and incentives for each level will be communicated via email.",
+    "expiredBadge": "EXPIRED"
   },
   "profile": {
     "pageStatus": "Module: Operative Identity",

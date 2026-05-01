@@ -77,22 +77,34 @@ export function ElitePointsHistory() {
 
           <div className="space-y-2">
             {entries.map((entry) => {
-              const label = SOURCE_LABELS[entry.source] ?? entry.source;
-              const color = SOURCE_COLORS[entry.source] ?? SOURCE_COLORS['otro'];
-              const pts   = parseFloat(entry.points).toLocaleString('es-MX', { maximumFractionDigits: 2 });
-              const usd   = parseFloat(entry.amount_usd) > 0
+              const label   = SOURCE_LABELS[entry.source] ?? entry.source;
+              const color   = SOURCE_COLORS[entry.source] ?? SOURCE_COLORS['otro'];
+              const pts     = parseFloat(entry.points).toLocaleString('es-MX', { maximumFractionDigits: 2 });
+              const usd     = parseFloat(entry.amount_usd) > 0
                 ? `$${parseFloat(entry.amount_usd).toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
                 : '—';
+              const expired = entry.is_expired;
 
               return (
                 <div
                   key={entry.id}
-                  className="grid grid-cols-[1fr_auto_auto_auto] gap-4 items-center px-4 py-3 rounded-2xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] transition-colors"
+                  className={`grid grid-cols-[1fr_auto_auto_auto] gap-4 items-center px-4 py-3 rounded-2xl border transition-colors ${
+                    expired
+                      ? 'bg-white/[0.01] border-white/5 opacity-50'
+                      : 'bg-white/[0.02] border-white/5 hover:bg-white/[0.04]'
+                  }`}
                 >
                   <div className="flex flex-col gap-1">
-                    <span className={`text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full border w-fit ${color}`}>
-                      {label}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className={`text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full border w-fit ${color}`}>
+                        {label}
+                      </span>
+                      {expired && (
+                        <span className="text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full bg-red-500/10 border border-red-500/20 text-red-400">
+                          {t('expiredBadge')}
+                        </span>
+                      )}
+                    </div>
                     {entry.source_user_masked && (
                       <span className="text-[9px] text-white/40 font-medium px-1">
                         {entry.source_user_masked}
@@ -100,7 +112,7 @@ export function ElitePointsHistory() {
                     )}
                   </div>
                   <span className="text-white/40 text-sm font-mono text-right">{usd}</span>
-                  <span className="text-nexus-blue-light font-black text-sm tracking-tighter text-right">
+                  <span className={`font-black text-sm tracking-tighter text-right ${expired ? 'text-white/20' : 'text-nexus-blue-light'}`}>
                     +{pts} <span className="text-[10px] text-white/30">pts</span>
                   </span>
                   <span className="text-white/30 text-xs font-medium text-right whitespace-nowrap">{formatDate(entry.created_at)}</span>

@@ -1,6 +1,6 @@
 'use client';
 
-import { Star, Trophy, Wallet } from 'lucide-react';
+import { AlertTriangle, Clock, Info, Star, Trophy, Wallet } from 'lucide-react';
 import type { ReferralElite } from '@/types/models';
 import { formatCurrency } from '@/lib/utils/format';
 import { useTranslations } from 'next-intl';
@@ -10,12 +10,26 @@ interface EliteProgressProps {
   totalPersonalDeposit?: string;
 }
 
+function formatExpiryDate(iso: string): string {
+  return new Date(iso).toLocaleDateString('es-MX', {
+    day:   '2-digit',
+    month: 'long',
+    year:  'numeric',
+  });
+}
+
 export function EliteProgress({ elite, totalPersonalDeposit }: EliteProgressProps) {
   const t = useTranslations('referrals');
   const tierName     = elite.tier?.name ?? 'Elite';
   const tierSlug     = elite.tier?.slug ?? 'none';
   const nextTierName = elite.next_tier?.name ?? '';
   const pointsTotal  = parseFloat(elite.points_total).toLocaleString('es-MX', { maximumFractionDigits: 0 });
+
+  const hasExpiring    = elite.points_expiring_soon !== null;
+  const expiringPts    = hasExpiring
+    ? parseFloat(elite.points_expiring_soon!).toLocaleString('es-MX', { maximumFractionDigits: 0 })
+    : null;
+  const expiryDateFmt  = elite.next_expiry_date ? formatExpiryDate(elite.next_expiry_date) : null;
 
   return (
     <section className="relative overflow-hidden rounded-[2.5rem] p-10 bg-[#0a0f16]/40 border border-white/10 backdrop-blur-xl shadow-[0_8px_40px_rgba(0,0,0,0.4)] group hover:border-nexus-blue/20 transition-all">
@@ -92,6 +106,7 @@ export function EliteProgress({ elite, totalPersonalDeposit }: EliteProgressProp
           </div>
         </div>
 
+        {/* Points-to-next / max level banner */}
         <div className="flex items-center gap-5 p-6 rounded-3xl bg-white/5 border border-white/5 backdrop-blur-sm">
           <div className="p-3 bg-nexus-blue/10 rounded-2xl border border-nexus-blue/20 shrink-0">
             <Star className="h-6 w-6 text-nexus-blue-light fill-nexus-blue-light" />
@@ -109,7 +124,33 @@ export function EliteProgress({ elite, totalPersonalDeposit }: EliteProgressProp
             </p>
           )}
         </div>
+
+        {/* ── Expiring points warning ── */}
+        {hasExpiring && expiringPts && expiryDateFmt && (
+          <div className="flex items-start gap-4 p-5 rounded-3xl bg-amber-500/10 border border-amber-500/30 backdrop-blur-sm">
+            <div className="p-2.5 bg-amber-500/20 rounded-2xl border border-amber-500/30 shrink-0 mt-0.5">
+              <Clock className="h-5 w-5 text-amber-400" />
+            </div>
+            <div className="space-y-1">
+              <p className="text-sm font-black text-amber-300 uppercase tracking-widest flex items-center gap-2">
+                <AlertTriangle className="w-3.5 h-3.5" />
+                {t('pointsExpiringSoon', { points: expiringPts, date: expiryDateFmt })}
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* ── Validity & benefits notice ── */}
+        <div className="flex items-start gap-4 p-5 rounded-3xl bg-white/[0.03] border border-white/10 backdrop-blur-sm">
+          <div className="p-2.5 bg-nexus-blue/10 rounded-2xl border border-nexus-blue/20 shrink-0 mt-0.5">
+            <Info className="h-5 w-5 text-nexus-blue-light/70" />
+          </div>
+          <p className="text-xs text-white/40 font-medium leading-relaxed">
+            {t('pointsValidity')}
+          </p>
+        </div>
       </div>
     </section>
   );
 }
+
