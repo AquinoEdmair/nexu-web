@@ -3,9 +3,8 @@
 import { useEffect, useState } from 'react';
 import { useCampaigns, type Campaign } from './useCampaigns';
 import { useRouter } from 'next/navigation';
-import { X } from 'lucide-react';
-import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
+import { Modal } from '@/components/ui/Modal';
+import { Button } from '@/components/ui/Button';
 
 export function GlobalCampaignManager() {
   const { activeCampaigns, markAsViewed, respondToCampaign } = useCampaigns();
@@ -48,64 +47,56 @@ export function GlobalCampaignManager() {
   if (!currentCampaign) return null;
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && handleAction('rejected')}>
-      <DialogContent className="sm:max-w-md bg-[#0a0f16] border border-white/10 text-white rounded-3xl overflow-hidden p-0 gap-0">
-        <DialogTitle className="sr-only">{currentCampaign.title}</DialogTitle>
-        <DialogDescription className="sr-only">Campaign Modal</DialogDescription>
-        
-        {currentCampaign.image_url && (
-          <div className="w-full h-48 bg-white/5 relative">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img 
-              src={currentCampaign.image_url} 
-              alt={currentCampaign.title}
-              className="w-full h-full object-cover"
-            />
-          </div>
-        )}
-        
-        <div className="p-8 space-y-6">
-          <div>
-            <h3 className="text-2xl font-black uppercase tracking-tighter mb-4">
-              {currentCampaign.title}
-            </h3>
-            
-            {currentCampaign.description && (
-              <div 
-                className="text-sm text-white/60 leading-relaxed prose prose-invert"
-                // WARNING: Use DOMPurify in production before injecting HTML
-                dangerouslySetInnerHTML={{ __html: currentCampaign.description }}
-              />
-            )}
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-3 pt-4">
-            {currentCampaign.type === 'action' && currentCampaign.cta_text && (
-              <Button 
-                onClick={() => handleAction('accepted')}
-                className="w-full bg-nexus-blue hover:bg-nexus-blue-light text-white font-black uppercase tracking-widest rounded-xl h-12"
-              >
-                {currentCampaign.cta_text}
-              </Button>
-            )}
-            
-            <Button 
-              variant="outline" 
-              onClick={() => handleAction('rejected')}
-              className="w-full border-white/10 hover:bg-white/5 text-white/60 font-bold uppercase tracking-wider rounded-xl h-12"
-            >
-              Cerrar
-            </Button>
-          </div>
+    <Modal 
+      isOpen={isOpen} 
+      onClose={() => handleAction('rejected')}
+      className="bg-[#0a0f16] border-white/10 text-white p-0 overflow-hidden"
+    >
+      {currentCampaign.image_url && (
+        <div className="w-full h-48 bg-white/5 relative">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img 
+            src={currentCampaign.image_url} 
+            alt={currentCampaign.title}
+            className="w-full h-full object-cover"
+          />
         </div>
-        
-        <button 
-          onClick={() => handleAction('rejected')}
-          className="absolute top-4 right-4 p-2 rounded-full bg-black/20 hover:bg-black/40 text-white/60 transition-colors backdrop-blur-sm"
-        >
-          <X className="w-4 h-4" />
-        </button>
-      </DialogContent>
-    </Dialog>
+      )}
+      
+      <div className="p-8 space-y-6">
+        <div>
+          <h3 className="text-2xl font-black uppercase tracking-tighter mb-4 pr-8">
+            {currentCampaign.title}
+          </h3>
+          
+          {currentCampaign.description && (
+            <div 
+              className="text-sm text-white/60 leading-relaxed prose prose-invert"
+              // WARNING: Use DOMPurify in production before injecting HTML
+              dangerouslySetInnerHTML={{ __html: currentCampaign.description }}
+            />
+          )}
+        </div>
+
+        <div className="flex flex-col sm:flex-row gap-3 pt-4">
+          {currentCampaign.type === 'action' && currentCampaign.cta_text && (
+            <Button 
+              onClick={() => handleAction('accepted')}
+              className="w-full bg-nexus-blue hover:bg-nexus-blue-light text-white font-black uppercase tracking-widest rounded-xl h-12"
+            >
+              {currentCampaign.cta_text}
+            </Button>
+          )}
+          
+          <Button 
+            variant="outline" 
+            onClick={() => handleAction('rejected')}
+            className="w-full border-white/10 hover:bg-white/5 text-white/60 hover:text-white font-bold uppercase tracking-wider rounded-xl h-12"
+          >
+            Cerrar
+          </Button>
+        </div>
+      </div>
+    </Modal>
   );
 }
