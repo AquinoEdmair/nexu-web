@@ -19,7 +19,7 @@ export function useCampaigns() {
   const { data: activeCampaigns = [], isLoading } = useQuery({
     queryKey: ['campaigns', 'active'],
     queryFn: async (): Promise<Campaign[]> => {
-      const response = await api.get('/api/v1/campaigns/active');
+      const response = await api.get('/campaigns/active');
       return response.data.data;
     },
     staleTime: 1000 * 60 * 5, // 5 minutes
@@ -27,13 +27,13 @@ export function useCampaigns() {
 
   const markAsViewed = useMutation({
     mutationFn: async (campaignId: string) => {
-      await api.post(`/api/v1/campaigns/${campaignId}/view`);
+      await api.post(`/campaigns/${campaignId}/view`);
     },
   });
 
   const respondToCampaign = useMutation({
     mutationFn: async ({ id, action }: { id: string; action: 'accepted' | 'rejected' }) => {
-      await api.post(`/api/v1/campaigns/${id}/action`, { action });
+      await api.post(`/campaigns/${id}/action`, { action });
     },
     onSuccess: () => {
       // Refresh the list so accepted/rejected campaigns disappear
