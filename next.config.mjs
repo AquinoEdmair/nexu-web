@@ -15,7 +15,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'nexu-api-production.up.railway.app',
+        hostname: 'api.nexu.capital',
         pathname: '/storage/**',
       },
     ],
