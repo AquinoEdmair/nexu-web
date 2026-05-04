@@ -20,7 +20,7 @@ interface WithdrawalPreview {
   net_amount: number;
 }
 
-export function WithdrawalForm() {
+export function WithdrawalForm({ availableBalance }: { availableBalance: string }) {
   const [selectedCurrency, setSelectedCurrency] = useState<string>('');
   const [amount, setAmount] = useState('');
   const [address, setAddress] = useState('');
@@ -40,10 +40,6 @@ export function WithdrawalForm() {
     }
   }, [currencies, selectedCurrency]);
 
-  const balance = balanceData?.data;
-  const inOperation = balance?.balance_in_operation ?? '0';
-  const availableBalance = balance?.balance_available ?? inOperation;
-  const activatingBalance = balance?.balance_activating ?? '0';
   const numericAmount = parseFloat(amount) || 0;
 
   const { data: commissionData } = useQuery<{ data: WithdrawalPreview }>({
@@ -106,240 +102,179 @@ export function WithdrawalForm() {
   const isFormValid      = numericAmount > 0 && (isAddressValid || isQrValid) && numericAmount <= parseFloat(availableBalance) && !!selectedCurrency;
 
   return (
-    <div className="bg-[#0a0f16]/40 border border-white/10 rounded-3xl backdrop-blur-xl shadow-[0_8px_40px_rgba(0,0,0,0.3)] overflow-hidden">
-
-      <div className="px-8 py-5 border-b border-white/5 flex flex-wrap items-center justify-between gap-4">
-        <div className="flex items-center gap-6">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 bg-nexus-blue/10 rounded-xl border border-nexus-blue/20">
-              <Wallet className="h-4 w-4 text-nexus-blue-light" />
-            </div>
-            <div>
-              <p className="text-[9px] font-black text-white/20 uppercase tracking-[0.3em]">{t('available')}</p>
-              <FormattedAmount amount={availableBalance} className="text-xl" />
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 bg-amber-500/10 rounded-xl border border-amber-500/20">
-              <Lock className="h-4 w-4 text-amber-500" />
-            </div>
-            <div>
-              <p className="text-[9px] font-black text-white/20 uppercase tracking-[0.3em]">EN ACTIVACIÓN</p>
-              <FormattedAmount amount={activatingBalance} className="text-xl text-amber-500" />
-            </div>
-          </div>
-
-          <div className="flex flex-wrap gap-2 p-1 bg-white/5 rounded-xl border border-white/5">
-            {currenciesLoading ? (
-              <div className="px-3 py-1.5 flex items-center gap-1.5">
-                <Loader2 className="h-3 w-3 text-white/20 animate-spin" />
-                <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">{t('submitting')}</span>
-              </div>
-            ) : currencies && currencies.length > 0 ? (
-              currencies.map((c) => {
-                const isSelected = selectedCurrency === c.symbol;
-                return (
-                  <button
-                    key={c.symbol}
-                    onClick={() => handleSelectCurrency(c.symbol)}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${
-                      isSelected
-                        ? 'bg-nexus-blue text-white shadow-[0_0_12px_rgba(11,64,193,0.3)]'
-                        : 'text-white/30 hover:text-white hover:bg-white/5'
-                    }`}
-                  >
-                    {c.symbol}
-                    {c.network && <span className="text-[8px] opacity-60">({c.network})</span>}
-                  </button>
-                );
-              })
-            ) : (
-              <span className="px-3 py-1.5 text-[10px] font-black text-white/20 uppercase tracking-widest">{t('noCurrencies')}</span>
-            )}
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2 px-3 py-1.5 bg-white/5 rounded-full border border-white/10">
-          <Zap className="w-3 h-3 text-nexus-blue-light fill-nexus-blue-light" />
-          <span className="text-[9px] font-black text-nexus-blue-light uppercase tracking-widest">{t('hmacValidation')}</span>
-        </div>
+    <div className="space-y-6">
+      <div className="relative">
+        <span className="absolute inset-y-0 left-5 flex items-center font-black text-lg text-nexus-blue-light pointer-events-none">$</span>
+        <input
+          type="number"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+          placeholder="0.00"
+          className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-10 pr-24 text-white font-black text-xl outline-none focus:border-nexus-blue/50 focus:bg-white/[0.08] transition-all placeholder:text-white/10"
+        />
+        <button
+          onClick={handleMax}
+          className="absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-black text-nexus-blue-light uppercase tracking-widest px-4 py-1.5 bg-nexus-blue/10 rounded-lg hover:bg-nexus-blue hover:text-white transition-all border border-nexus-blue/20"
+        >
+          MÁX
+        </button>
       </div>
+      <p className="text-[10px] text-white/40 font-medium">Máximo disponible: ${formatCurrency(availableBalance)} USDT</p>
 
-      <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-
-        <div className="space-y-2">
-          <label className="text-[9px] font-black uppercase tracking-[0.3em] text-white/30 flex items-center gap-1.5">
-            <span className="w-1 h-3 bg-nexus-blue-light rounded-full inline-block" />
-            {t('amount')}
-          </label>
-          <div className="relative">
-            <span className="absolute inset-y-0 left-5 flex items-center font-black text-lg text-nexus-blue-light pointer-events-none">$</span>
-            <input
-              type="number"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              placeholder="0.00"
-              className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-10 pr-16 text-white font-black text-xl outline-none focus:border-nexus-blue/50 focus:bg-white/[0.08] transition-all placeholder:text-white/10"
-            />
-            <button
-              onClick={handleMax}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-[9px] font-black text-nexus-blue-light uppercase tracking-widest px-2.5 py-1 bg-nexus-blue/10 rounded-lg hover:bg-nexus-blue hover:text-white transition-all border border-nexus-blue/20"
-            >
-              {t('max')}
-            </button>
+      {hasCommission && (
+        <div className="w-full rounded-2xl border border-amber-500/20 bg-amber-500/5 px-5 py-4 space-y-2">
+          <div className="flex items-center gap-1.5 mb-1">
+            <ShieldAlert className="w-3 h-3 text-amber-400" />
+            <span className="text-[9px] font-black uppercase tracking-[0.2em] text-amber-400/80">{t('breakdown')}</span>
+          </div>
+          <div className="flex justify-between text-[10px]">
+            <span className="text-white/40 font-black uppercase tracking-widest">{t('gross')}</span>
+            <span className="text-white font-black">${preview.amount.toFixed(2)}</span>
+          </div>
+          <div className="flex justify-between text-[10px]">
+            <span className="text-amber-400/70 font-black uppercase tracking-widest">{t('commission')} ({preview.rate}%)</span>
+            <span className="text-amber-400/80 font-black">-${preview.fee_amount.toFixed(2)}</span>
+          </div>
+          <div className="flex justify-between text-[11px] border-t border-white/5 pt-2">
+            <span className="text-white font-black uppercase tracking-widest">{t('youReceive')}</span>
+            <span className="text-nexus-blue-light font-black text-base">${preview.net_amount.toFixed(2)}</span>
           </div>
         </div>
+      )}
 
-        <div className="flex items-end">
-          {hasCommission ? (
-            <div className="w-full rounded-2xl border border-amber-500/20 bg-amber-500/5 px-5 py-4 space-y-2">
-              <div className="flex items-center gap-1.5 mb-1">
-                <ShieldAlert className="w-3 h-3 text-amber-400" />
-                <span className="text-[9px] font-black uppercase tracking-[0.2em] text-amber-400/80">{t('breakdown')}</span>
-              </div>
-              <div className="flex justify-between text-[10px]">
-                <span className="text-white/40 font-black uppercase tracking-widest">{t('gross')}</span>
-                <span className="text-white font-black">${preview.amount.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between text-[10px]">
-                <span className="text-amber-400/70 font-black uppercase tracking-widest">{t('commission')} ({preview.rate}%)</span>
-                <span className="text-amber-400/80 font-black">-${preview.fee_amount.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between text-[11px] border-t border-white/5 pt-2">
-                <span className="text-white font-black uppercase tracking-widest">{t('youReceive')}</span>
-                <span className="text-nexus-blue-light font-black text-base">${preview.net_amount.toFixed(2)}</span>
-              </div>
-            </div>
-          ) : (
-            <div className="w-full rounded-2xl border border-white/5 bg-white/[0.02] px-5 py-4 flex items-center gap-3">
-              <ShieldAlert className="w-4 h-4 text-white/10 shrink-0" />
-              <p className="text-[10px] font-black text-white/20 uppercase tracking-widest">{t('commissionPlaceholder')}</p>
-            </div>
-          )}
-        </div>
-
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <label className="text-[9px] font-black uppercase tracking-[0.3em] text-white/30 flex items-center gap-1.5">
+          <label className="text-[9px] font-black uppercase tracking-[0.3em] text-nexus-blue-light flex items-center gap-1.5">
             <span className="w-1 h-3 bg-nexus-blue-light rounded-full inline-block" />
-            {t('walletAddress')} {selectedCurrency ? `(${selectedCurrency})` : ''}
-            {!isQrValid && <span className="text-nexus-blue-light/40 normal-case tracking-normal font-bold ml-auto">* REQUERIDO</span>}
+            Dirección de Wallet (USDT)
+            <span className="text-nexus-blue-light/40 normal-case tracking-normal font-bold ml-auto">* REQUERIDO</span>
           </label>
           <input
             type="text"
             value={address}
             onChange={(e) => setAddress(e.target.value)}
             placeholder="Pega tu dirección aquí..."
-            className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-5 text-white font-black text-sm outline-none focus:border-nexus-blue/50 focus:bg-white/[0.08] transition-all placeholder:text-white/10 tracking-wide font-mono"
+            className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-white font-black text-xs outline-none focus:border-nexus-blue/50 focus:bg-white/[0.08] transition-all placeholder:text-white/10 tracking-wide font-mono"
           />
         </div>
 
         <div className="space-y-2">
-          <label className="text-[9px] font-black uppercase tracking-[0.3em] text-white/30 flex items-center gap-1.5">
+          <label className="text-[9px] font-black uppercase tracking-[0.3em] text-red-400 flex items-center gap-1.5">
             <span className="w-1 h-3 bg-red-400 rounded-full inline-block" />
-            {t('confirmAddress')}
+            Confirmar Dirección
+            <span className="text-red-400/40 normal-case tracking-normal font-bold ml-auto">* REQUERIDO</span>
           </label>
           <input
             type="text"
             value={addressConfirm}
             onChange={(e) => setAddressConfirm(e.target.value)}
             placeholder="Vuelve a pegar tu dirección..."
-            className={`w-full bg-white/5 border rounded-2xl py-4 px-5 text-white font-black text-sm outline-none transition-all placeholder:text-white/10 tracking-wide font-mono ${
+            className={`w-full bg-white/5 border rounded-xl py-3 px-4 text-white font-black text-xs outline-none transition-all placeholder:text-white/10 tracking-wide font-mono ${
               addressMismatch
                 ? 'border-red-500/60 focus:border-red-500 bg-red-500/5'
                 : 'border-white/10 focus:border-nexus-blue/50 focus:bg-white/[0.08]'
             }`}
           />
           {addressMismatch && (
-            <p className="text-[10px] font-black text-red-400 uppercase tracking-widest flex items-center gap-1.5">
+            <p className="text-[9px] font-black text-red-400 uppercase tracking-widest flex items-center gap-1.5 mt-1">
               <TrendingDown className="w-3 h-3" /> {t('addressMismatch')}
             </p>
           )}
         </div>
+      </div>
 
-        {/* QR Image Upload */}
-        <div className="md:col-span-2 space-y-2">
-          <label className="text-[9px] font-black uppercase tracking-[0.3em] text-white/30 flex items-center gap-1.5">
-            <span className="w-1 h-3 bg-nexus-blue rounded-full inline-block" />
-            QR de destino {!isAddressValid && <span className="text-nexus-blue-light/40 normal-case tracking-normal font-bold ml-auto">* REQUERIDO</span>}
-          </label>
-
-          {qrPreview ? (
-            <div className="relative w-fit">
-              <img
-                src={qrPreview}
-                alt="QR preview"
-                className="h-36 w-36 object-contain rounded-2xl border border-nexus-blue/30 bg-white/5 p-2"
-              />
-              <button
-                type="button"
-                onClick={handleQrRemove}
-                className="absolute -top-2 -right-2 bg-red-500/80 hover:bg-red-500 rounded-full p-1 transition-colors"
-              >
-                <X className="w-3 h-3 text-white" />
-              </button>
-            </div>
-          ) : (
-            <label className="flex flex-col items-center justify-center gap-2 w-full border-2 border-dashed border-white/10 hover:border-nexus-blue/40 rounded-2xl py-6 px-4 cursor-pointer transition-colors group bg-white/[0.02] hover:bg-white/5">
-              <QrCode className="w-6 h-6 text-white/20 group-hover:text-nexus-blue-light transition-colors" />
-              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/20 group-hover:text-white/40 transition-colors">
-                Adjuntar imagen del QR
-              </span>
-              <span className="text-[9px] text-white/10 uppercase tracking-widest">JPG, PNG, WEBP · Máx. 5 MB</span>
-              <input
-                type="file"
-                accept="image/jpeg,image/png,image/webp"
-                className="hidden"
-                onChange={handleQrChange}
-              />
-            </label>
-          )}
-        </div>
-
-        <div className="md:col-span-2 flex gap-4 p-4 bg-red-500/5 border border-red-500/15 rounded-2xl relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-1 h-full bg-red-500" />
-          <AlertTriangle className="h-4 w-4 shrink-0 text-red-400 mt-0.5" />
-          <div>
-            <p className="text-[9px] font-black text-red-400 uppercase tracking-[0.2em] mb-0.5">{t('criticalWarning')}</p>
-            <p className="text-[10px] font-black leading-relaxed text-red-400/60 uppercase tracking-tight">
-              {t('criticalWarningDetail')}
-            </p>
-          </div>
-        </div>
-
-        <div className="md:col-span-2 flex gap-4 p-4 bg-amber-500/5 border border-amber-500/15 rounded-2xl relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-1 h-full bg-amber-500" />
-          <Lock className="h-4 w-4 shrink-0 text-amber-500 mt-0.5" />
-          <div>
-            <p className="text-[9px] font-black text-amber-500 uppercase tracking-[0.2em] mb-0.5">Activación de fondos.</p>
-            <p className="text-[10px] font-black leading-relaxed text-amber-500/60 uppercase tracking-tight">
-              Los fondos se habilitan progresivamente tras su integración en el sistema operativo. Cada tipo de saldo cuenta con un periodo de activación específico que garantiza la correcta ejecución y estabilidad de las operaciones.
-            </p>
-          </div>
-        </div>
-
-        <div className="md:col-span-2 flex gap-4 p-4 bg-white/5 border border-white/10 rounded-2xl relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-1 h-full bg-nexus-blue" />
-          <ShieldAlert className="h-4 w-4 shrink-0 text-nexus-blue-light mt-0.5" />
-          <p className="text-[10px] font-black leading-relaxed text-white/30 uppercase tracking-tight">
-            {t('processInfo')}
-          </p>
-        </div>
-
-        <div className="md:col-span-2">
-          <button
-            onClick={handleSubmit}
-            disabled={isPending || !isFormValid}
-            className="w-full py-4 bg-nexus-blue text-white font-black rounded-2xl hover:bg-nexus-blue-light hover:shadow-[0_0_30px_rgba(11,64,193,0.3)] active:scale-[0.99] transition-all flex items-center justify-center gap-3 disabled:opacity-20 disabled:cursor-not-allowed uppercase tracking-[0.2em] text-xs shadow-[0_4px_20px_rgba(0,0,0,0.2)]"
+      <div className="space-y-2">
+        <label className="text-[9px] font-black uppercase tracking-[0.3em] text-nexus-blue-light flex items-center gap-1.5">
+          <span className="w-1 h-3 bg-nexus-blue-light rounded-full inline-block" />
+          Red de Destino
+          <span className="text-nexus-blue-light/40 normal-case tracking-normal font-bold ml-auto">* REQUERIDO</span>
+        </label>
+        <div className="relative">
+          <select
+            value={selectedCurrency}
+            onChange={(e) => handleSelectCurrency(e.target.value)}
+            className="w-full appearance-none bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-white font-black text-xs outline-none focus:border-nexus-blue/50 focus:bg-white/[0.08] transition-all cursor-pointer uppercase tracking-widest"
           >
-            {isPending ? (
-              <><Loader2 className="h-4 w-4 animate-spin" /> {t('submitting')}</>
-            ) : (
-              <>{hasCommission ? `${t('submitLabel')} $${preview.net_amount.toFixed(2)}` : t('submit')}<ArrowRight className="h-4 w-4" /></>
-            )}
-          </button>
+            <option value="" disabled className="bg-[#0a0f16]">Selecciona la red</option>
+            {currencies?.map(c => (
+              <option key={c.symbol} value={c.symbol} className="bg-[#0a0f16]">
+                {c.symbol} {c.network ? `(${c.network})` : ''}
+              </option>
+            ))}
+          </select>
+          <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none">
+            <svg className="w-4 h-4 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7"/></svg>
+          </div>
         </div>
       </div>
+
+      <div className="space-y-2">
+        <label className="text-[9px] font-black uppercase tracking-[0.3em] text-white/30 flex items-center gap-1.5">
+          <span className="w-1 h-3 bg-nexus-blue rounded-full inline-block" />
+          QR de destino (Opcional)
+        </label>
+
+        {qrPreview ? (
+          <div className="relative w-full border border-white/10 rounded-2xl p-4 bg-white/[0.02] flex items-center gap-4">
+            <img
+              src={qrPreview}
+              alt="QR preview"
+              className="h-16 w-16 object-contain rounded-xl border border-nexus-blue/30 bg-white/5 p-1"
+            />
+            <div className="flex-1">
+              <p className="text-[10px] font-black text-white/80 uppercase tracking-widest">QR Adjunto</p>
+              <p className="text-[9px] text-white/40 uppercase">Listo para revisión</p>
+            </div>
+            <button
+              type="button"
+              onClick={handleQrRemove}
+              className="bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white rounded-lg p-2 transition-colors border border-red-500/20"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        ) : (
+          <label className="flex items-center gap-4 w-full border border-dashed border-white/10 hover:border-nexus-blue/40 rounded-xl py-4 px-4 cursor-pointer transition-colors group bg-white/[0.02] hover:bg-white/5">
+            <div className="p-2 bg-white/5 rounded-lg group-hover:bg-nexus-blue/10 transition-colors">
+              <QrCode className="w-5 h-5 text-white/30 group-hover:text-nexus-blue-light transition-colors" />
+            </div>
+            <div className="flex flex-col">
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/60 group-hover:text-white transition-colors">
+                Adjuntar imagen del QR
+              </span>
+              <span className="text-[9px] text-white/30 uppercase tracking-widest">JPG, PNG, WEBP · Máx. 5 MB</span>
+            </div>
+            <input
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              className="hidden"
+              onChange={handleQrChange}
+            />
+          </label>
+        )}
+      </div>
+
+      <div className="flex items-start gap-4 p-4 bg-amber-500/10 border border-amber-500/20 rounded-xl">
+        <AlertTriangle className="h-5 w-5 shrink-0 text-amber-500 mt-0.5" />
+        <div>
+          <p className="text-[10px] font-black text-amber-500 uppercase tracking-widest mb-1">Verifica cuidadosamente la información</p>
+          <p className="text-[10px] text-amber-500/60 leading-relaxed uppercase">
+            Una vez procesado, el retiro no puede ser cancelado ni revertido.
+          </p>
+        </div>
+      </div>
+
+      <button
+        onClick={handleSubmit}
+        disabled={isPending || !isFormValid}
+        className="w-full py-4 bg-nexus-blue text-white font-black rounded-xl hover:bg-nexus-blue-light hover:shadow-[0_0_30px_rgba(11,64,193,0.3)] active:scale-[0.99] transition-all flex items-center justify-center gap-3 disabled:opacity-20 disabled:cursor-not-allowed uppercase tracking-[0.2em] text-[10px] shadow-[0_4px_20px_rgba(0,0,0,0.2)] mt-6"
+      >
+        {isPending ? (
+          <><Loader2 className="h-4 w-4 animate-spin" /> {t('submitting')}</>
+        ) : (
+          <>Ejecutar Retiro <ArrowRight className="h-4 w-4" /></>
+        )}
+      </button>
     </div>
   );
 }

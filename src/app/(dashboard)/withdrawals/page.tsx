@@ -1,6 +1,6 @@
 'use client';
 
-import { WithdrawalForm } from '@/components/withdrawals/WithdrawalForm';
+import { WithdrawalDashboard } from '@/components/withdrawals/WithdrawalDashboard';
 import { WithdrawalHistory } from '@/components/withdrawals/WithdrawalHistory';
 import { CreditCard, ShieldCheck } from 'lucide-react';
 import { useTranslations } from 'next-intl';
@@ -9,7 +9,7 @@ export default function WithdrawalsPage() {
   const t = useTranslations('withdrawals');
 
   return (
-    <main className="max-w-7xl mx-auto pt-6 pb-32 px-4 md:px-8 space-y-10">
+    <main className="max-w-[1400px] mx-auto pt-6 pb-32 px-4 md:px-8 space-y-10">
       <header className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-white/5 pb-8">
         <div>
           <div className="flex items-center gap-2 mb-2">
@@ -25,8 +25,11 @@ export default function WithdrawalsPage() {
         </div>
       </header>
 
-      <WithdrawalForm />
-      <WithdrawalHistory />
+      <WithdrawalDashboard />
+      
+      <div className="pt-8 mt-8 border-t border-white/5">
+        <WithdrawalHistory />
+      </div>
     </main>
   );
 }
