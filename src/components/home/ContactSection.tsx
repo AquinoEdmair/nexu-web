@@ -68,20 +68,6 @@ export function ContactSection() {
             </div>
           </div>
 
-          <a
-            href="tel:+14708269616"
-            className="flex items-start gap-4 p-6 rounded-2xl bg-white/[0.02] border border-white/5 group hover:border-nexus-blue/20 transition-all active:scale-[0.98]"
-          >
-            <div className="w-12 h-12 rounded-xl bg-nexus-blue/10 flex items-center justify-center shrink-0">
-              <Phone className="w-5 h-5 text-nexus-blue-light" />
-            </div>
-            <div>
-              <h4 className="text-[10px] font-black text-white/30 uppercase tracking-[0.3em] mb-2">{t('phoneLabel')}</h4>
-              <p className="text-sm font-black text-white leading-tight uppercase tracking-[0.5em] italic font-mono">
-                {t('phone')}
-              </p>
-            </div>
-          </a>
 
           {config?.telegram_community_url && (
             <a
