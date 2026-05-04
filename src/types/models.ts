@@ -34,6 +34,7 @@ export interface Transaction {
   metadata: Record<string, unknown> | null;
   notes: string | null;
   admin_name: string | null;
+  available_at: string | null;
   created_at: string;
   updated_at: string;
 }
