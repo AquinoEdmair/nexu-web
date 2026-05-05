@@ -1,12 +1,13 @@
 'use client';
 
-import React, { useState, Suspense } from 'react';
+import React, { useState, Suspense, useRef, useEffect } from 'react';
 import { AtSign, Eye, EyeOff, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { useLogin } from '@/lib/hooks/useAuth';
 import { loginSchema } from '@/lib/validators/auth';
 import { useTranslations } from 'next-intl';
 import { TurnstileWidget } from '@/components/ui/TurnstileWidget';
+import type { TurnstileInstance } from '@marsidev/react-turnstile';
 
 export default function LoginPageWrapper() {
   return (
@@ -21,9 +22,18 @@ function LoginPage() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const captchaRef = useRef<TurnstileInstance>(null);
     const { login, isLoading, error, fieldErrors, reset } = useLogin();
   const t = useTranslations('auth.login');
   const vt = useTranslations('validation');
+
+  // Reset captcha if an error occurs, as Turnstile tokens are one-time use
+  useEffect(() => {
+    if (error || fieldErrors) {
+      captchaRef.current?.reset();
+      setCaptchaToken(null);
+    }
+  }, [error, fieldErrors]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -117,6 +127,7 @@ function LoginPage() {
 
         {/* CAPTCHA */}
         <TurnstileWidget
+          widgetRef={captchaRef}
           onSuccess={(token) => setCaptchaToken(token)}
           onExpire={() => setCaptchaToken(null)}
           onError={() => setCaptchaToken(null)}

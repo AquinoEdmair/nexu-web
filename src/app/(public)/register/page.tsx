@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, Suspense } from 'react';
+import React, { useState, Suspense, useRef, useEffect } from 'react';
 import { Eye, EyeOff, Award, Loader2, User, Mail } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
@@ -9,6 +9,7 @@ import { registerSchema } from '@/lib/validators/auth';
 import { PhoneInput } from '@/components/ui/PhoneInput';
 import { useTranslations } from 'next-intl';
 import { TurnstileWidget } from '@/components/ui/TurnstileWidget';
+import type { TurnstileInstance } from '@marsidev/react-turnstile';
 
 export default function RegisterPageWrapper() {
   return (
@@ -37,7 +38,16 @@ function RegisterPage() {
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [clientErrors, setClientErrors] = useState<Record<string, string>>({});
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const captchaRef = useRef<TurnstileInstance>(null);
   const { register, isLoading, error, fieldErrors, reset } = useRegister();
+
+  // Reset captcha if an error occurs, as Turnstile tokens are one-time use
+  useEffect(() => {
+    if (error || fieldErrors) {
+      captchaRef.current?.reset();
+      setCaptchaToken(null);
+    }
+  }, [error, fieldErrors]);
 
   const updateField = (field: string, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -248,6 +258,7 @@ function RegisterPage() {
 
         {/* CAPTCHA */}
         <TurnstileWidget
+          widgetRef={captchaRef}
           onSuccess={(token) => setCaptchaToken(token)}
           onExpire={() => setCaptchaToken(null)}
           onError={() => setCaptchaToken(null)}

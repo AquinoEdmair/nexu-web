@@ -1,6 +1,6 @@
 'use client';
 
-import { Turnstile } from '@marsidev/react-turnstile';
+import { Turnstile, type TurnstileInstance } from '@marsidev/react-turnstile';
 import { ShieldCheck } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
@@ -8,11 +8,12 @@ interface TurnstileWidgetProps {
   onSuccess: (token: string) => void;
   onExpire?: () => void;
   onError?: () => void;
+  widgetRef?: React.RefObject<TurnstileInstance | null>;
 }
 
 const SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? '1x00000000000000000000AA';
 
-export function TurnstileWidget({ onSuccess, onExpire, onError }: TurnstileWidgetProps) {
+export function TurnstileWidget({ onSuccess, onExpire, onError, widgetRef }: TurnstileWidgetProps) {
   const vt = useTranslations('validation');
 
   return (
@@ -25,6 +26,7 @@ export function TurnstileWidget({ onSuccess, onExpire, onError }: TurnstileWidge
       </div>
       <div className="rounded-xl overflow-hidden bg-white/5 border border-white/5 w-full flex items-center justify-center min-h-[65px]">
         <Turnstile
+          ref={widgetRef}
           siteKey={SITE_KEY}
           options={{
             theme: 'dark',
