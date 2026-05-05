@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const loginSchema = z.object({
-  email: z.email('validation.invalidEmail'),
+  email: z.string().email('validation.invalidEmail').transform((val) => val.toLowerCase()),
   password: z.string().min(1, 'validation.required'),
   captcha_token: z.string().optional(),
 });
@@ -9,7 +9,7 @@ export const loginSchema = z.object({
 export const registerSchema = z
   .object({
     name: z.string().min(2, 'validation.minChars').max(100),
-    email: z.email('validation.invalidEmail'),
+    email: z.string().email('validation.invalidEmail').transform((val) => val.toLowerCase()),
     password: z
       .string()
       .min(8, 'validation.minChars')
@@ -27,12 +27,12 @@ export const registerSchema = z
   });
 
 export const forgotPasswordSchema = z.object({
-  email: z.email('validation.invalidEmail'),
+  email: z.string().email('validation.invalidEmail').transform((val) => val.toLowerCase()),
 });
 
 export const resetPasswordSchema = z
   .object({
-    email: z.email('validation.invalidEmail'),
+    email: z.string().email('validation.invalidEmail').transform((val) => val.toLowerCase()),
     token: z.string().min(1),
     password: z
       .string()

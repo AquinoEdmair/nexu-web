@@ -265,6 +265,11 @@ function RegisterPage() {
                 <Loader2 className="w-5 h-5 animate-spin" />
                 {t('submitting')}
               </>
+            ) : !captchaToken ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin opacity-50" />
+                {t('waitingForCaptcha')}
+              </>
             ) : (
               t('submit')
             )}

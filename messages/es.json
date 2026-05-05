@@ -48,7 +48,8 @@
       "submit": "Iniciar Sesión",
       "submitting": "Iniciando sesión...",
       "noAccount": "¿No tienes una cuenta?",
-      "joinElite": "Únete a la Élite"
+      "joinElite": "Únete a la Élite",
+      "waitingForCaptcha": "Esperando verificación..."
     },
     "register": {
       "title": "Registro de Inversor Élite",
@@ -71,7 +72,8 @@
       "submit": "Crear Cuenta",
       "submitting": "Validando datos...",
       "hasAccount": "¿Ya tienes una cuenta?",
-      "signIn": "Iniciar Sesión"
+      "signIn": "Iniciar Sesión",
+      "waitingForCaptcha": "Esperando verificación..."
     },
     "forgotPassword": {
       "title": "Protocolo de Recuperación",
