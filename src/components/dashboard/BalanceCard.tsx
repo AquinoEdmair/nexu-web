@@ -4,13 +4,26 @@ import { useBalance } from '@/lib/hooks/useBalance';
 import { useGoldPrice } from '@/lib/hooks/useMetrics';
 import { formatCurrency } from '@/lib/utils/format';
 import { FormattedAmount } from '@/components/ui/FormattedAmount';
-import { Shield, Wallet, CheckCircle2, Loader2 } from 'lucide-react';
+import { Shield, Wallet, CheckCircle2, Loader2, Copy, Check } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import { useReferralSummary } from '@/lib/hooks/useReferrals';
+import { useState } from 'react';
 
 export function BalanceCard() {
   const { data, isLoading, isError, refetch } = useBalance();
   const { data: goldData } = useGoldPrice();
   const t = useTranslations('balance');
+  const tr = useTranslations('referrals');
+  const { data: referralData } = useReferralSummary();
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    if (referralData?.data.share_url) {
+      navigator.clipboard.writeText(referralData.data.share_url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -90,6 +103,24 @@ export function BalanceCard() {
             <p className="text-xl font-black text-white group-hover:text-nexus-blue-light transition-colors">
               ${formatCurrency(balance.balance_in_operation)}
             </p>
+            {referralData?.data.share_url && (
+              <div className="mt-3 space-y-1">
+                <p className="text-[8px] font-black text-white/20 uppercase tracking-[0.2em]">{tr('linkLabel')}</p>
+                <button
+                  onClick={handleCopy}
+                  className="flex items-center gap-2 px-3 py-1.5 bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 hover:border-nexus-blue-light/30 transition-all group/copy"
+                >
+                  <span className="text-[9px] font-black text-nexus-blue-light/60 uppercase tracking-widest truncate max-w-[120px]">
+                    {referralData.data.share_url.replace(/^https?:\/\//, '')}
+                  </span>
+                  {copied ? (
+                    <Check className="w-3 h-3 text-green-400" />
+                  ) : (
+                    <Copy className="w-3 h-3 text-nexus-blue-light/40 group-hover/copy:text-nexus-blue-light transition-colors" />
+                  )}
+                </button>
+              </div>
+            )}
           </div>
           <div className="space-y-1">
             <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.15em]">{t('securityStatus')}</p>
